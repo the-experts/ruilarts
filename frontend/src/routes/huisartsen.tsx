@@ -1,13 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Await, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/huisartsen")({
   component: App,
-  loader: async () => {
-    const response = await fetch("http://localhost:5001/huisartsen?naam=Kraag");
-    const data = (await response.json()) as Huisarts[];
-
-    return data;
-  },
+  loader: () => ({
+    deferred: new Promise<Huisarts[]>(async (resolve) => {
+      const response = await fetch("http://localhost:5001/huisartsen")
+        const data = await response.json()
+        return resolve(data)
+    }),
+  }),
 });
 
 interface Huisarts {
@@ -19,24 +20,32 @@ interface Huisarts {
 }
 
 function App() {
-  const huisartsen = Route.useLoaderData();
+  const data = Route.useLoaderData();
 
   return (
     <div>
       <h1>Huisartsen</h1>
       <ul>
-        {huisartsen.map((huisarts, index) => (
-          <li key={index}>
-            <h2>{huisarts.naam}</h2>
-            <p>Adres: {huisarts.adres}</p>
-            <p>
-              Locatie: ({huisarts.latitude}, {huisarts.longitude})
-            </p>
-            <a href={huisarts.link} target="_blank" rel="noopener noreferrer">
-              Website
-            </a>
-          </li>
-        ))}
+        <Await promise={data.deferred} fallback="Loading...">
+          {(huisartsen) =>
+            huisartsen.slice(0, 50).map((huisarts, index) => (
+              <li key={index}>
+                <h2>{huisarts.naam}</h2>
+                <p>Adres: {huisarts.adres}</p>
+                <p>
+                  Locatie: ({huisarts.latitude}, {huisarts.longitude})
+                </p>
+                <a
+                  href={huisarts.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Website
+                </a>
+              </li>
+            ))
+          }
+        </Await>
       </ul>
     </div>
   );
