@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": [
+    "nodejs@22.14.0", 
+    "python@3.11",
+    "python311Packages.pip@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      ". $VENV_DIR/bin/activate",
+      "pip install pytest pytest-cov boto3 requests bs4 pandas psycopg2-binary flask"
+    ],
+    "scripts": {
+      "test": [
+        "pytest tests/ -v"
+      ],
+      "scrape_huisartsen":"python huisartsen_api/scrape_huisartsen.py"
+    }
+  }
+}
