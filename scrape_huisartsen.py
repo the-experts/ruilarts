@@ -11,10 +11,13 @@ headers = {
 }
 
 def get_huisartsen(page=1):
-    url = f"{SEARCH_URL}?page={page}"
+    url = f"{SEARCH_URL}/pagina{page}"
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, "html.parser")
     cards = soup.select(".filter-result")
+    
+    
+    print(url)
 
     huisartsen = []
     for card in cards:
@@ -41,7 +44,7 @@ def get_huisartsen(page=1):
         })
     return huisartsen
 
-def scrape_all(pages=5):
+def scrape_all(pages=408):
     all_data = []
     for page in range(1, pages + 1):
         print(f"Scraping page {page}...")
@@ -50,7 +53,7 @@ def scrape_all(pages=5):
         time.sleep(1)  # Respecteer de server
     return pd.DataFrame(all_data)
 
-# Scrape de eerste 5 pagina's
+# Scrape alle pagina's
 df = scrape_all(pages=408)
 
 # Opslaan als CSV
