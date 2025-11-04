@@ -80,6 +80,8 @@ services:
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=ruilarts123
       - PORT=8000
+      - MAX_PRACTICE_CHOICES=10
+      - MAX_CIRCLE_SIZE=10
     ports:
       - "8000:8000"
     volumes:

@@ -44,7 +44,7 @@ function Stap1() {
     // Fetch nearby PGs (even though mocked)
     setIsLoading(true)
     try {
-      await getNearbyPGs(normalized)
+      await getNearbyPGs({data: {postalCode: normalized}})
       navigate({ to: `/registreren/${normalized}/stap-2` })
     } catch {
       setError('Er is een fout opgetreden. Probeer het opnieuw.')

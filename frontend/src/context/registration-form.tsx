@@ -1,16 +1,5 @@
-import { ClosestHuisarts } from "@/data/huisartsService";
+import { ClosestHuisarts, Huisarts } from "@/data/huisartsService";
 import { createContext, ReactNode, useContext, useState } from "react";
-
-export interface PG {
-  id: string;
-  name: string;
-  address: string;
-  postalCode: string;
-  city: string;
-  lat: number;
-  lng: number;
-  distance?: number;
-}
 
 export interface ContactDetails {
   name: string;
@@ -24,7 +13,7 @@ export interface ContactDetails {
 export interface RegistrationFormData {
   postalCode: string;
   targetPGs: ClosestHuisarts[];
-  currentPG: ClosestHuisarts | null;
+  currentPG: Huisarts | null;
   contactDetails: ContactDetails;
 }
 
@@ -32,7 +21,7 @@ interface RegistrationFormContextType {
   formData: RegistrationFormData;
   updatePostalCode: (postalCode: string) => void;
   updateTargetPGs: (pgs: ClosestHuisarts[]) => void;
-  updateCurrentPG: (pg: ClosestHuisarts) => void;
+  updateCurrentPG: (pg: Huisarts) => void;
   updateContactDetails: (details: Partial<ContactDetails>) => void;
   reset: () => void;
 }
@@ -71,7 +60,7 @@ export function RegistrationFormProvider({
     setFormData((prev) => ({ ...prev, targetPGs: pgs }));
   };
 
-  const updateCurrentPG = (pg: ClosestHuisarts) => {
+  const updateCurrentPG = (pg: Huisarts) => {
     setFormData((prev) => ({ ...prev, currentPG: pg }));
   };
 
@@ -106,7 +95,7 @@ export function useRegistrationForm() {
   const context = useContext(RegistrationFormContext);
   if (!context) {
     throw new Error(
-      "useRegistrationForm must be used within RegistrationFormProvider",
+      "useRegistrationForm must be used within RegistrationFormProvider"
     );
   }
   return context;
