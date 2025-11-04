@@ -168,22 +168,31 @@ RETURN ${returnItems.join(', ')}
   }
 
   /**
-   * Rank cycles by preference order (lower is better)
-   * Priority: maxPreferenceOrder, totalPreferenceScore, size (smaller is better)
+   * Rank cycles using weighted scoring (lower score = better match)
+   * Score = (maxPref × preferenceWeight) + (totalScore × totalScoreWeight) + (distance × sizeWeight)
    */
   private rankCycles(cycles: RawCycle[]): RawCycle[] {
-    return cycles.sort((a, b) => {
-      // Lower max preference is better
-      if (a.maxPreferenceOrder !== b.maxPreferenceOrder) {
-        return a.maxPreferenceOrder - b.maxPreferenceOrder;
-      }
-      // Lower total score is better
-      if (a.totalPreferenceScore !== b.totalPreferenceScore) {
-        return a.totalPreferenceScore - b.totalPreferenceScore;
-      }
-      // Smaller circle is better
-      return a.nodes.length - b.nodes.length;
+    const idealSize = config.matching.idealCircleSize;
+    const w1 = config.matching.preferenceWeight;
+    const w2 = config.matching.totalScoreWeight;
+    const w3 = config.matching.sizeWeight;
+
+    // Calculate score for each cycle
+    const cyclesWithScores = cycles.map(cycle => {
+      const distance = Math.abs(cycle.nodes.length - idealSize);
+      const score = (cycle.maxPreferenceOrder * w1) +
+                   (cycle.totalPreferenceScore * w2) +
+                   (distance * w3);
+
+      console.log(`[Matcher] Cycle size ${cycle.nodes.length}: maxPref=${cycle.maxPreferenceOrder}, total=${cycle.totalPreferenceScore}, distance=${distance}, score=${score.toFixed(2)}`);
+
+      return { cycle, score };
     });
+
+    // Sort by score (lower is better)
+    cyclesWithScores.sort((a, b) => a.score - b.score);
+
+    return cyclesWithScores.map(item => item.cycle);
   }
 
   /**
