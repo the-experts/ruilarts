@@ -1,0 +1,36 @@
+meta {
+  name: Closest Huisartsen
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{huisartsenApiUrl}}/huisartsen/closest?lat=&lon=
+  body: none
+  auth: none
+}
+
+params:query {
+  lat:
+  lon:
+}
+
+docs {
+  Retrieve the 3 closest huisartsen (GP practices) based on geographic coordinates.
+
+  Query Parameters:
+  - lat (required): Latitude of the reference location
+  - lon (required): Longitude of the reference location
+
+  Returns:
+  - Array of the 3 closest huisarts objects with:
+    - naam: Practice name
+    - adres: Address
+    - latitude: Latitude coordinate
+    - longitude: Longitude coordinate
+    - link: URL link
+    - distance_m: Distance from input location in meters
+
+  Examples:
+  - /huisartsen/closest?lat=52.0605&lon=4.4478
+}

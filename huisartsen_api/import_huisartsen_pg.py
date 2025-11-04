@@ -24,6 +24,10 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
+cursor.execute("""
+DROP TABLE IF EXISTS huisartsen
+""")
+
 # Tabel aanmaken
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS huisartsen (

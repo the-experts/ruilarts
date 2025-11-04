@@ -46,5 +46,50 @@ def get_huisartsen():
     ]
     return jsonify(results)
 
+from math import radians, cos, sin, asin, sqrt
+
+def haversine(lat1, lon1, lat2, lon2):
+    # Convert decimal degrees to radians
+    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+    # Haversine formula
+    dlat = lat2 - lat1 
+    dlon = lon2 - lon1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    r = 6371000  # Radius of Earth in meters
+    return c * r
+
+@app.route('/huisartsen/closest', methods=['GET'])
+def get_closest_huisartsen():
+    lat = request.args.get('lat', type=float)
+    lon = request.args.get('lon', type=float)
+
+    if lat is None or lon is None:
+        return jsonify({"error": "Please provide both 'lat' and 'lon' query parameters."}), 400
+
+    cursor.execute("SELECT naam, adres, latitude, longitude, link FROM huisartsen")
+    rows = cursor.fetchall()
+
+    distances = []
+    for row in rows:
+        naam, adres, latitude, longitude, link = row
+    
+        if latitude is not None and longitude is not None:
+            distance = haversine(lat, lon, latitude, longitude)
+            distances.append({
+                "naam": naam,
+                "adres": adres,
+                "latitude": latitude,
+                "longitude": longitude,
+                "link": link,
+                "distance_m": round(distance)  # distance in meters
+            })
+
+    # Sort by distance and take the closest 3
+    closest = sorted(distances, key=lambda x: x["distance_m"])[:3]
+  
+
+    return jsonify(closest)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
