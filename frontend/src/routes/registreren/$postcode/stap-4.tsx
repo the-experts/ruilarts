@@ -293,7 +293,7 @@ function Stap4() {
           className="w-full"
           size="lg"
         >
-          {isLoading ? "Bezig met verzenden..." : "Volgende"}
+          {isLoading ? "Bezig met verzenden..." : "Verzenden"}
         </Button>
       </div>
     </div>
