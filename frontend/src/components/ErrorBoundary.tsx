@@ -1,5 +1,5 @@
-import { useRouter } from "@tanstack/react-router";
-import { RootRouteError } from "@tanstack/react-router";
+import { RootRouteError, useRouter } from "@tanstack/react-router";
+import LetterGlitch from "./bg/LetterGlitch";
 
 export function ErrorBoundary({ error }: { error: RootRouteError }) {
   const router = useRouter();
@@ -118,7 +118,15 @@ export function ErrorBoundary({ error }: { error: RootRouteError }) {
         `}</style>
       </head>
       <body>
-        <div className="container">
+        <div className="absolute top-0 left-0 right-0 bottom-0 z-0">
+          <LetterGlitch
+            glitchSpeed={1}
+            centerVignette={false}
+            outerVignette={true}
+            smooth={true}
+          />
+        </div>
+        <div className="container z-10">
           <div className="icon">⚠️</div>
           <h1>Oeps, iets ging fout</h1>
           <p className="subtitle">
@@ -133,7 +141,14 @@ export function ErrorBoundary({ error }: { error: RootRouteError }) {
 
           {isDevMode && error && (
             <details>
-              <summary style={{ cursor: "pointer", color: "#667eea", fontWeight: "bold", marginBottom: "8px" }}>
+              <summary
+                style={{
+                  cursor: "pointer",
+                  color: "#667eea",
+                  fontWeight: "bold",
+                  marginBottom: "8px",
+                }}
+              >
                 Technische details (alleen ontwikkelaars)
               </summary>
               <div className="error-details">
