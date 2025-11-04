@@ -1,6 +1,5 @@
 export interface Practice {
-  name: string;
-  location: string;
+  id: number;
 }
 
 export interface Person {
@@ -37,12 +36,8 @@ export interface MatchResult {
 
 export interface PersonCreate {
   name: string;
-  currentPracticeName: string;
-  currentLocation: string;
-  choices: {
-    practiceName: string;
-    location: string;
-  }[];
+  currentPracticeId: number;
+  choices: number[];
 }
 
 export interface Statistics {

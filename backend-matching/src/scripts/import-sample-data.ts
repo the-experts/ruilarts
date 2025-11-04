@@ -24,12 +24,9 @@ const __dirname = path.dirname(__filename);
 interface CSVRow {
   person_id: string;
   name: string;
-  current_huisarts: string;
-  current_location: string;
-  desired_huisarts: string;
-  new_location: string;
-  desired_huisarts_2: string;
-  new_location_2: string;
+  current_practice_id: string;
+  desired_practice_id_1: string;
+  desired_practice_id_2: string;
 }
 
 // Simple CSV parser (handles basic CSV without complex escaping)
@@ -67,8 +64,6 @@ async function importSampleData(): Promise<void> {
     neo4j.auth.basic(config.neo4j.username, config.neo4j.password)
   );
 
-  const PREFERENCE_RELATIONS = ['WANTS_FIRST', 'WANTS_SECOND'] as const;
-
   try {
     // Verify connectivity
     console.log('🔌 Connecting to Neo4j...');
@@ -99,38 +94,37 @@ async function importSampleData(): Promise<void> {
       for (const row of rows) {
         try {
           const rawChoices = [
-            { practiceName: row.desired_huisarts, location: row.new_location },
-            { practiceName: row.desired_huisarts_2, location: row.new_location_2 },
+            row.desired_practice_id_1,
+            row.desired_practice_id_2,
           ]
-            .filter(choice => choice.practiceName && choice.location)
-            .slice(0, 2);
+            .filter(id => id && !isNaN(parseInt(id)))
+            .map(id => parseInt(id));
 
           if (rawChoices.length === 0) {
             throw new Error(`No valid choices supplied for ${row.name}`);
           }
 
-          const choices = rawChoices.slice(0, PREFERENCE_RELATIONS.length);
+          const choices = rawChoices;
 
           const query = `
-            MERGE (currentPr:Practice {name: $currentPracticeName, location: $currentLocation})
+            MERGE (currentPr:Practice {id: $currentPracticeId})
             ${choices
               .map(
                 (_choice, index) =>
-                  `MERGE (choice${index}:Practice {name: $choice${index}Name, location: $choice${index}Location})`
+                  `MERGE (choice${index}:Practice {id: $choice${index}Id})`
               )
               .join('\n            ')}
 
             CREATE (p:Person {
               id: $personId,
-              name: $name,
-              current_location: $currentLocation
+              name: $name
             })
 
             CREATE (p)-[:CURRENTLY_AT]->(currentPr)
             ${choices
               .map(
                 (_choice, index) =>
-                  `CREATE (p)-[:${PREFERENCE_RELATIONS[index]} {location: $choice${index}Location}]->(choice${index})`
+                  `CREATE (p)-[:WANTS {order: ${index}}]->(choice${index})`
               )
               .join('\n            ')}
 
@@ -140,13 +134,11 @@ async function importSampleData(): Promise<void> {
           const params: Record<string, unknown> = {
             personId: row.person_id,
             name: row.name,
-            currentPracticeName: row.current_huisarts,
-            currentLocation: row.current_location,
+            currentPracticeId: parseInt(row.current_practice_id),
           };
 
-          choices.forEach((choice, index) => {
-            params[`choice${index}Name`] = choice.practiceName;
-            params[`choice${index}Location`] = choice.location;
+          choices.forEach((choiceId, index) => {
+            params[`choice${index}Id`] = choiceId;
           });
 
           await session.run(query, params);
