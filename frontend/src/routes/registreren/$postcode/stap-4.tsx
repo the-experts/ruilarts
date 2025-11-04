@@ -27,7 +27,7 @@ function Stap4() {
 
   const [name, setName] = useState(formData.contactDetails.name || "");
   const [postalCode, setPostalCode] = useState(
-    formData.contactDetails.postalCode || "",
+    formData.contactDetails.postalCode || postcode || "",
   );
   const [houseNumber, setHouseNumber] = useState(
     formData.contactDetails.houseNumber || "",
@@ -55,8 +55,10 @@ function Stap4() {
       setIsLookingUpAddress(true);
       try {
         const result = await lookupPDOKAddress({
-          postalCode: normalized,
-          houseNumber: houseNumber.trim(),
+          data: {
+            postalCode: normalized,
+            houseNumber: houseNumber.trim(),
+          },
         });
 
         if (result) {

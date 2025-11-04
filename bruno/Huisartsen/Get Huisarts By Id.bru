@@ -1,0 +1,33 @@
+meta {
+  name: Get Huisarts By ID
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{huisartsenApiUrl}}/huisartsen/:id
+  body: none
+  auth: none
+}
+
+docs {
+  Summary:
+  Retrieve details of a specific huisarts (general practitioner) by their unique ID.
+
+  URL Parameters:
+  - id (integer): The unique identifier of the huisarts.
+
+  Response:
+  Returns a `Huisarts` object with the following fields:
+  - naam (string): Name of the practice
+  - adres (string): Address of the practice
+  - street (string): Street of the practice
+  - postalcode (string): Postal code of the practice
+  - city (string): City of the practice
+  - latitude (float): Latitude coordinate
+  - longitude (float): Longitude coordinate
+  - link (string): URL to the practice's website or profile
+
+  Example Request:
+  - GET /huisartsen/1
+}

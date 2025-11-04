@@ -90,30 +90,6 @@ app.get('/huisartsen', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/huisartsen/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  const query = 'SELECT id, naam, adres, street, postalcode, city, latitude, longitude, link FROM huisartsen WHERE id = $1';
-
-  try {
-    const result = await pool.query(query, [id]);
-
-    if (result.rows.length === 0) {
-       res.status(404).json({ error: 'Huisarts not found' });
-       return
-    }
-
-    const row = result.rows[0];
-    const huisarts = convertRow(row);
-
-    res.json(huisarts);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database query failed' });
-  }
-});
-
-
 app.get('/huisartsen/closest', async (req: Request, res: Response) => {
   const lat = parseFloat(req.query.lat as string);
   const lon = parseFloat(req.query.lon as string);
@@ -144,6 +120,30 @@ app.get('/huisartsen/closest', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
+
+app.get('/huisartsen/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const query = 'SELECT id, naam, adres, street, postalcode, city, latitude, longitude, link FROM huisartsen WHERE id = $1';
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+       res.status(404).json({ error: 'Huisarts not found' });
+       return
+    }
+
+    const row = result.rows[0];
+    const huisarts = convertRow(row);
+
+    res.json(huisarts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server running on http://0.0.0.0:${port}`);

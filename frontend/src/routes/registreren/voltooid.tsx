@@ -1,20 +1,20 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { useRegistrationForm } from '@/context/registration-form'
-import { CheckCircle } from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import { useRegistrationForm } from "@/context/registration-form";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { CheckCircle } from "lucide-react";
 
-export const Route = createFileRoute('/registreren/voltooid')({
+export const Route = createFileRoute("/registreren/voltooid")({
   component: Voltooid,
-})
+});
 
 function Voltooid() {
-  const navigate = useNavigate()
-  const { formData, reset } = useRegistrationForm()
+  const navigate = useNavigate();
+  const { formData, reset } = useRegistrationForm();
 
   const handleGoHome = () => {
-    reset()
-    navigate({ to: '/' })
-  }
+    reset();
+    navigate({ to: "/" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -30,7 +30,7 @@ function Voltooid() {
           <div className="mt-6 h-1 w-full overflow-hidden rounded-full bg-gray-200">
             <div
               className="h-full bg-blue-600 transition-all duration-300"
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             />
           </div>
         </div>
@@ -59,7 +59,8 @@ function Voltooid() {
 
             <ol className="space-y-2 list-inside list-decimal text-sm text-gray-700">
               <li>
-                We analyseren uw gegevens en zoeken naar mogelijke uitwisselingen
+                We analyseren uw gegevens en zoeken naar mogelijke
+                uitwisselingen
               </li>
               <li>
                 Wanneer we een geschikte match hebben gevonden, sturen we u een
@@ -80,13 +81,13 @@ function Voltooid() {
 
             <div className="space-y-3 text-sm">
               <div>
-                <p className="text-gray-600">Uw huiige huisarts:</p>
+                <p className="text-gray-600">Uw huidige huisarts:</p>
                 <p className="font-semibold text-gray-900">
-                  {formData.currentPG?.name || 'Niet ingesteld'}
+                  {formData.currentPG?.name || "Niet ingesteld"}
                 </p>
                 <p className="text-gray-600">
-                  {formData.currentPG?.address}, {formData.currentPG?.postalCode}{' '}
-                  {formData.currentPG?.city}
+                  {formData.currentPG?.address},{" "}
+                  {formData.currentPG?.postalCode} {formData.currentPG?.city}
                 </p>
               </div>
 
@@ -114,14 +115,18 @@ function Voltooid() {
                   {formData.contactDetails.name}
                 </p>
                 <p className="text-gray-600">
-                  {formData.contactDetails.postalCode}{' '}
+                  {formData.contactDetails.postalCode}{" "}
                   {formData.contactDetails.houseNumber}
                 </p>
                 {formData.contactDetails.street && (
-                  <p className="text-gray-600">{formData.contactDetails.street}</p>
+                  <p className="text-gray-600">
+                    {formData.contactDetails.street}
+                  </p>
                 )}
                 {formData.contactDetails.city && (
-                  <p className="text-gray-600">{formData.contactDetails.city}</p>
+                  <p className="text-gray-600">
+                    {formData.contactDetails.city}
+                  </p>
                 )}
                 <p className="text-gray-600">{formData.contactDetails.email}</p>
               </div>
@@ -131,8 +136,8 @@ function Voltooid() {
           {/* Info about privacy */}
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
             <p className="text-xs text-gray-600">
-              ℹ️ Uw gegevens worden vertrouwelijk behandeld en alleen gebruikt voor
-              het vinden van geschikte huisartsuitwisselingen. We geven uw
+              ℹ️ Uw gegevens worden vertrouwelijk behandeld en alleen gebruikt
+              voor het vinden van geschikte huisartsuitwisselingen. We geven uw
               gegevens niet door aan derden.
             </p>
           </div>
@@ -154,14 +159,14 @@ function Voltooid() {
               <div
                 key={step}
                 className={`flex flex-col items-center gap-2 ${
-                  step <= 5 ? 'text-blue-600' : 'text-gray-400'
+                  step <= 5 ? "text-blue-600" : "text-gray-400"
                 }`}
               >
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
                     step <= 5
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-300 text-gray-500'
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-300 text-gray-500"
                   }`}
                 >
                   {step}
@@ -172,5 +177,5 @@ function Voltooid() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Heart, MapPin, Users } from "lucide-react";
 import { useState } from "react";
+import Logo from "../logo.svg";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -12,7 +13,10 @@ function App() {
   const [postalCodeInput, setPostalCodeInput] = useState("");
 
   const handleStartClick = () => {
-    navigate({ to: "/registreren/stap-1" });
+    navigate({
+      to: "/registreren/$postcode/stap-2",
+      params: { postcode: postalCodeInput },
+    });
   };
 
   return (
@@ -22,13 +26,16 @@ function App() {
         <div className="absolute inset-0 bg-linear-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5"></div>
         <div className="relative max-w-4xl mx-auto">
           <div className="mb-6 flex justify-center">
+            <img src={Logo} width={400} alt="Ruil Arts" />
+          </div>
+          <div className="mb-6 flex justify-center">
             <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
               🏥 Je Huisarts Dichter Bij Huis
             </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.02em]">
             Vind een huisarts{" "}
-            <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
               door ruilen
             </span>
           </h1>
@@ -207,6 +214,7 @@ function App() {
             <div className="flex-1">
               <Input
                 type="text"
+                name="postcode"
                 placeholder="1234AB"
                 className="w-full h-12 text-base pl-4"
                 maxLength={7}
