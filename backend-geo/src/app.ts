@@ -1,13 +1,13 @@
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = 3030;
 
 /**
  * !! Please take care when calling it multiple times (include some delay..), pdok rate limit not known !!
- * example call1  http://localhost:3000/location?postcode=3608AB&addressNumber=48
- * example call2  http://localhost:3000/location?postcode=6922KZ&address=Laan%20van%20de%20landinrichtingscommissie&addressNumber=1
- * returns long, lat
+ * example call1  http://localhost:3030/location?postcode=3608AB&addressNumber=48
+ * example call2  http://localhost:3030/location?postcode=6922KZ&address=Laan%20van%20de%20landinrichtingscommissie&addressNumber=1
+ * returns long, lat wgs84
  *
  */
 app.get('/location', async (req, res) => {
@@ -36,7 +36,72 @@ app.get('/location', async (req, res) => {
         }
         res.send(jsonResponse)
     }else{
+        console.log("location error happened")
+    }
+    res.send(response.statusText)
+});
 
+/**
+ * !! Please take care when calling it multiple times (include some delay..), grashopper rate limit 500 a day ?!!
+ * example call1  http://localhost:3030/route?fromLon=5.03239361&fromLat=52.12244549&toLon=5.05239361&toLat=52.12244549
+ * returns weight + distance
+ *
+ */
+app.get('/route', async (req, res) => {
+    console.log('receiving')
+    const postcode = req.query.postcode
+
+    const fromLon = parseFloat(req.query.fromLon)
+    const fromLat = parseFloat(req.query.fromLat)
+    const toLon = parseFloat(req.query.toLon)
+    const toLat = parseFloat(req.query.toLat)
+    let body = JSON.stringify({
+        points: [
+            [
+                fromLon,
+                fromLat
+            ],
+            [
+                toLon,
+                toLat
+            ]
+        ],
+        snap_preventions: [
+            "motorway",
+            "ferry",
+            "tunnel"
+        ],
+        details: [
+            "road_class",
+            "surface"
+        ],
+        profile: "car",
+        locale: "en",
+        instructions: true,
+        calc_points: true,
+        points_encoded: false
+    });
+    const response = await fetch(
+        'https://graphhopper.com/api/1/route?key=5c35b258-d4f2-4556-8df8-9da8d5011909',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: body,
+        }
+    );
+    console.log(response)
+    //extract JSON from the http response
+    if (response.ok) {
+        let routeResponse = await response.json();
+        const jsonResponse = {
+            time : routeResponse.paths[0].time,
+            distance : routeResponse.paths[0].distance
+        }
+        res.send(jsonResponse)
+    }else{
+        console.log("route error happened")
     }
     res.send(response.statusText)
 });
@@ -45,13 +110,3 @@ app.listen(port, () => {
     return console.log(`Express is listening at http://localhost:${port}`);
 });
 
-function mercatorToLatLon(mercX, mercY) {
-
-    var rMajor = 6378137; //Equatorial Radius, WGS84
-    var shift  = Math.PI * rMajor;
-    var lon    = mercX / shift * 180.0;
-    var lat    = mercY / shift * 180.0;
-    lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
-
-    return { 'Lon': lon, 'Lat': lat };
-}
