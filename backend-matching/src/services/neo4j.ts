@@ -144,6 +144,24 @@ class Neo4jService {
     }
   }
 
+  async getAllPeople(): Promise<Person[]> {
+    const session = await this.getSession();
+    try {
+      const query = `
+        MATCH (p:Person)
+        MATCH (p)-[:CURRENTLY_AT]->(currentPractice:Practice)
+        OPTIONAL MATCH (p)-[w:WANTS]->(choice:Practice)
+        RETURN p,
+               currentPractice,
+               collect({practice: choice, order: w.order}) as choices
+      `;
+
+      const result = await session.run(query);
+      return result.records.map((record) => this.recordToPerson(record));
+    } finally {
+      await session.close();
+    }
+  }
 
   async deletePerson(personId: string): Promise<void> {
     const session = await this.getSession();
