@@ -224,7 +224,7 @@ RETURN ${returnItems.join(', ')}
 
       // The previous person in the cycle is who this person gets a spot from
       const prevIndex = (index - 1 + cycle.nodes.length) % cycle.nodes.length;
-      const getsSpotFrom = cycle.nodes[prevIndex].personName;
+      const getsSpotFrom = cycle.nodes[prevIndex].personId;
 
       return {
         person,
