@@ -3,7 +3,6 @@ import { getGeolocation } from "../geoService";
 import {
   getClosestHuisarts,
   getHuisartsen,
-  Huisarts,
 } from "../huisartsService";
 
 /**
@@ -27,9 +26,6 @@ export const getNearbyPGs = createServerFn()
       throw e;
     }
   });
-// export async function getNearbyPGs =(postalCode: string) {
-
-// }
 
 /**
  * Search Huisartsen with filters

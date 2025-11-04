@@ -83,11 +83,11 @@ function Voltooid() {
               <div>
                 <p className="text-gray-600">Uw huidige huisarts:</p>
                 <p className="font-semibold text-gray-900">
-                  {formData.currentPG?.name || "Niet ingesteld"}
+                  {formData.currentPG?.naam || "Niet ingesteld"}
                 </p>
                 <p className="text-gray-600">
-                  {formData.currentPG?.address},{" "}
-                  {formData.currentPG?.postalCode} {formData.currentPG?.city}
+                  {formData.currentPG?.street},{" "}
+                  {formData.currentPG?.postalcode} {formData.currentPG?.city}
                 </p>
               </div>
 
@@ -97,9 +97,9 @@ function Voltooid() {
                   <ul className="mt-1 space-y-1">
                     {formData.targetPGs.map((pg, index) => (
                       <li key={pg.id} className="font-semibold text-gray-900">
-                        {index + 1}. {pg.name}
+                        {index + 1}. {pg.naam}
                         <p className="text-sm font-normal text-gray-600">
-                          {pg.address}, {pg.postalCode} {pg.city}
+                          {pg.street}, {pg.postalcode} {pg.city}
                         </p>
                       </li>
                     ))}
