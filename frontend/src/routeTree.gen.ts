@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyStatementRouteImport } from './routes/privacy-statement'
 import { Route as MatchesRouteImport } from './routes/matches'
@@ -22,6 +24,13 @@ import { Route as RegistrerenPostcodeStap4RouteImport } from './routes/registrer
 import { Route as RegistrerenPostcodeStap3RouteImport } from './routes/registreren/$postcode/stap-3'
 import { Route as RegistrerenPostcodeStap2RouteImport } from './routes/registreren/$postcode/stap-2'
 
+const RegistrerenRouteImport = createFileRoute('/registreren')()
+
+const RegistrerenRoute = RegistrerenRouteImport.update({
+  id: '/registreren',
+  path: '/registreren',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyStatementRoute = PrivacyStatementRouteImport.update({
   id: '/privacy-statement',
   path: '/privacy-statement',
@@ -120,6 +129,7 @@ export interface FileRoutesById {
   '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
+  '/registreren': typeof RegistrerenRouteWithChildren
   '/registreren/__layout': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/matches'
     | '/privacy-statement'
     | '/registreren/$postcode'
+    | '/registreren'
     | '/registreren/__layout'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
@@ -178,10 +189,18 @@ export interface RootRouteChildren {
   MatchesRoute: typeof MatchesRoute
   PrivacyStatementRoute: typeof PrivacyStatementRoute
   RegistrerenPostcodeRouteRoute: typeof RegistrerenPostcodeRouteRouteWithChildren
+  RegistrerenRoute: typeof RegistrerenRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registreren': {
+      id: '/registreren'
+      path: '/registreren'
+      fullPath: '/registreren'
+      preLoaderRoute: typeof RegistrerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy-statement': {
       id: '/privacy-statement'
       path: '/privacy-statement'
@@ -233,7 +252,7 @@ declare module '@tanstack/react-router' {
     }
     '/registreren/__layout': {
       id: '/registreren/__layout'
-      path: ''
+      path: '/registreren'
       fullPath: '/registreren'
       preLoaderRoute: typeof Registreren_layoutRouteImport
       parentRoute: typeof RegistrerenRoute
@@ -287,12 +306,31 @@ const RegistrerenPostcodeRouteRouteWithChildren =
     RegistrerenPostcodeRouteRouteChildren,
   )
 
+interface RegistrerenRouteChildren {
+  Registreren_layoutRoute: typeof Registreren_layoutRoute
+  RegistrerenStap1Route: typeof RegistrerenStap1Route
+  RegistrerenVoltooidRoute: typeof RegistrerenVoltooidRoute
+  RegistrerenIndexRoute: typeof RegistrerenIndexRoute
+}
+
+const RegistrerenRouteChildren: RegistrerenRouteChildren = {
+  Registreren_layoutRoute: Registreren_layoutRoute,
+  RegistrerenStap1Route: RegistrerenStap1Route,
+  RegistrerenVoltooidRoute: RegistrerenVoltooidRoute,
+  RegistrerenIndexRoute: RegistrerenIndexRoute,
+}
+
+const RegistrerenRouteWithChildren = RegistrerenRoute._addFileChildren(
+  RegistrerenRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
   MatchesRoute: MatchesRoute,
   PrivacyStatementRoute: PrivacyStatementRoute,
   RegistrerenPostcodeRouteRoute: RegistrerenPostcodeRouteRouteWithChildren,
+  RegistrerenRoute: RegistrerenRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
