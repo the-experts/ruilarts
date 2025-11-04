@@ -36,7 +36,10 @@ CREATE TABLE IF NOT EXISTS huisartsen (
     adres TEXT,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
-    link TEXT
+    link TEXT,
+    street TEXT,
+    postalcode TEXT,
+    city TEXT
 )
 """)
 
@@ -46,9 +49,9 @@ df = pd.read_csv("huisartsen_zorgkaart.csv")
 # Data invoegen
 for _, row in df.iterrows():
     cursor.execute("""
-    INSERT INTO huisartsen (naam, adres, latitude, longitude, link)
-    VALUES (%s, %s, %s, %s, %s)
-    """, (row['Naam'], row['Adres'], row['Latitude'], row['Longitude'], row['Link']))
+    INSERT INTO huisartsen (naam, adres, latitude, longitude, link, street, postalcode, city)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """, (row['Naam'], row['Adres'], row['Latitude'], row['Longitude'], row['Link'],row['Street'],row['Postcode'],row['City']))
 
 conn.commit()
 cursor.close()

@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as HuisartsenRouteImport } from './routes/huisartsen'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegistrerenIndexRouteImport } from './routes/registreren/index'
@@ -27,6 +28,11 @@ const RegistrerenRouteImport = createFileRoute('/registreren')()
 const RegistrerenRoute = RegistrerenRouteImport.update({
   id: '/registreren',
   path: '/registreren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchesRoute = MatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HuisartsenRoute = HuisartsenRouteImport.update({
@@ -86,6 +92,7 @@ const RegistrerenPostcodeStap2Route =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/matches': typeof MatchesRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
   '/registreren': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/matches': typeof MatchesRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
   '/registreren': typeof RegistrerenIndexRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/matches': typeof MatchesRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
   '/registreren': typeof RegistrerenRouteWithChildren
   '/registreren/__layout': typeof Registreren_layoutRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/huisartsen'
+    | '/matches'
     | '/registreren/$postcode'
     | '/registreren'
     | '/registreren/stap-1'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/huisartsen'
+    | '/matches'
     | '/registreren/$postcode'
     | '/registreren'
     | '/registreren/stap-1'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/huisartsen'
+    | '/matches'
     | '/registreren/$postcode'
     | '/registreren'
     | '/registreren/__layout'
@@ -162,6 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuisartsenRoute: typeof HuisartsenRoute
+  MatchesRoute: typeof MatchesRoute
   RegistrerenPostcodeRouteRoute: typeof RegistrerenPostcodeRouteRouteWithChildren
   RegistrerenRoute: typeof RegistrerenRouteWithChildren
 }
@@ -173,6 +186,13 @@ declare module '@tanstack/react-router' {
       path: '/registreren'
       fullPath: '/registreren'
       preLoaderRoute: typeof RegistrerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matches': {
+      id: '/matches'
+      path: '/matches'
+      fullPath: '/matches'
+      preLoaderRoute: typeof MatchesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/huisartsen': {
@@ -287,6 +307,7 @@ const RegistrerenRouteWithChildren = RegistrerenRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
+  MatchesRoute: MatchesRoute,
   RegistrerenPostcodeRouteRoute: RegistrerenPostcodeRouteRouteWithChildren,
   RegistrerenRoute: RegistrerenRouteWithChildren,
 }
