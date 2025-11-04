@@ -43,7 +43,7 @@ services:
 
   # Huisartsen API (Flask)
   huisartsen-api:
-    build: .
+    build: ./huisartsen_api
     container_name: ruilarts-huisartsen-api
     depends_on:
       - db
