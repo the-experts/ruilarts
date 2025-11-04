@@ -1,0 +1,31 @@
+meta {
+  name: Create Person
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/people
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Jan de Vries",
+    "current_practice_name": "Huisartsen Amsterdam",
+    "current_location": "Amsterdam",
+    "desired_practice_first": "Huisartsen Utrecht",
+    "desired_location_first": "Utrecht",
+    "desired_practice_second": "Huisartsen Rotterdam",
+    "desired_location_second": "Rotterdam"
+  }
+}
+
+docs {
+  Add a new person to the matching system with their current practice and desired practices (first and optionally second choice).
+
+  Returns:
+  - 201: Person created successfully
+  - 400: Invalid data
+}

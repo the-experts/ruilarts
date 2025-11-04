@@ -1,6 +1,6 @@
 # Ruilarts
 
-A circular matching algorithm to help people who moved homes find a huisarts (general practitioner) in their new location.
+A circular matching system to help people who moved homes find a huisarts (general practitioner) in their new location.
 
 ## The Problem
 
@@ -17,6 +17,99 @@ The system detects circular matches (swap cycles) where multiple people can exch
 - Person D wants huisarts A's practice
 
 The system detects this circular pattern (A→B→C→D→A) and everyone can swap!
+
+## Tech Stack
+
+- **Backend Matching API**: FastAPI + Neo4j (graph-based circular matching)
+- **Huisartsen API**: Flask + PostgreSQL (huisarts data)
+- **Frontend**: React + TanStack Start
+- **Infrastructure**: Docker Compose for orchestration
+
+## Quick Start
+
+### Prerequisites
+
+- Docker and Docker Compose installed
+
+### Run the Application
+
+```bash
+# 1. Start all services
+docker-compose up -d
+
+# 2. Load sample data into Neo4j
+docker-compose exec backend-matching python scripts/migrate_csv_to_neo4j.py
+
+# 3. Access the services:
+# - Backend Matching API: http://localhost:8000
+# - API Documentation: http://localhost:8000/docs
+# - Neo4j Browser: http://localhost:7474 (neo4j / ruilarts123)
+# - Huisartsen API: http://localhost:5001
+```
+
+### View Logs
+
+```bash
+# All services
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f backend-matching
+```
+
+### Stop Services
+
+```bash
+docker-compose down
+
+# Or remove all data volumes
+docker-compose down -v
+```
+
+## Project Structure
+
+```
+ruilarts/
+├── backend-matching/      # FastAPI circular matching service (Neo4j)
+├── backend-geo/           # Geographic matching service
+├── frontend/              # React frontend
+├── huisartsen_api/        # Huisarts data API (Flask + PostgreSQL)
+├── docker-compose.yml     # Unified Docker orchestration
+└── sample_circle.csv      # Test data
+```
+
+## Services
+
+### Backend Matching API (Port 8000)
+
+Graph-based circular matching algorithm using Neo4j.
+
+**Key Features:**
+- Clean architecture (domain, application, infrastructure, API layers)
+- Neo4j for efficient cycle detection
+- First and second preference support
+- RESTful API with FastAPI
+
+**Documentation:** See [backend-matching/README.md](backend-matching/README.md)
+
+### Huisartsen API (Port 5001)
+
+Provides data about huisarts practices.
+
+**Tech:** Flask + PostgreSQL
+
+### Frontend (Port 3000)
+
+User interface for the matching system.
+
+**Tech:** React + TanStack Start + Vite
+
+### Neo4j Database (Ports 7474, 7687)
+
+Graph database for storing and querying circular matches.
+
+**Browser:** http://localhost:7474
+**Credentials:** neo4j / ruilarts123
 
 ## Test Data
 
