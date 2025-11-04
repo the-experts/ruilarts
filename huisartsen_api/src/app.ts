@@ -36,7 +36,7 @@ function haversine(lat1: number, lon1: number, lat2: number, lon2: number): numb
 
 app.get('/huisartsen', async (req: Request, res: Response) => {
   const { naam, locatie } = req.query;
-  let query = 'SELECT naam, adres, latitude, longitude, link FROM huisartsen';
+  let query = 'SELECT id, naam, adres, latitude, longitude, link FROM huisartsen';
   const filters: string[] = [];
   const params: any[] = [];
 
@@ -56,6 +56,7 @@ app.get('/huisartsen', async (req: Request, res: Response) => {
   try {
     const result = await pool.query(query, params);
     const rows = result.rows.map(row => ({
+      id: row.id,
       naam: row.naam,
       adres: row.adres,
       latitude: row.latitude,
@@ -73,21 +74,21 @@ app.get('/huisartsen/closest', async (req: Request, res: Response) => {
   const lat = parseFloat(req.query.lat as string);
   const lon = parseFloat(req.query.lon as string);
 
+  console.log(lat)
+
   if (isNaN(lat) || isNaN(lon)) {
      res.status(400).json({ error: "Please provide both 'lat' and 'lon' query parameters." });
      return
   }
 
   try {
-    const result = await pool.query('SELECT naam, adres, latitude, longitude, link FROM huisartsen');
+    const result = await pool.query('SELECT id, naam, adres, latitude, longitude, link FROM huisartsen');
     const distances = result.rows
       .filter(row => row.latitude !== null && row.longitude !== null)
       .map(row => {
         const distance = haversine(lat, lon, row.latitude, row.longitude);
-        if (distance < 100) {
-        console.log(distance)
-        }
         return {
+          id: row.id,
           naam: row.naam,
           adres: row.adres,
           latitude: row.latitude,
@@ -98,7 +99,7 @@ app.get('/huisartsen/closest', async (req: Request, res: Response) => {
       });
 
     distances.sort((a, b) => a.distance_m - b.distance_m);
-    res.json(distances.slice(0, 3));
+    res.json(distances.slice(0, 5));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database query failed' });
