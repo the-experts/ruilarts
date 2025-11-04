@@ -19,9 +19,13 @@
   <body>
     <div class="reveal">
       <div class="slides">
+         <!-- page 1 -->
         <section>
-          <section>
-            <img src="logo.svg" width="750" />
+          <section
+            data-background-transition="serif"
+            data-background="background.png"
+          >
+            <img style="float: left" src="logo.svg" width="600" />
           </section>
           <section>
             <h3>The Team</h3>
@@ -41,7 +45,291 @@
             </ul>
           </section>
         </section>
-        <section>Slide 2</section>
+         <!-- page 2 -->
+        <section>
+          <section>
+            <h3>Het Probleem</h3>
+            <p>
+              Wanneer mensen verhuizen, komt de zorgtoegang in het gedrang
+            </p>
+          </section>
+          <section>
+            <h3>Scenario</h3>
+            <p><strong>Pieter</strong> is net naar Enschede verhuisd</p>
+            <ul>
+              <li>Heeft een huisarts in Den Haag (nu ver weg)</li>
+              <li>Zoekt een huisarts in Enschede</li>
+              <li>Maar de praktijken in Enschede zitten vol 😞</li>
+            </ul>
+            <p><strong>Eddy</strong> is net naar Den Haag verhuisd</p>
+            <ul>
+              <li>Heeft een huisarts in Enschede (nu ver weg)</li>
+              <li>Zoekt een huisarts in Den Haag</li>
+              <li>Maar de praktijken in Den Haag zitten vol 😞</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Het Probleem</h3>
+            <p>
+              🏥
+              <strong>Individuele ruilingen zijn lastig te coördineren</strong>
+            </p>
+            <ul>
+              <li>Mensen weten niet wie hun plek wil</li>
+              <li>Er is geen centraal matchesysteem</li>
+              <li>Handmatige afstemming kost veel tijd</li>
+              <li>Veel mensen blijven vastzitten bij verre huisartsen</li>
+            </ul>
+          </section>
+          <section>
+            <h3>De Kans</h3>
+            <p>
+              💡
+              <strong
+                >Wat als we meerdere mensen in een cirkel kunnen
+                matchen?</strong
+              >
+            </p>
+            <p><strong>A → B → C → D → A</strong></p>
+            <p>Iedereen krijgt wat hij of zij nodig heeft!</p>
+          </section>
+        </section>
+         <!-- page 3: De Oplossing -->
+        <section>
+          <section>
+            <h3>De Oplossing</h3>
+            <p><strong>Circulair matching-algoritme in het kort</strong></p>
+          </section>
+          <section>
+            <h3>Hoe het werkt</h3>
+            <ul>
+              <li>Mensen melden hun huidige én gewenste praktijken (max. 10)</li>
+              <li>Het algoritme zoekt onmiddellijk naar cirkels van 2‑10 personen</li>
+              <li>Iedereen in de cirkel krijgt tegelijk een passende overstap</li>
+            </ul>
+            <p><strong>Persoon A → praktijk B</strong></p>
+            <p><strong>Persoon B → praktijk C</strong></p>
+            <p><strong>Persoon C → praktijk A</strong></p>
+          </section>
+          <section>
+            <h3>Waarom dit werkt</h3>
+            <p>✨ Resultaat: iedereen closer bij huis, ruil in één keer geregeld.</p>
+            <ul>
+              <li><strong>Neo4j-graph</strong> vindt patronen razendsnel en verwijdert gematchte personen direct</li>
+              <li><strong>Slimme ranking</strong> bewaakt voorkeuren en ideale cirkelgrootte</li>
+              <li><strong>PostgreSQL</strong> bewaart matches, zodat het systeem efficiënt en opgeschoond blijft</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 4: Technologiestack -->
+        <section>
+          <section>
+            <h3>Technologiestack in één oogopslag</h3>
+          </section>
+          <section>
+            <h3>Stack</h3>
+            <ul>
+              <li><strong>Backend</strong>: Hono + TypeScript, Neo4j voor matching, PostgreSQL voor opslag, Flask-service voor huisartsdata, Node-geo-service en GraphHopper voor routes.</li>
+              <li><strong>Frontend</strong>: React 19 met TanStack Start, UI via shadcn/Untitled/Radix, formulieren met React Hook Form + Zod, styling in Tailwind.</li>
+              <li><strong>Infrastructuur</strong>: alles draait via Docker Compose, tests met Bruno, code in TypeScript/Node.js 22.</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Waarom dit werkt</h3>
+            <ul>
+              <li>Snel en type-safe vanaf edge tot database.</li>
+              <li>Graphdatabase voor relationele kracht, relationeel voor historie.</li>
+              <li>Moderne UI + tooling, klaar voor snelle iteratie en deploy.</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 5: Systeemarchitectuur -->
+        <section>
+          <section>
+            <h3>Systeemarchitectuur in vogelvlucht</h3>
+          </section>
+          <section>
+            <h3>Architectuur</h3>
+            <ul>
+              <li><strong>Frontend</strong> (React/TanStack/Tailwind) praat met drie services: matching (Hono/TS), huisartsendata (Flask) en geo (Node). GraphHopper levert routes.</li>
+              <li><strong>Backend-matching</strong> is modulair: modellen → services (Neo4j, matcher, Postgres, cleanup) → routes. Config en migraties houden het netjes.</li>
+              <li><strong>Data</strong>: Neo4j voor actieve graaf (snel zoeken, daarna opschonen), PostgreSQL voor definitieve cirkels en rapportage.</li>
+              <li><strong>API</strong>: <code>/api/people</code>, <code>/api/matches</code>, <code>/health</code> dekken registreren, resultaten en monitoring.</li>
+              <li><strong>Configuratie</strong> via env-vars (max keuzes, cirkelgrootte, wegingen, DB-URI's) met één scoreformule die eenvoudig aanpasbaar is.</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 6: Matching-algoritme -->
+        <section>
+          <section>
+            <h3>Het matching-algoritme in het kort</h3>
+          </section>
+          <section>
+            <h3>Algoritme</h3>
+            <ul>
+              <li><strong>Graphmodel</strong>: personen en praktijken in Neo4j met <code>CURRENTLY_AT</code> en geordende <code>WANTS</code>-relaties.</li>
+              <li><strong>Zoeken</strong>: dynamisch Cypher-patroon voor cirkels van 2‑10 personen, ankerpersoon voorkomt combinatorische explosie.</li>
+              <li><strong>Score</strong>: voorkeur (×10), totale tevredenheid (×1) en afstand tot ideale grootte 5 (×20) bepalen de winnaar.</li>
+              <li><strong>Workflow</strong>: vind alle cirkels → rangschik → maak cirkelobject → schrijf naar PostgreSQL → verwijder uit Neo4j.</li>
+              <li><strong>Transparantie</strong>: uitgebreide logging toont gevonden cirkels, scores en opschoning.</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 7: Datastroom -->
+        <section>
+          <section>
+            <h3>Datastroom samengevat</h3>
+          </section>
+          <section>
+            <h3>Flow</h3>
+            <ol>
+              <li><strong>Registratie</strong> – gebruiker meldt huidige praktijk + voorkeuren; Neo4j krijgt nodes en <code>WANTS</code>-relaties.</li>
+              <li><strong>Async matching</strong> – API antwoordt direct, matcher zoekt op achtergrond cirkels van 2‑10 personen.</li>
+              <li><strong>Ranking & selectie</strong> – beste cirkel gekozen op voorkeursorde, totaalscore en cirkelgrootte.</li>
+              <li><strong>Opslag & cleanup</strong> – cirkel naar PostgreSQL, personen uit Neo4j verwijderd, weespraktijken opgeruimd.</li>
+              <li><strong>Terughalen</strong> – frontend leest resultaten via <code>/api/matches</code>; Neo4j blijft licht voor nieuwe aanvragen.</li>
+            </ol>
+            <p><strong>Resultaat</strong>: snelle feedback voor gebruikers én een opgeschoonde graaf na elke succesvolle match.</p>
+          </section>
+        </section>
+         <!-- page 8: Ontwikkeltijdlijn -->
+        <section>
+          <section>
+            <h3>Ontwikkeltijdlijn</h3>
+            <p>36 uur in het kort</p>
+          </section>
+          <section>
+            <h3>Timeline</h3>
+            <ul>
+              <li><strong>Dag 1 avond</strong> – projectstructuur + scraping van 3.000 huisartsrecords, PostgreSQL en Flask-API opgezet.</li>
+              <li><strong>Dag 2 ochtend</strong> – eerste matchingservice, grote pivot naar TypeScript/Hono, Docker en GraphHopper ingeregeld.</li>
+              <li><strong>Dag 2 middag</strong> – multi-keuze matching, UI-flow, geo-API's, ID‑gebaseerde data en PDOK-adreslookup toegevoegd.</li>
+              <li><strong>Dag 2 avond</strong> – frontend↔backend gekoppeld, testdata geladen, algoritmebug gefikst, PostgreSQL-persistentie afgerond.</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Statistieken</h3>
+            <ul>
+              <li>110 commits</li>
+              <li>4 developers</li>
+              <li>~10k regels code</li>
+              <li>5 services</li>
+            </ul>
+            <p><strong>Kernbeslissingen</strong>: Neo4j + PostgreSQL, rewrite naar TypeScript, async matching, configureerbare scoring.</p>
+            <p><strong>Resultaat</strong>: van idee naar demo-klaar product in één hackathonweekend.</p>
+          </section>
+        </section>
+         <!-- page 9: Key Features -->
+        <section>
+          <section>
+            <h3>Belangrijkste features in één lijst</h3>
+          </section>
+          <section>
+            <h3>Features</h3>
+            <ol>
+              <li><strong>Slimme matching</strong> – Neo4j vindt circulaire ruilen van 2‑10 personen, ranking bewaakt voorkeuren én coördinatie.</li>
+              <li><strong>Flexibele voorkeuren</strong> – tot 10 praktijken per gebruiker, automatisch fallback zonder slechte matches te forceren.</li>
+              <li><strong>Twee-database design</strong> – Neo4j voor snelle zoekgraaf, PostgreSQL voor duurzame opslag en rapportage.</li>
+              <li><strong>Rijke data & geo</strong> – 3.000+ praktijken, PDOK-adressen, Haversine-afstanden en GraphHopper-routes voor relevante suggesties.</li>
+              <li><strong>Heldere API + moderne UI</strong> – REST endpoints voor mensen en cirkels, React/Tailwind frontend, alles startbaar met <code>docker-compose up</code>.</li>
+              <li><strong>Observability & veiligheid</strong> – uitgebreide logging, healthcheck, rollbackbescherming en configuratie via env-vars voor snelle tuning.</li>
+            </ol>
+          </section>
+        </section>
+         <!-- page 10: Challenges -->
+        <section>
+          <section>
+            <h3>Opgeloste uitdagingen</h3>
+          </section>
+          <section>
+            <h3>Uitdagingen</h3>
+            <ul>
+              <li><strong>Technologiewissel</strong> – Python/FastAPI → TypeScript/Hono voor betere tooling, typeveiligheid en snelheid.</li>
+              <li><strong>Unieke identifiers</strong> – overstap van namen naar UUID's + numerieke praktijk-ID's voorkomt botsingen.</li>
+              <li><strong>Meer voorkeuren</strong> – array van 10 keuzes verhoogt matchkans zonder de kwaliteit te verlagen.</li>
+              <li><strong>Query-bug</strong> – modulo-fout in cyclusdetectie opgelost, volledige matches gevonden.</li>
+              <li><strong>Persistentie</strong> – PostgreSQL bewaart cirkels, Neo4j blijft licht; uitrol via Docker-compose.</li>
+              <li><strong>Async UX</strong> – matching draait op achtergrond, API blijft snel; logging maakt alles traceerbaar.</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 11: Demo Scenarios -->
+        <section>
+          <section>
+            <h3>Demo-scenario's samengevat</h3>
+          </section>
+          <section>
+            <h3>Scenario's</h3>
+            <ol>
+              <li><strong>Perfecte cirkel (10 personen)</strong> – iedereen wisselt één stap door, alle eerste voorkeuren vervuld.</li>
+              <li><strong>Geïsoleerd duo</strong> – twee personen ruilen 1-op-1 hun praktijk, meest voorkomende real-life situatie.</li>
+              <li><strong>Geen match</strong> – iemand wil een niet-bestaande plek, blijft wachten zonder slechte match af te dwingen.</li>
+              <li><strong>Multi-keuze succes</strong> – mix van tweede/derde voorkeuren levert alsnog een optimale cirkel op.</li>
+              <li><strong>Grootte-optimalisatie</strong> – scoringssysteem kiest cirkel dicht bij ideale grootte van 5.</li>
+              <li><strong>Realistisch verhuisverhaal</strong> – Jan ↔ Sophie tonen dat matches automatisch ontstaan zodra puzzel compleet is.</li>
+            </ol>
+          </section>
+          <section>
+            <h3>Performance</h3>
+            <p><strong>Interactieve demo</strong>: <code>npm run import:data</code>, personen posten naar <code>/api/people</code>, resultaten via <code>/api/matches</code>.</p>
+            <p><strong>Performancebewijs</strong>: 1.000 personen → matching &lt;200 ms, meerdere cirkelgroottes, Neo4j/Pg blijven responsief. Edgecases (iedereen wil dezelfde praktijk, lange ketens) worden correct afgehandeld.</p>
+          </section>
+        </section>
+         <!-- page 12: Current State -->
+        <section>
+          <section>
+            <h3>Huidige status</h3>
+            <p>Waar staan we?</p>
+          </section>
+          <section>
+            <h3>Status</h3>
+            <ul>
+              <li><strong>Werkt nu</strong>: matching-engine (cirkels 2‑10, configurabel, realtime), Neo4j + PostgreSQL met automatische opschoning, REST-API's en React-frontend draaien via Docker Compose.</li>
+              <li><strong>Klaar voor beta</strong>: logging, healthcheck en rollbackbescherming aanwezig; documentatie en datasets gereed.</li>
+              <li><strong>Nog te doen</strong>: authenticatie/autorisatie, uitgebreide testdekking, monitoring & notificaties, gebruikersdashboard.</li>
+              <li><strong>Gereedheid</strong>: kerntechnologie ~80% productieklaar; productfeatures ~30% – vier maanden tot productie met geplande roadmap.</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 13: Future Roadmap -->
+        <section>
+          <section>
+            <h3>Toekomstige uitbreidingen</h3>
+            <p>Roadmap</p>
+          </section>
+          <section>
+            <h3>Roadmap (1)</h3>
+            <ul>
+              <li><strong>Maand 1-2</strong>: auth & rollen, realtime notificaties (WebSockets/e-mail), testsuite (unit + integratie) en stagingomgeving.</li>
+              <li><strong>Maand 3-4</strong>: gebruikersdashboard met matchvisualisatie, verfijnde registratieflow, polish van UX en content.</li>
+              <li><strong>Maand 5-6</strong>: AI-assist (matchkans & suggesties), afstands- en CO₂-metingen, praktijkportaal en mobiele/PWA-ervaring.</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Roadmap (2)</h3>
+            <ul>
+              <li><strong>Maand 7-12</strong>: integraties met LSP, Zorgkaart, verzekeraars; uitrol naar andere zorgdomeinen; internationalisatie.</li>
+              <li><strong>Jaar 2+</strong>: schaaloptimalisaties, caching, Kubernetes, nieuwe verdienmodellen (freemium, praktijkabonnement, verzekerings-partners), internationale expansie en onderzoekssamenwerkingen.</li>
+            </ul>
+          </section>
+        </section>
+         <!-- page 14: Key Takeaways -->
+        <section>
+          <section>
+            <h3>Belangrijkste inzichten</h3>
+            <p>In één pagina</p>
+          </section>
+          <section>
+            <h3>Inzichten</h3>
+            <ul>
+              <li><strong>Prestatie</strong>: in 36 uur een end-to-end systeem gebouwd – matching-algoritme, data, frontend, infra en logging.</li>
+              <li><strong>Techniek</strong>: Neo4j + PostgreSQL bewijst zich, TypeScript levert typeveiligheid, async ontwerpen houdt de UX snel.</li>
+              <li><strong>Proces</strong>: durf te pivotten, documenteer tijdens het bouwen, ship klein en vaak, gebruik testdata als versneller.</li>
+              <li><strong>Impact</strong>: patiënten dichter bij huis, praktijken minder administratie, zorgsysteem efficiënter.</li>
+              <li><strong>Volgende stap</strong>: auth + monitoring afronden, beta draaien, feedback verwerken en gecontroleerd opschalen.</li>
+            </ul>
+          </section>
+        </section>
       </div>
     </div>
 
