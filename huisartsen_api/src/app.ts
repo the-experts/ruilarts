@@ -99,7 +99,7 @@ app.get('/huisartsen/closest', async (req: Request, res: Response) => {
       });
 
     distances.sort((a, b) => a.distance_m - b.distance_m);
-    res.json(distances.slice(0, 3));
+    res.json(distances.slice(0, 5));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database query failed' });

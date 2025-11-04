@@ -1,3 +1,4 @@
+import { ClosestHuisarts } from "@/data/huisartsService";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface PG {
@@ -22,16 +23,16 @@ export interface ContactDetails {
 
 export interface RegistrationFormData {
   postalCode: string;
-  targetPGs: PG[];
-  currentPG: PG | null;
+  targetPGs: ClosestHuisarts[];
+  currentPG: ClosestHuisarts | null;
   contactDetails: ContactDetails;
 }
 
 interface RegistrationFormContextType {
   formData: RegistrationFormData;
   updatePostalCode: (postalCode: string) => void;
-  updateTargetPGs: (pgs: PG[]) => void;
-  updateCurrentPG: (pg: PG) => void;
+  updateTargetPGs: (pgs: ClosestHuisarts[]) => void;
+  updateCurrentPG: (pg: ClosestHuisarts) => void;
   updateContactDetails: (details: Partial<ContactDetails>) => void;
   reset: () => void;
 }
@@ -66,11 +67,11 @@ export function RegistrationFormProvider({
     setFormData((prev) => ({ ...prev, postalCode }));
   };
 
-  const updateTargetPGs = (pgs: PG[]) => {
+  const updateTargetPGs = (pgs: ClosestHuisarts[]) => {
     setFormData((prev) => ({ ...prev, targetPGs: pgs }));
   };
 
-  const updateCurrentPG = (pg: PG) => {
+  const updateCurrentPG = (pg: ClosestHuisarts) => {
     setFormData((prev) => ({ ...prev, currentPG: pg }));
   };
 

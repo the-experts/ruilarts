@@ -85,13 +85,14 @@ function Stap2() {
                 className="mt-1"
               />
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">{pg.name}</h3>
+                <h3 className="font-semibold text-gray-900">{pg.naam}</h3>
                 <p className="mt-1 text-sm text-gray-600">
-                  {pg.address}, {pg.postalCode} {pg.city}
+                  {pg.adres}
+                  {/* {pg.address}, {pg.postalCode} {pg.city} */}
                 </p>
-                {pg.distance && (
+                {pg.distance_m && (
                   <p className="mt-2 text-xs text-blue-600 font-medium">
-                    {formatDistance((pg.distance || 0) * 1000)}
+                    {formatDistance((pg.distance_m || 0) / 1000)}
                   </p>
                 )}
               </div>
