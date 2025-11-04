@@ -1,383 +1,134 @@
-# Ruilarts Backend - Clean Architecture
+# Ruilarts Backend Matching - Node.js
 
-A REST API for the Ruilarts circular matching system, built with clean architecture principles and powered by Neo4j graph database.
+A Node.js/TypeScript rewrite of the Python backend matching service using Hono framework and Neo4j.
+
+## Features
+
+- Circular matching algorithm for huisarts (GP) swaps
+- RESTful API built with Hono (fast, lightweight, edge-ready)
+- Neo4j graph database for efficient cycle detection
+- TypeScript for type safety
+- Multi-preference matching (first and second choices)
 
 ## Architecture
 
-This backend follows clean architecture (aka hexagonal/onion architecture) with clear separation of concerns:
-
 ```
-backend/
-├── src/
-│   ├── domain/              # Core business logic (no dependencies)
-│   │   ├── models.py        # Person, Practice, Circle, MatchResult
-│   │   └── interfaces.py    # Repository and Algorithm interfaces
-│   ├── application/         # Use cases and orchestration
-│   │   └── matching_service.py
-│   ├── infrastructure/      # External dependencies
-│   │   ├── neo4j_connection.py
-│   │   ├── repositories/
-│   │   │   └── neo4j_repository.py
-│   │   └── matching/
-│   │       └── neo4j_matcher.py
-│   └── api/                 # HTTP layer (FastAPI)
-│       ├── main.py
-│       ├── dependencies.py
-│       ├── schemas.py
-│       └── routes/
-│           ├── people.py
-│           ├── matches.py
-│           └── statistics.py
-├── data/
-│   └── sample_circle.csv
-├── scripts/
-│   └── migrate_csv_to_neo4j.py
-├── Dockerfile
-├── .dockerignore
-└── requirements.txt
+src/
+├── models/          # TypeScript types and interfaces
+├── services/        # Business logic (Neo4j, matching algorithm)
+├── routes/          # API endpoints
+├── config.ts        # Configuration management
+└── index.ts         # Main application entry point
 ```
 
-### Layers
+## Prerequisites
 
-**Domain** (innermost):
-- Pure business logic
-- No external dependencies
-- Defines interfaces for repositories and algorithms
+- Node.js 18+ or 20+
+- Neo4j database running on `bolt://localhost:7687`
+- Neo4j credentials: username `neo4j`, password `ruilarts123`
 
-**Application**:
-- Orchestrates business logic
-- Use cases (e.g., "find matches", "add person")
-- Depends only on domain
-
-**Infrastructure**:
-- Implementations of domain interfaces
-- Neo4j storage and graph-based matching algorithm
-- Can be swapped without changing domain
-
-**API** (outermost):
-- HTTP/REST layer
-- Request/response handling
-- Dependency injection
-
-## Benefits
-
-1. **Testability**: Each layer can be tested independently
-2. **Flexibility**: Easy to swap implementations (CSV → Neo4j, demonstrated!)
-3. **Maintainability**: Clear separation of concerns
-4. **Scalability**: Can add features without breaking existing code
-5. **Graph Power**: Leverages Neo4j's graph algorithms for efficient circular matching
-
-## Setup
-
-### Prerequisites
-
-- Docker and Docker Compose
-
-### Docker Setup (Recommended)
-
-The easiest way to run the backend-matching service is using Docker Compose from the **project root**:
-
-#### 1. Start All Services
+## Installation
 
 ```bash
-# From the project root directory
-cd /path/to/ruilarts
-docker-compose up -d
+npm install
 ```
 
-This starts:
-- **Neo4j** database (ports 7474, 7687)
-- **Backend-matching API** (port 8000)
-- PostgreSQL database (for huisartsen-api)
-- Huisartsen API (port 5001)
+## Configuration
 
-#### 2. Load Initial Data
-
-After services are running, load the sample data into Neo4j:
+Copy `.env` file and adjust if needed:
 
 ```bash
-docker-compose exec backend-matching python scripts/migrate_csv_to_neo4j.py
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=ruilarts123
+PORT=8000
 ```
 
-This will:
-- Clear the Neo4j database
-- Create schema (constraints and indexes)
-- Load all people and practices from `data/sample_circle.csv`
-- Verify the migration
+## Running
 
-#### 3. Access the Services
-
-- **Backend API**: http://localhost:8000
-- **API Docs (Swagger)**: http://localhost:8000/docs
-- **Neo4j Browser**: http://localhost:7474 (login: neo4j / ruilarts123)
-
-#### View Logs
-
+### Development mode (with hot reload)
 ```bash
-# All services
-docker-compose logs -f
-
-# Just backend-matching
-docker-compose logs -f backend-matching
-
-# Just Neo4j
-docker-compose logs -f neo4j
+npm run dev
 ```
 
-#### Stop Services
-
+### Production build
 ```bash
-docker-compose down
-
-# Or stop and remove volumes (clears all data)
-docker-compose down -v
+npm run build
+npm start
 ```
 
-### Local Development Setup (Alternative)
-
-If you prefer to run the services locally without Docker:
-
-#### 1. Start Neo4j Database
-
+### Type checking
 ```bash
-# From the project root
-docker-compose up -d neo4j
+npm run typecheck
 ```
-
-#### 2. Install Python Dependencies
-
-```bash
-cd backend-matching
-pip install -r requirements.txt
-```
-
-#### 3. Load Initial Data
-
-```bash
-python scripts/migrate_csv_to_neo4j.py
-```
-
-#### 4. Start the API Server
-
-```bash
-python run.py
-# Or use uvicorn directly:
-# uvicorn src.api.main:app --reload
-```
-
-The API will be available at:
-- **API**: http://localhost:8000
-- **Swagger Docs**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
 
 ## API Endpoints
 
-### People Management
+### Health Check
+- `GET /health` - Check API and Neo4j connectivity
 
-**POST /api/people** - Add a new person
+### People Management
+- `POST /api/people` - Add a new person
+- `GET /api/people/:id` - Get person by ID
+- `GET /api/people` - Get all people
+- `DELETE /api/people/:id` - Delete a person
+
+### Matching
+- `POST /api/matches` - Run the matching algorithm
+- `GET /api/matches` - Get cached matching results
+
+### Statistics
+- `GET /api/statistics` - Get matching statistics
+
+## Example: Add a Person
+
 ```bash
 curl -X POST http://localhost:8000/api/people \
   -H "Content-Type: application/json" \
   -d '{
     "name": "John Doe",
-    "current_practice_name": "Huisartsen Amsterdam",
-    "current_location": "Amsterdam",
-    "desired_practice_first": "Huisartsen Utrecht",
-    "desired_location_first": "Utrecht",
-    "desired_practice_second": "Huisartsen Rotterdam",
-    "desired_location_second": "Rotterdam"
+    "currentPracticeName": "Practice A",
+    "currentLocation": "Amsterdam",
+    "desiredPracticeFirst": "Practice B",
+    "desiredLocationFirst": "Rotterdam",
+    "desiredPracticeSecond": "Practice C",
+    "desiredLocationSecond": "Utrecht"
   }'
 ```
 
-**GET /api/people/{id}** - Get person details
-```bash
-curl http://localhost:8000/api/people/{person_id}
-```
+## Example: Run Matching
 
-### Matching
-
-**POST /api/matches** - Run matching algorithm
 ```bash
 curl -X POST http://localhost:8000/api/matches
 ```
 
-Returns:
-- All circular matches found
-- Unmatched people
-- Statistics
+## Matching Algorithm
 
-**GET /api/matches** - Get cached results
-```bash
-curl http://localhost:8000/api/matches
-```
+The algorithm finds circular swaps where multiple people can exchange huisarts practices:
 
-### Statistics
+1. Build a directed graph: current practice → desired practice
+2. Find all cycles (size 2, 3, and 4) using Neo4j Cypher queries
+3. Select non-overlapping cycles (greedy algorithm, smallest first)
+4. Try first preferences, then second preferences for unmatched people
+5. Return matched circles and unmatched people with statistics
 
-**GET /api/statistics** - Get summary statistics
-```bash
-curl http://localhost:8000/api/statistics
-```
+## Technology Stack
 
-Returns:
-- Total people, matched, unmatched
-- Match rate and preference fulfillment
-- Circle size distribution
+- **Framework**: Hono (v4)
+- **Language**: TypeScript (v5)
+- **Database**: Neo4j (v5)
+- **Runtime**: Node.js (v18+)
+- **Dev Tools**: tsx for hot reload
 
-## Example Workflow
+## Migration from Python
 
-```bash
-# 1. Ensure Neo4j is running and data is loaded
-docker-compose up -d
-python scripts/migrate_csv_to_neo4j.py
+This is a complete rewrite of the Python FastAPI backend with:
+- Same API endpoints and response formats
+- Same matching algorithm logic
+- Simplified architecture (3 layers vs 4)
+- Hono instead of FastAPI
+- Native TypeScript types instead of Pydantic
 
-# 2. Start the API server
-python run.py
+## License
 
-# 3. Add a new person (optional)
-curl -X POST http://localhost:8000/api/people -H "Content-Type: application/json" -d '{
-  "name": "Jan de Vries",
-  "current_practice_name": "Huisartsen Amsterdam",
-  "current_location": "Amsterdam",
-  "desired_practice_first": "Huisartsen Utrecht",
-  "desired_location_first": "Utrecht"
-}'
-
-# 4. Run the matching algorithm
-curl -X POST http://localhost:8000/api/matches
-
-# 5. View match results
-curl http://localhost:8000/api/matches
-
-# 6. View statistics
-curl http://localhost:8000/api/statistics
-```
-
-## Exploring Neo4j
-
-You can explore the data directly in Neo4j Browser:
-
-1. Open http://localhost:7474
-2. Login with: neo4j / ruilarts123
-3. Try these queries:
-
-```cypher
-// View all people and their current practices
-MATCH (p:Person)-[:CURRENTLY_AT]->(pr:Practice)
-RETURN p, pr
-LIMIT 25
-
-// View people and their preferences
-MATCH (p:Person)-[r:WANTS_FIRST|WANTS_SECOND]->(pr:Practice)
-RETURN p.name, type(r) as preference, pr.name, pr.location
-
-// Find a 2-person circular match
-MATCH (p1:Person)-[:CURRENTLY_AT]->(pr1:Practice)
-MATCH (p1)-[:WANTS_FIRST]->(pr2:Practice)<-[:CURRENTLY_AT]-(p2:Person)
-MATCH (p2)-[:WANTS_FIRST]->(pr1:Practice)
-RETURN p1.name, pr1.name, p2.name, pr2.name
-LIMIT 5
-```
-
-## Development
-
-### Running Tests
-
-```bash
-# Add tests in tests/ directory
-pytest
-```
-
-### Adding a New Repository
-
-1. Create class implementing `PersonRepository` interface
-2. Update `dependencies.py` to inject it
-3. No changes needed in domain or application layers!
-
-### Adding a New Matching Algorithm
-
-1. Create class implementing `MatchingAlgorithm` interface
-2. Update `dependencies.py` to inject it
-3. Business logic remains unchanged!
-
-## Neo4j Integration
-
-This backend now uses Neo4j as the primary data store! The integration demonstrates clean architecture's flexibility:
-
-### What Changed
-- ✅ Added `Neo4jPersonRepository` implementing `PersonRepository`
-- ✅ Added `Neo4jMatcher` implementing `MatchingAlgorithm`
-- ✅ Updated `dependencies.py` to inject Neo4j implementations
-- ✅ Added migration script to load CSV data into Neo4j
-- ⚠️ **No changes** to domain models or application logic!
-
-### Architecture Benefits Demonstrated
-The ability to swap from CSV to Neo4j with minimal changes proves the power of clean architecture:
-- Domain layer: Unchanged
-- Application layer: Unchanged
-- Infrastructure: New implementations added
-- API: Only dependency injection updated
-
-### Graph Model
-
-**Nodes**:
-- `Person` (id, name, current_location)
-- `Practice` (name, location)
-
-**Relationships**:
-- `CURRENTLY_AT`: Person → Practice (current practice)
-- `WANTS_FIRST`: Person → Practice (1st choice, includes location)
-- `WANTS_SECOND`: Person → Practice (2nd choice, includes location)
-
-### Environment Variables
-
-The Neo4j connection can be configured via environment variables:
-
-```bash
-export NEO4J_URI="bolt://localhost:7687"
-export NEO4J_USER="neo4j"
-export NEO4J_PASSWORD="ruilarts123"
-```
-
-Defaults are provided if not set.
-
-## Troubleshooting
-
-### Neo4j Connection Failed
-
-If you see "Failed to connect to Neo4j":
-
-```bash
-# Check if Neo4j is running
-docker ps | grep neo4j
-
-# If not, start it
-cd backend && docker-compose up -d
-
-# Check logs
-docker logs ruilarts-neo4j
-```
-
-### Empty Database
-
-If no matches are found:
-
-```bash
-# Re-run migration
-python scripts/migrate_csv_to_neo4j.py
-```
-
-### Port Conflicts
-
-If ports 7474 or 7687 are in use:
-- Edit `docker-compose.yml` to use different ports
-- Update `NEO4J_URI` environment variable
-
-## Next Steps
-
-Potential enhancements:
-1. ✅ ~~Neo4j integration~~ (Complete!)
-2. **Authentication**: Add user authentication
-3. **WebSockets**: Real-time match notifications
-4. **Frontend**: Build React/Vue UI using this API
-5. **Tests**: Add comprehensive test suite
-6. **Advanced matching**: Use Neo4j Graph Data Science algorithms
+MIT
