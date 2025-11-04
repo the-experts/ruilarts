@@ -34,19 +34,46 @@ function haversine(lat1: number, lon1: number, lat2: number, lon2: number): numb
   return c * r;
 }
 
+const convertRow = (row: Record<string, string|number>) => ({
+    id: row.id,
+      naam: row.naam,
+      adres: row.adres,
+      street: row.street,
+      postalcode: row.postalcode,
+      city: row.city,
+      latitude: row.latitude,
+      longitude: row.longitude,
+      link: row.link,
+})
+
 app.get('/huisartsen', async (req: Request, res: Response) => {
-  const { naam, locatie } = req.query;
-  let query = 'SELECT id, naam, adres, latitude, longitude, link FROM huisartsen';
+  const { naam, locatie, straat, postcode, plaats } = req.query;
+  let query = `
+    SELECT id, naam, adres, street, postalcode, city, latitude, longitude, link 
+    FROM huisartsen
+  `;
   const filters: string[] = [];
   const params: any[] = [];
 
   if (naam) {
-    filters.push('naam ILIKE $' + (params.length + 1));
+    filters.push(`naam ILIKE $${params.length + 1}`);
     params.push(`%${naam}%`);
   }
   if (locatie) {
-    filters.push('adres ILIKE $' + (params.length + 1));
+    filters.push(`adres ILIKE $${params.length + 1}`);
     params.push(`%${locatie}%`);
+  }
+  if (straat) {
+    filters.push(`street ILIKE $${params.length + 1}`);
+    params.push(`%${straat}%`);
+  }
+  if (postcode) {
+    filters.push(`postalcode ILIKE $${params.length + 1}`);
+    params.push(`%${postcode}%`);
+  }
+  if (plaats) {
+    filters.push(`city ILIKE $${params.length + 1}`);
+    params.push(`%${plaats}%`);
   }
 
   if (filters.length > 0) {
@@ -55,20 +82,37 @@ app.get('/huisartsen', async (req: Request, res: Response) => {
 
   try {
     const result = await pool.query(query, params);
-    const rows = result.rows.map(row => ({
-      id: row.id,
-      naam: row.naam,
-      adres: row.adres,
-      latitude: row.latitude,
-      longitude: row.longitude,
-      link: row.link,
-    }));
+    const rows = result.rows.map(convertRow);
     res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database query failed' });
   }
 });
+
+app.get('/huisartsen/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const query = 'SELECT id, naam, adres, street, postalcode, city, latitude, longitude, link FROM huisartsen WHERE id = $1';
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+       res.status(404).json({ error: 'Huisarts not found' });
+       return
+    }
+
+    const row = result.rows[0];
+    const huisarts = convertRow(row);
+
+    res.json(huisarts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
 
 app.get('/huisartsen/closest', async (req: Request, res: Response) => {
   const lat = parseFloat(req.query.lat as string);
@@ -82,18 +126,13 @@ app.get('/huisartsen/closest', async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await pool.query('SELECT id, naam, adres, latitude, longitude, link FROM huisartsen');
+    const result = await pool.query('SELECT id, naam, adres, street, postalcode, city, latitude, longitude, link FROM huisartsen');
     const distances = result.rows
       .filter(row => row.latitude !== null && row.longitude !== null)
       .map(row => {
         const distance = haversine(lat, lon, row.latitude, row.longitude);
         return {
-          id: row.id,
-          naam: row.naam,
-          adres: row.adres,
-          latitude: row.latitude,
-          longitude: row.longitude,
-          link: row.link,
+          ...convertRow(row),
           distance_m: Math.round(distance),
         };
       });

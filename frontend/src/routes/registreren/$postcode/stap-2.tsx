@@ -12,7 +12,7 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/registreren/$postcode/stap-2")({
   loader: async ({ params }) => {
-    return getNearbyPGs(params.postcode);
+    return getNearbyPGs({data: {postalCode: params.postcode}});
   },
   component: Stap2,
 });
@@ -23,7 +23,7 @@ function Stap2() {
   const { formData, updateTargetPGs, updatePostalCode } = useRegistrationForm();
   const nearbyPGs = Route.useLoaderData();
 
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(
     new Set(formData.targetPGs.map((pg) => pg.id)),
   );
   const [error, setError] = useState("");
@@ -33,7 +33,7 @@ function Stap2() {
     updatePostalCode(postcode);
   }
 
-  const handleTogglePG = (pgId: string) => {
+  const handleTogglePG = (pgId: number) => {
     const newSelected = new Set(selectedIds);
     if (newSelected.has(pgId)) {
       newSelected.delete(pgId);

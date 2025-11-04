@@ -1,10 +1,16 @@
-export interface ClosestHuisarts {
-  id: string;
+export interface Huisarts {
+  id: number;
   naam: string;
   adres: string;
+  postalcode: string;
+  street: string;
+  city: string;
   latitude: number;
   longitude: number;
   link: string;
+}
+
+export interface ClosestHuisarts extends Huisarts {
   distance_m: number;
 }
 
@@ -14,9 +20,6 @@ export const getClosestHuisarts = async (
   latitude: string,
   longitude: string
 ) => {
-
-console.log({latitude, longitude})
-
   const response = await fetch(
     `${BASE_URL}/huisartsen/closest?lat=${latitude}&lon=${longitude}`
   );
@@ -25,3 +28,25 @@ console.log({latitude, longitude})
 
   return data;
 };
+
+export const getHuisartsen = async (
+  filters?: { naam?: string; postcode?: string; plaats?: string }
+) => {
+  const queryParams = new URLSearchParams();
+
+  if (filters?.naam) queryParams.append('naam', filters.naam);
+  if (filters?.postcode) queryParams.append('postcode', filters.postcode);
+  if (filters?.plaats) queryParams.append('plaats', filters.plaats);
+
+  const response = await fetch(
+    `${BASE_URL}/huisartsen?${queryParams.toString()}`
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch huisartsen');
+  }
+
+  const data = (await response.json()) as ClosestHuisarts[];
+
+  return data;
+}
