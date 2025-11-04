@@ -352,13 +352,13 @@ function App() {
             </p>
           </div>
           <div className="flex gap-8 text-sm text-slate-600">
-            <a href="#" className="hover:text-slate-900 transition">
+            <a href="https://the-experts.nl/" className="hover:text-slate-900 transition">
               Over ons
             </a>
             <a href="/privacy-statement" className="hover:text-slate-900 transition">
               Privacy
             </a>
-            <a href="#" className="hover:text-slate-900 transition">
+            <a href="https://the-experts.nl/contact" className="hover:text-slate-900 transition">
               Contact
             </a>
           </div>
