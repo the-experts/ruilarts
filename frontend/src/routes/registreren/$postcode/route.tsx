@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
-export const Route = createFileRoute("/registreren/$postcode/__layout")({
+export const Route = createFileRoute("/registreren/$postcode")({
   component: PostcodeLayout,
 });
 
