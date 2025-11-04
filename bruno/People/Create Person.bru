@@ -13,19 +13,28 @@ post {
 body:json {
   {
     "name": "Jan de Vries",
-    "current_practice_name": "Huisartsen Amsterdam",
-    "current_location": "Amsterdam",
-    "desired_practice_first": "Huisartsen Utrecht",
-    "desired_location_first": "Utrecht",
-    "desired_practice_second": "Huisartsen Rotterdam",
-    "desired_location_second": "Rotterdam"
+    "currentPracticeName": "Huisartsen Amsterdam",
+    "currentLocation": "Amsterdam",
+    "choices": [
+      {
+        "practiceName": "Huisartsen Utrecht",
+        "location": "Utrecht"
+      },
+      {
+        "practiceName": "Huisartsen Rotterdam",
+        "location": "Rotterdam"
+      }
+    ]
   }
 }
 
 docs {
-  Add a new person to the matching system with their current practice and desired practices (first and optionally second choice).
+  Add a new person to the matching system with their current practice and desired practices.
+
+  The API will automatically trigger match calculation asynchronously after creating the person.
+  Use GET /api/matches to retrieve the calculated match results.
 
   Returns:
-  - 201: Person created successfully
+  - 201: Person created successfully (match calculation runs in background)
   - 400: Invalid data
 }

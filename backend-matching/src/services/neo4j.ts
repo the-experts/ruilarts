@@ -102,12 +102,12 @@ class Neo4jService {
                ${choiceReturnClause}
       `;
 
-      const params: Record<string, unknown> = {
+      const params = {
         personId,
         name: personData.name,
         currentPracticeName: personData.currentPracticeName,
         currentLocation: personData.currentLocation,
-      };
+      } as any;
 
       normalizedChoices.forEach((choice, index) => {
         params[`choice${index}Name`] = choice.practiceName;
