@@ -235,7 +235,7 @@ function App() {
               </div>
               <h3 className="font-bold text-lg mb-2">Wij Zoeken Matches</h3>
               <p className="text-slate-300">
-                Ons systeem zoekt andere mensen die passen in een ruilcircle.
+                Ons systeem zoekt andere mensen die passen in een ruil cirkel.
               </p>
             </div>
             <div className="text-center">
