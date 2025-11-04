@@ -204,6 +204,10 @@ async function importSampleData(): Promise<void> {
     console.log(`\n\n✅ Import completed!`);
     console.log(`   • People imported: ${successCount}`);
     console.log(`   • Errors: ${errorCount}`);
+
+    // Show sample query
+    console.log(`\n💡 Try this query in Neo4j Browser:`);
+    console.log(`   MATCH (p:Person)-[r]->(pr:Practice) RETURN p, r, pr LIMIT 25`);
   } catch (error) {
     console.error('❌ Import failed:', error);
     process.exit(1);
