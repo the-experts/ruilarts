@@ -1,6 +1,5 @@
 export interface Practice {
-  name: string;
-  location: string;
+  id: number;
 }
 
 export interface Person {
@@ -8,6 +7,7 @@ export interface Person {
   name: string;
   currentPractice: Practice;
   choices: Practice[];
+  matchedInCircleId?: string | null;
 }
 
 export interface CirclePerson {
@@ -37,19 +37,6 @@ export interface MatchResult {
 
 export interface PersonCreate {
   name: string;
-  currentPracticeName: string;
-  currentLocation: string;
-  choices: {
-    practiceName: string;
-    location: string;
-  }[];
-}
-
-export interface Statistics {
-  totalPeople: number;
-  totalMatched: number;
-  matchRate: number;
-  choiceCounts: number[];
-  averageCircleSize: number;
-  circleSizes: Record<number, number>;
+  currentPracticeId: number;
+  choices: number[];
 }

@@ -10,4 +10,8 @@ export const config = {
   cors: {
     origins: ['http://localhost:3000', 'http://localhost:8000', 'http://localhost:5173'],
   },
+  matching: {
+    maxPracticeChoices: parseInt(process.env.MAX_PRACTICE_CHOICES || '3', 10),
+    maxCircleSize: parseInt(process.env.MAX_CIRCLE_SIZE || '5', 10),
+  },
 };
