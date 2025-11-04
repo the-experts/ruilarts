@@ -1,47 +1,21 @@
-# The Solution
+# De Oplossing
 
-## Circular Matching Algorithm
+## Circulair matching-algoritme in het kort
 
----
-
-### How It Works
+- Mensen melden hun huidige én gewenste praktijken (max. 10)
+- Het algoritme zoekt onmiddellijk naar cirkels van 2‑10 personen
+- Iedereen in de cirkel krijgt tegelijk een passende overstap
 
 ```
-Person A (currently at Practice 37) wants Practice 48
-Person B (currently at Practice 48) wants Practice 69
-Person C (currently at Practice 69) wants Practice 37
-
-✨ MATCH FOUND! ✨
-
-A → 48 → B → 69 → C → 37 → A
+Persoon A → praktijk B
+Persoon B → praktijk C
+Persoon C → praktijk A
 ```
 
-**Everyone gets a new huisarts closer to their new home!**
+✨ Resultaat: iedereen closer bij huis, ruil in één keer geregeld.
 
----
+### Waarom dit werkt
 
-### The System
-
-1. **Register**: Enter current practice + desired practices (up to 10 choices)
-2. **Match**: Algorithm detects circular patterns automatically
-3. **Notify**: When a circle forms, all participants are notified
-4. **Swap**: Coordinate the simultaneous exchange
-
----
-
-### Key Innovation
-
-🎯 **Graph Database (Neo4j)**
-- Perfect for detecting cycles in relationships
-- Fast pattern matching
-- Handles complex multi-person swaps (2-10 people)
-
-🎯 **Intelligent Ranking**
-- Prefers first choices over second choices
-- Balances circle size (sweet spot: 5 people)
-- Configurable scoring system
-
-🎯 **Automatic Cleanup**
-- Matched people removed from graph
-- Circles persisted to PostgreSQL
-- System stays efficient
+- **Neo4j-graph** vindt patronen razendsnel en verwijdert gematchte personen direct
+- **Slimme ranking** bewaakt voorkeuren en ideale cirkelgrootte
+- **PostgreSQL** bewaart matches, zodat het systeem efficiënt en opgeschoond blijft
