@@ -13,7 +13,7 @@ export const Route = createFileRoute('/registreren/stap-1')({
 
 function Stap1() {
   const navigate = useNavigate()
-  const { formData, updatePostalCode } = useRegistrationForm()
+  const { formData, updatePostalCode, updateTargetPGs } = useRegistrationForm()
   const [input, setInput] = useState(formData.postalCode || '')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -41,10 +41,10 @@ function Stap1() {
     // Update form state
     updatePostalCode(normalized)
 
-    // Fetch nearby PGs (even though mocked)
     setIsLoading(true)
     try {
       await getNearbyPGs({data: {postalCode: normalized}})
+      updateTargetPGs([])
       navigate({ to: `/registreren/${normalized}/stap-2` })
     } catch {
       setError('Er is een fout opgetreden. Probeer het opnieuw.')

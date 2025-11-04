@@ -12,6 +12,11 @@ export const config = {
   },
   matching: {
     maxPracticeChoices: parseInt(process.env.MAX_PRACTICE_CHOICES || '3', 10),
-    maxCircleSize: parseInt(process.env.MAX_CIRCLE_SIZE || '5', 10),
+    maxCircleSize: parseInt(process.env.MAX_CIRCLE_SIZE || '10', 10),
+    idealCircleSize: parseInt(process.env.IDEAL_CIRCLE_SIZE || '5', 10),
+    // Scoring weights (lower score = better match)
+    preferenceWeight: parseInt(process.env.PREFERENCE_WEIGHT || '10', 10),
+    totalScoreWeight: parseFloat(process.env.TOTAL_SCORE_WEIGHT || '1'),
+    sizeWeight: parseInt(process.env.SIZE_WEIGHT || '20', 10),
   },
 };

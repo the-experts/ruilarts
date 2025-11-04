@@ -193,6 +193,11 @@ async function importSampleData(): Promise<void> {
     // Show sample query
     console.log(`\n💡 Try this query in Neo4j Browser:`);
     console.log(`   MATCH (p:Person)-[r]->(pr:Practice) RETURN p, r, pr LIMIT 25`);
+
+
+    console.log('------------------------------------------------------------')
+    console.log('Use postal code: "1696 CB" to get the desired Huisarts named "Meijer, A.E."')
+    console.log('Use search "Bakashvili" to gete the desired Huisarts named "Bakashvili, N."')
   } catch (error) {
     console.error('❌ Import failed:', error);
     process.exit(1);

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   createFileRoute,
   Outlet,
+  useLocation,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
@@ -24,19 +25,22 @@ function PostcodeLayout() {
   const { postcode } = useParams({ from: "/registreren/$postcode" });
 
   // Determine current step from pathname
-  const pathname = window.location.pathname;
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  });
+
   const currentStepIndex = STEPS.findIndex((step) =>
-    pathname.includes(step.id),
+    pathname.includes(step.id)
   );
   const currentStep = STEPS[currentStepIndex] || STEPS[1];
   const progressPercent = ((currentStepIndex + 1) / STEPS.length) * 100;
 
-  const canGoBack = currentStepIndex > 1;
+  const canGoBack = currentStepIndex > 0;
 
   const handleBack = () => {
     if (canGoBack) {
       const prevStep = STEPS[currentStepIndex - 1];
-      if (currentStepIndex === 2) {
+      if (currentStepIndex === 1) {
         // From stap-2, go back to stap-1 (no postcode in URL)
         navigate({ to: "/registreren/stap-1" });
       } else {
