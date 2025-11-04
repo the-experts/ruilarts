@@ -55,8 +55,10 @@ function Stap4() {
       setIsLookingUpAddress(true);
       try {
         const result = await lookupPDOKAddress({
-          postalCode: normalized,
-          houseNumber: houseNumber.trim(),
+          data: {
+            postalCode: normalized,
+            houseNumber: houseNumber.trim(),
+          },
         });
 
         if (result) {
