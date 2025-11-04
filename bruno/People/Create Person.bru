@@ -13,26 +13,26 @@ post {
 body:json {
   {
     "name": "Jan de Vries",
-    "currentPracticeId": 37,
-    "choices": [25, 48]
+    "currentPracticeId": 48,
+    "choices": [69, 33, 1]  
   }
 }
 
 docs {
   Add a new person to the matching system with their current practice and desired practices.
-
+  
   Request body:
   - name: Person's name (string)
   - currentPracticeId: ID of current practice (number)
   - choices: Array of practice IDs (array of numbers, max 10)
-
+  
   The API will automatically trigger match calculation asynchronously after creating the person.
   Use GET /api/matches to retrieve the calculated match results.
-
+  
   Note: Practices are automatically created if they don't exist.
-
+  
   The matching algorithm will prioritize lower-indexed choices (first choice, then second, etc.)
-
+  
   Returns:
   - 201: Person created successfully (match calculation runs in background)
   - 400: Invalid data (missing fields, invalid types, or too many choices)
