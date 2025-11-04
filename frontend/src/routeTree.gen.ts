@@ -8,17 +8,27 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HuisartsenRouteImport } from './routes/huisartsen'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegistrerenIndexRouteImport } from './routes/registreren/index'
 import { Route as RegistrerenVoltooidRouteImport } from './routes/registreren/voltooid'
 import { Route as RegistrerenStap1RouteImport } from './routes/registreren/stap-1'
+import { Route as Registreren_layoutRouteImport } from './routes/registreren/__layout'
 import { Route as RegistrerenPostcodeRouteRouteImport } from './routes/registreren/$postcode/route'
 import { Route as RegistrerenPostcodeStap4RouteImport } from './routes/registreren/$postcode/stap-4'
 import { Route as RegistrerenPostcodeStap3RouteImport } from './routes/registreren/$postcode/stap-3'
 import { Route as RegistrerenPostcodeStap2RouteImport } from './routes/registreren/$postcode/stap-2'
 
+const RegistrerenRouteImport = createFileRoute('/registreren')()
+
+const RegistrerenRoute = RegistrerenRouteImport.update({
+  id: '/registreren',
+  path: '/registreren',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HuisartsenRoute = HuisartsenRouteImport.update({
   id: '/huisartsen',
   path: '/huisartsen',
@@ -42,6 +52,10 @@ const RegistrerenVoltooidRoute = RegistrerenVoltooidRouteImport.update({
 const RegistrerenStap1Route = RegistrerenStap1RouteImport.update({
   id: '/stap-1',
   path: '/stap-1',
+  getParentRoute: () => RegistrerenRoute,
+} as any)
+const Registreren_layoutRoute = Registreren_layoutRouteImport.update({
+  id: '/__layout',
   getParentRoute: () => RegistrerenRoute,
 } as any)
 const RegistrerenPostcodeRouteRoute =
@@ -73,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
+  '/registreren': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
   '/registreren/': typeof RegistrerenIndexRoute
@@ -84,9 +99,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
+  '/registreren': typeof RegistrerenIndexRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
-  '/registreren': typeof RegistrerenIndexRoute
   '/registreren/$postcode/stap-2': typeof RegistrerenPostcodeStap2Route
   '/registreren/$postcode/stap-3': typeof RegistrerenPostcodeStap3Route
   '/registreren/$postcode/stap-4': typeof RegistrerenPostcodeStap4Route
@@ -96,6 +111,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
   '/registreren/$postcode': typeof RegistrerenPostcodeRouteRouteWithChildren
+  '/registreren': typeof RegistrerenRouteWithChildren
+  '/registreren/__layout': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
   '/registreren/': typeof RegistrerenIndexRoute
@@ -109,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/huisartsen'
     | '/registreren/$postcode'
+    | '/registreren'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
     | '/registreren/'
@@ -120,9 +138,9 @@ export interface FileRouteTypes {
     | '/'
     | '/huisartsen'
     | '/registreren/$postcode'
+    | '/registreren'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
-    | '/registreren'
     | '/registreren/$postcode/stap-2'
     | '/registreren/$postcode/stap-3'
     | '/registreren/$postcode/stap-4'
@@ -131,6 +149,8 @@ export interface FileRouteTypes {
     | '/'
     | '/huisartsen'
     | '/registreren/$postcode'
+    | '/registreren'
+    | '/registreren/__layout'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
     | '/registreren/'
@@ -143,10 +163,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuisartsenRoute: typeof HuisartsenRoute
   RegistrerenPostcodeRouteRoute: typeof RegistrerenPostcodeRouteRouteWithChildren
+  RegistrerenRoute: typeof RegistrerenRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registreren': {
+      id: '/registreren'
+      path: '/registreren'
+      fullPath: '/registreren'
+      preLoaderRoute: typeof RegistrerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/huisartsen': {
       id: '/huisartsen'
       path: '/huisartsen'
@@ -180,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/stap-1'
       fullPath: '/registreren/stap-1'
       preLoaderRoute: typeof RegistrerenStap1RouteImport
+      parentRoute: typeof RegistrerenRoute
+    }
+    '/registreren/__layout': {
+      id: '/registreren/__layout'
+      path: '/registreren'
+      fullPath: '/registreren'
+      preLoaderRoute: typeof Registreren_layoutRouteImport
       parentRoute: typeof RegistrerenRoute
     }
     '/registreren/$postcode': {
@@ -231,10 +266,29 @@ const RegistrerenPostcodeRouteRouteWithChildren =
     RegistrerenPostcodeRouteRouteChildren,
   )
 
+interface RegistrerenRouteChildren {
+  Registreren_layoutRoute: typeof Registreren_layoutRoute
+  RegistrerenStap1Route: typeof RegistrerenStap1Route
+  RegistrerenVoltooidRoute: typeof RegistrerenVoltooidRoute
+  RegistrerenIndexRoute: typeof RegistrerenIndexRoute
+}
+
+const RegistrerenRouteChildren: RegistrerenRouteChildren = {
+  Registreren_layoutRoute: Registreren_layoutRoute,
+  RegistrerenStap1Route: RegistrerenStap1Route,
+  RegistrerenVoltooidRoute: RegistrerenVoltooidRoute,
+  RegistrerenIndexRoute: RegistrerenIndexRoute,
+}
+
+const RegistrerenRouteWithChildren = RegistrerenRoute._addFileChildren(
+  RegistrerenRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
   RegistrerenPostcodeRouteRoute: RegistrerenPostcodeRouteRouteWithChildren,
+  RegistrerenRoute: RegistrerenRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
