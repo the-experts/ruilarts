@@ -1,3 +1,4 @@
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,37 @@ function App() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-blue-50 to-indigo-50">
       {/* Hero Section */}
+      <div className="bg-linear-to-r from-sky-200 via-sky-200 to-teal-200 flex justify-end pt-2">
+        <div
+          className="aspect-8/9 w-full md:w-[50vw] relative"
+          style={{ background: 'url("/nlmap.svg")', backgroundSize: "cover" }}
+        >
+          <Avatar className="absolute top-3/5 left-2/7">
+            <AvatarImage
+              src="https://avatar.iran.liara.run/public/boy?username=Wilhelm"
+              alt="Wilhelm"
+            />
+          </Avatar>
+          <Avatar className="absolute top-1/5 left-3/5">
+            <AvatarImage
+              src="https://avatar.iran.liara.run/public/boy?username=Henk"
+              alt="Henk"
+            />
+          </Avatar>
+          <Avatar className="absolute top-2/5 left-4/5">
+            <AvatarImage
+              src="https://avatar.iran.liara.run/public/girl?username=Fransiska"
+              alt="Anouk"
+            />
+          </Avatar>
+          <Avatar className="absolute top-5/11 left-3/7">
+            <AvatarImage
+              src="https://avatar.iran.liara.run/public/girl?username=Maria"
+              alt="Maria"
+            />
+          </Avatar>
+        </div>
+      </div>
       <section className="relative py-24 px-6 text-center overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5"></div>
         <div className="relative max-w-4xl mx-auto">
