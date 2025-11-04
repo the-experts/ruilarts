@@ -7,8 +7,9 @@ import { ArrowRight, Heart, MapPin, Users } from "lucide-react";
 import { useState } from "react";
 import Logo from "../logo.svg";
 
-import { normalizePostalCode, isValidPostalCode } from "@/lib/form-utils";
+import Dither from "@/components/bg/Dither";
 import { getNearbyPGs } from "@/data/huisartsen";
+import { isValidPostalCode, normalizePostalCode } from "@/lib/form-utils";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -28,7 +29,7 @@ function App() {
 
     if (!isValidPostalCode(normalized)) {
       setError(
-        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)"
+        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)",
       );
       return;
     }
@@ -48,87 +49,101 @@ function App() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-blue-50 to-indigo-50">
       {/* Hero Section */}
-      <div className="bg-linear-to-r from-sky-200 via-sky-200 to-teal-200 flex justify-end pt-2">
-        <div
-          className="aspect-8/9 w-full md:w-[50vw] relative"
-          style={{ background: 'url("/nlmap.svg")', backgroundSize: "cover" }}
-        >
-          <Avatar className="absolute top-3/5 left-2/7">
-            <AvatarImage
-              src="https://avatar.iran.liara.run/public/boy?username=Wilhelm"
-              alt="Wilhelm"
-            />
-          </Avatar>
-          <Avatar className="absolute top-1/5 left-3/5">
-            <AvatarImage
-              src="https://avatar.iran.liara.run/public/boy?username=Henk"
-              alt="Henk"
-            />
-          </Avatar>
-          <Avatar className="absolute top-2/5 left-4/5">
-            <AvatarImage
-              src="https://avatar.iran.liara.run/public/girl?username=Fransiska"
-              alt="Anouk"
-            />
-          </Avatar>
-          <Avatar className="absolute top-5/11 left-3/7">
-            <AvatarImage
-              src="https://avatar.iran.liara.run/public/girl?username=Maria"
-              alt="Maria"
-            />
-          </Avatar>
+      <div className="bg-linear-to-r from-sky-200 via-sky-200 to-teal-200 w-full h-[60vh] grid">
+        <div className="row-end-1 col-end-1">
+          <Dither
+            waveColor={[0, 0.7, 1]}
+            disableAnimation={false}
+            enableMouseInteraction={false}
+            colorNum={11}
+            waveAmplitude={0.6}
+            waveFrequency={3}
+            waveSpeed={0.03}
+          />
+        </div>
+        <div className="row-end-1 col-end-1 flex z-10 justify-between bg-sky-200/80">
+          <div>
+            <section className="relative py-24 px-6 text-center overflow-hidden">
+              <div className="relative max-w-4xl mx-auto z-10 p-8">
+                <div className="mb-6 flex justify-center w-[400px]">
+                  <img src={Logo} width={400} alt="Ruil Arts" />
+                </div>
+                <Card>
+                  <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.02em]">
+                    Vind een huisarts{" "}
+                    <span className="bg-linear-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+                      door ruilen
+                    </span>
+                  </h1>
+                  <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Na een verhuizing is een huisarts dicht bij huis belangrijk.
+                    Ruilarts helpt je een huisarts te vinden door mensen die
+                    verhuizen slim met elkaar te verbinden.
+                  </p>
+                  <div className="relative z-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
+                    <div className="flex-1">
+                      <Input
+                        type="text"
+                        name="postcode"
+                        placeholder="1234AB"
+                        className="w-full h-12 text-base pl-4"
+                        maxLength={7}
+                        value={postalCodeInput}
+                        onChange={(e) => setPostalCodeInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleStartClick();
+                          }
+                        }}
+                      />
+                      {error && (
+                        <p className="text-sm text-red-600 text-left">
+                          {error}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      onClick={handleStartClick}
+                      className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold whitespace-nowrap"
+                    >
+                      Starten <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            </section>
+          </div>
+          <div
+            className="aspect-8/9 w-full md:w-[50vw] relative"
+            style={{ background: 'url("/nlmap.svg")', backgroundSize: "cover" }}
+          >
+            <Avatar className="absolute top-3/5 left-2/7">
+              <AvatarImage
+                src="https://avatar.iran.liara.run/public/boy?username=Wilhelm"
+                alt="Wilhelm"
+              />
+            </Avatar>
+            <Avatar className="absolute top-1/5 left-3/5">
+              <AvatarImage
+                src="https://avatar.iran.liara.run/public/boy?username=Henk"
+                alt="Henk"
+              />
+            </Avatar>
+            <Avatar className="absolute top-2/5 left-4/5">
+              <AvatarImage
+                src="https://avatar.iran.liara.run/public/girl?username=Fransiska"
+                alt="Anouk"
+              />
+            </Avatar>
+            <Avatar className="absolute top-5/11 left-3/7">
+              <AvatarImage
+                src="https://avatar.iran.liara.run/public/girl?username=Maria"
+                alt="Maria"
+              />
+            </Avatar>
+          </div>
         </div>
       </div>
-      <section className="relative py-24 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5"></div>
-        <div className="relative max-w-4xl mx-auto z-10">
-          <div className="mb-6 flex justify-center">
-            <img src={Logo} width={400} alt="Ruil Arts" />
-          </div>
-          <div className="mb-6 flex justify-center">
-            <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-              🏥 Je Huisarts Dichter Bij Huis
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.02em]">
-            Vind een huisarts{" "}
-            <span className="bg-linear-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              door ruilen
-            </span>
-          </h1>
-          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Na een verhuizing is een huisarts dicht bij huis belangrijk.
-            Ruilarts helpt je een huisarts te vinden door mensen die verhuizen
-            slim met elkaar te verbinden.
-          </p>
-        </div>
-
-        <div className="relative z-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
-          <div className="flex-1">
-            <Input
-              type="text"
-              name="postcode"
-              placeholder="1234AB"
-              className="w-full h-12 text-base pl-4"
-              maxLength={7}
-              value={postalCodeInput}
-              onChange={(e) => setPostalCodeInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleStartClick();
-                }
-              }}
-            />
-            {error && <p className="text-sm text-red-600 text-left">{error}</p>}
-          </div>
-          <Button
-            onClick={handleStartClick}
-            className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold whitespace-nowrap"
-          >
-            Starten <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
-        </div>
-      </section>
 
       {/* Benefits Section */}
       <section className="py-20 px-6">
