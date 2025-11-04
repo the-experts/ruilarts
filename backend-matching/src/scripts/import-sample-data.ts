@@ -3,21 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-const DEFAULT_API_BASE_PATH = '/api';
-
-async function loadConfig() {
-  try {
-    return (await import('../config.js')).config;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND') {
-      const tsConfigUrl = new URL('../config.ts', import.meta.url);
-      return (await import(tsConfigUrl.href)).config;
-    }
-    throw error;
-  }
-}
-
-const config = await loadConfig();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -147,7 +132,7 @@ function buildPersonPayload(row: CSVRow): PersonCreatePayload {
 async function importSampleData(): Promise<void> {
   const apiBaseUrl = normalizeBaseUrl(
     process.env.API_BASE_URL ||
-      `http://localhost:${config.server.port}${DEFAULT_API_BASE_PATH}`
+      `http://localhost:8000/api`
   );
 
   console.log(`🌐 Using API base URL: ${apiBaseUrl}`);
