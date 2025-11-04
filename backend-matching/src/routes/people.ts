@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { neo4jService } from '../services/neo4j.js';
+import { matcherService } from '../services/matcher.js';
 import { PersonCreate } from '../models/index.js';
 
 export const peopleRoutes = new Hono();
@@ -41,6 +42,12 @@ peopleRoutes.post('/', async (c) => {
       ...body,
       choices: normalizedChoices,
     });
+
+    // Trigger match calculation asynchronously (don't await)
+    matcherService.findMatches().catch((error) => {
+      console.error('Error calculating matches after adding person:', error);
+    });
+
     return c.json(person, 201);
   } catch (error) {
     console.error('Error adding person:', error);
