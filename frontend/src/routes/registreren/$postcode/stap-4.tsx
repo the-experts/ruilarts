@@ -41,6 +41,12 @@ function Stap4() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLookingUpAddress, setIsLookingUpAddress] = useState(false);
 
+  useEffect(() => {
+    if (!formData.currentPG) {
+      navigate({ to: `/registreren/${postcode}/stap-3` });
+    }
+  }, []);
+
   // Auto-lookup address when postal code and house number are filled
   useEffect(() => {
     if (!postalCode.trim() || !houseNumber.trim()) {
