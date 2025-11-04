@@ -86,11 +86,11 @@ app.get("/huisartsen", async (req: Request, res: Response) => {
     query += " WHERE " + filters.join(" AND ");
   }
 
+  query += " ORDER BY naam ASC"
+
   try {
     const result = await pool.query(query, params);
     const rows = result.rows.map(convertRow);
-    // @ts-expect-error can be number or string
-    rows.sort((a, b) => a.naam - b.naam);
     res.json(rows);
   } catch (err) {
     console.error(err);
