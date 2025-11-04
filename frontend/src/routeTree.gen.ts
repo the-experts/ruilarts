@@ -36,9 +36,9 @@ const RegistrerenIndexRoute = RegistrerenIndexRouteImport.update({
   getParentRoute: () => RegistrerenRoute,
 } as any)
 const RegistrerenVoltooidRoute = RegistrerenVoltooidRouteImport.update({
-  id: '/registreren/voltooid',
-  path: '/registreren/voltooid',
-  getParentRoute: () => rootRouteImport,
+  id: '/voltooid',
+  path: '/voltooid',
+  getParentRoute: () => RegistrerenRoute,
 } as any)
 const RegistrerenStap1Route = RegistrerenStap1RouteImport.update({
   id: '/stap-1',
@@ -152,7 +152,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuisartsenRoute: typeof HuisartsenRoute
   RegistrerenPostcodeRouteRoute: typeof RegistrerenPostcodeRouteRouteWithChildren
-  RegistrerenVoltooidRoute: typeof RegistrerenVoltooidRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,10 +179,10 @@ declare module '@tanstack/react-router' {
     }
     '/registreren/voltooid': {
       id: '/registreren/voltooid'
-      path: '/registreren/voltooid'
+      path: '/voltooid'
       fullPath: '/registreren/voltooid'
       preLoaderRoute: typeof RegistrerenVoltooidRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof RegistrerenRoute
     }
     '/registreren/stap-1': {
       id: '/registreren/stap-1'
@@ -252,7 +251,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
   RegistrerenPostcodeRouteRoute: RegistrerenPostcodeRouteRouteWithChildren,
-  RegistrerenVoltooidRoute: RegistrerenVoltooidRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
