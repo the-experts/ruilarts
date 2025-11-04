@@ -8,9 +8,19 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HuisartsenRouteImport } from './routes/huisartsen'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RegistrerenIndexRouteImport } from './routes/registreren/index'
+import { Route as RegistrerenVoltooidRouteImport } from './routes/registreren/voltooid'
+import { Route as RegistrerenStap1RouteImport } from './routes/registreren/stap-1'
+import { Route as Registreren_layoutRouteImport } from './routes/registreren/__layout'
+import { Route as RegistrerenPostcodeStap4RouteImport } from './routes/registreren/$postcode/stap-4'
+import { Route as RegistrerenPostcodeStap3RouteImport } from './routes/registreren/$postcode/stap-3'
+import { Route as RegistrerenPostcodeStap2RouteImport } from './routes/registreren/$postcode/stap-2'
+import { Route as RegistrerenPostcode_layoutRouteImport } from './routes/registreren/$postcode/__layout'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
@@ -19,6 +29,16 @@ import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
+const RegistrerenRouteImport = createFileRoute('/registreren')()
+const RegistrerenPostcodeRouteImport = createFileRoute(
+  '/registreren/$postcode',
+)()
+
+const RegistrerenRoute = RegistrerenRouteImport.update({
+  id: '/registreren',
+  path: '/registreren',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HuisartsenRoute = HuisartsenRouteImport.update({
   id: '/huisartsen',
   path: '/huisartsen',
@@ -29,6 +49,53 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegistrerenPostcodeRoute = RegistrerenPostcodeRouteImport.update({
+  id: '/$postcode',
+  path: '/$postcode',
+  getParentRoute: () => RegistrerenRoute,
+} as any)
+const RegistrerenIndexRoute = RegistrerenIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RegistrerenRoute,
+} as any)
+const RegistrerenVoltooidRoute = RegistrerenVoltooidRouteImport.update({
+  id: '/voltooid',
+  path: '/voltooid',
+  getParentRoute: () => RegistrerenRoute,
+} as any)
+const RegistrerenStap1Route = RegistrerenStap1RouteImport.update({
+  id: '/stap-1',
+  path: '/stap-1',
+  getParentRoute: () => RegistrerenRoute,
+} as any)
+const Registreren_layoutRoute = Registreren_layoutRouteImport.update({
+  id: '/__layout',
+  getParentRoute: () => RegistrerenRoute,
+} as any)
+const RegistrerenPostcodeStap4Route =
+  RegistrerenPostcodeStap4RouteImport.update({
+    id: '/stap-4',
+    path: '/stap-4',
+    getParentRoute: () => RegistrerenPostcodeRoute,
+  } as any)
+const RegistrerenPostcodeStap3Route =
+  RegistrerenPostcodeStap3RouteImport.update({
+    id: '/stap-3',
+    path: '/stap-3',
+    getParentRoute: () => RegistrerenPostcodeRoute,
+  } as any)
+const RegistrerenPostcodeStap2Route =
+  RegistrerenPostcodeStap2RouteImport.update({
+    id: '/stap-2',
+    path: '/stap-2',
+    getParentRoute: () => RegistrerenPostcodeRoute,
+  } as any)
+const RegistrerenPostcode_layoutRoute =
+  RegistrerenPostcode_layoutRouteImport.update({
+    id: '/__layout',
+    getParentRoute: () => RegistrerenPostcodeRoute,
+  } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
   path: '/demo/start/server-funcs',
@@ -68,9 +135,17 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/registreren': typeof Registreren_layoutRoute
+  '/registreren/stap-1': typeof RegistrerenStap1Route
+  '/registreren/voltooid': typeof RegistrerenVoltooidRoute
+  '/registreren/': typeof RegistrerenIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/registreren/$postcode': typeof RegistrerenPostcode_layoutRoute
+  '/registreren/$postcode/stap-2': typeof RegistrerenPostcodeStap2Route
+  '/registreren/$postcode/stap-3': typeof RegistrerenPostcodeStap3Route
+  '/registreren/$postcode/stap-4': typeof RegistrerenPostcodeStap4Route
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -79,9 +154,16 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/registreren': typeof RegistrerenIndexRoute
+  '/registreren/stap-1': typeof RegistrerenStap1Route
+  '/registreren/voltooid': typeof RegistrerenVoltooidRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/registreren/$postcode': typeof RegistrerenPostcode_layoutRoute
+  '/registreren/$postcode/stap-2': typeof RegistrerenPostcodeStap2Route
+  '/registreren/$postcode/stap-3': typeof RegistrerenPostcodeStap3Route
+  '/registreren/$postcode/stap-4': typeof RegistrerenPostcodeStap4Route
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -91,9 +173,19 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/registreren': typeof RegistrerenRouteWithChildren
+  '/registreren/__layout': typeof Registreren_layoutRoute
+  '/registreren/stap-1': typeof RegistrerenStap1Route
+  '/registreren/voltooid': typeof RegistrerenVoltooidRoute
+  '/registreren/': typeof RegistrerenIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/registreren/$postcode': typeof RegistrerenPostcodeRouteWithChildren
+  '/registreren/$postcode/__layout': typeof RegistrerenPostcode_layoutRoute
+  '/registreren/$postcode/stap-2': typeof RegistrerenPostcodeStap2Route
+  '/registreren/$postcode/stap-3': typeof RegistrerenPostcodeStap3Route
+  '/registreren/$postcode/stap-4': typeof RegistrerenPostcodeStap4Route
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -104,9 +196,17 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/huisartsen'
+    | '/registreren'
+    | '/registreren/stap-1'
+    | '/registreren/voltooid'
+    | '/registreren/'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/registreren/$postcode'
+    | '/registreren/$postcode/stap-2'
+    | '/registreren/$postcode/stap-3'
+    | '/registreren/$postcode/stap-4'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -115,9 +215,16 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/huisartsen'
+    | '/registreren'
+    | '/registreren/stap-1'
+    | '/registreren/voltooid'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/registreren/$postcode'
+    | '/registreren/$postcode/stap-2'
+    | '/registreren/$postcode/stap-3'
+    | '/registreren/$postcode/stap-4'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -126,9 +233,19 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/huisartsen'
+    | '/registreren'
+    | '/registreren/__layout'
+    | '/registreren/stap-1'
+    | '/registreren/voltooid'
+    | '/registreren/'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/registreren/$postcode'
+    | '/registreren/$postcode/__layout'
+    | '/registreren/$postcode/stap-2'
+    | '/registreren/$postcode/stap-3'
+    | '/registreren/$postcode/stap-4'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -138,6 +255,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuisartsenRoute: typeof HuisartsenRoute
+  RegistrerenRoute: typeof RegistrerenRouteWithChildren
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
@@ -149,6 +267,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registreren': {
+      id: '/registreren'
+      path: '/registreren'
+      fullPath: '/registreren'
+      preLoaderRoute: typeof RegistrerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/huisartsen': {
       id: '/huisartsen'
       path: '/huisartsen'
@@ -162,6 +287,69 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/registreren/$postcode': {
+      id: '/registreren/$postcode'
+      path: '/$postcode'
+      fullPath: '/registreren/$postcode'
+      preLoaderRoute: typeof RegistrerenPostcodeRouteImport
+      parentRoute: typeof RegistrerenRoute
+    }
+    '/registreren/': {
+      id: '/registreren/'
+      path: '/'
+      fullPath: '/registreren/'
+      preLoaderRoute: typeof RegistrerenIndexRouteImport
+      parentRoute: typeof RegistrerenRoute
+    }
+    '/registreren/voltooid': {
+      id: '/registreren/voltooid'
+      path: '/voltooid'
+      fullPath: '/registreren/voltooid'
+      preLoaderRoute: typeof RegistrerenVoltooidRouteImport
+      parentRoute: typeof RegistrerenRoute
+    }
+    '/registreren/stap-1': {
+      id: '/registreren/stap-1'
+      path: '/stap-1'
+      fullPath: '/registreren/stap-1'
+      preLoaderRoute: typeof RegistrerenStap1RouteImport
+      parentRoute: typeof RegistrerenRoute
+    }
+    '/registreren/__layout': {
+      id: '/registreren/__layout'
+      path: '/registreren'
+      fullPath: '/registreren'
+      preLoaderRoute: typeof Registreren_layoutRouteImport
+      parentRoute: typeof RegistrerenRoute
+    }
+    '/registreren/$postcode/stap-4': {
+      id: '/registreren/$postcode/stap-4'
+      path: '/stap-4'
+      fullPath: '/registreren/$postcode/stap-4'
+      preLoaderRoute: typeof RegistrerenPostcodeStap4RouteImport
+      parentRoute: typeof RegistrerenPostcodeRoute
+    }
+    '/registreren/$postcode/stap-3': {
+      id: '/registreren/$postcode/stap-3'
+      path: '/stap-3'
+      fullPath: '/registreren/$postcode/stap-3'
+      preLoaderRoute: typeof RegistrerenPostcodeStap3RouteImport
+      parentRoute: typeof RegistrerenPostcodeRoute
+    }
+    '/registreren/$postcode/stap-2': {
+      id: '/registreren/$postcode/stap-2'
+      path: '/stap-2'
+      fullPath: '/registreren/$postcode/stap-2'
+      preLoaderRoute: typeof RegistrerenPostcodeStap2RouteImport
+      parentRoute: typeof RegistrerenPostcodeRoute
+    }
+    '/registreren/$postcode/__layout': {
+      id: '/registreren/$postcode/__layout'
+      path: '/$postcode'
+      fullPath: '/registreren/$postcode'
+      preLoaderRoute: typeof RegistrerenPostcode_layoutRouteImport
+      parentRoute: typeof RegistrerenPostcodeRoute
     }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
@@ -215,9 +403,47 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface RegistrerenPostcodeRouteChildren {
+  RegistrerenPostcode_layoutRoute: typeof RegistrerenPostcode_layoutRoute
+  RegistrerenPostcodeStap2Route: typeof RegistrerenPostcodeStap2Route
+  RegistrerenPostcodeStap3Route: typeof RegistrerenPostcodeStap3Route
+  RegistrerenPostcodeStap4Route: typeof RegistrerenPostcodeStap4Route
+}
+
+const RegistrerenPostcodeRouteChildren: RegistrerenPostcodeRouteChildren = {
+  RegistrerenPostcode_layoutRoute: RegistrerenPostcode_layoutRoute,
+  RegistrerenPostcodeStap2Route: RegistrerenPostcodeStap2Route,
+  RegistrerenPostcodeStap3Route: RegistrerenPostcodeStap3Route,
+  RegistrerenPostcodeStap4Route: RegistrerenPostcodeStap4Route,
+}
+
+const RegistrerenPostcodeRouteWithChildren =
+  RegistrerenPostcodeRoute._addFileChildren(RegistrerenPostcodeRouteChildren)
+
+interface RegistrerenRouteChildren {
+  Registreren_layoutRoute: typeof Registreren_layoutRoute
+  RegistrerenStap1Route: typeof RegistrerenStap1Route
+  RegistrerenVoltooidRoute: typeof RegistrerenVoltooidRoute
+  RegistrerenIndexRoute: typeof RegistrerenIndexRoute
+  RegistrerenPostcodeRoute: typeof RegistrerenPostcodeRouteWithChildren
+}
+
+const RegistrerenRouteChildren: RegistrerenRouteChildren = {
+  Registreren_layoutRoute: Registreren_layoutRoute,
+  RegistrerenStap1Route: RegistrerenStap1Route,
+  RegistrerenVoltooidRoute: RegistrerenVoltooidRoute,
+  RegistrerenIndexRoute: RegistrerenIndexRoute,
+  RegistrerenPostcodeRoute: RegistrerenPostcodeRouteWithChildren,
+}
+
+const RegistrerenRouteWithChildren = RegistrerenRoute._addFileChildren(
+  RegistrerenRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
+  RegistrerenRoute: RegistrerenRouteWithChildren,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
