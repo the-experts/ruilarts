@@ -13,7 +13,10 @@ function App() {
   const [postalCodeInput, setPostalCodeInput] = useState("");
 
   const handleStartClick = () => {
-    navigate({ to: "/registreren/stap-1" });
+    navigate({
+      to: "/registreren/$postcode/stap-2",
+      params: { postcode: postalCodeInput },
+    });
   };
 
   return (
@@ -211,6 +214,7 @@ function App() {
             <div className="flex-1">
               <Input
                 type="text"
+                name="postcode"
                 placeholder="1234AB"
                 className="w-full h-12 text-base pl-4"
                 maxLength={7}
