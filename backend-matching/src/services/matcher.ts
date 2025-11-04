@@ -1,5 +1,5 @@
 import { neo4jService } from './neo4j.js';
-import { Circle, CirclePerson } from '../models/index.js';
+import { Circle, CirclePerson, MatchResult } from '../models/index.js';
 import { config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,6 +20,14 @@ interface RawCycle {
 }
 
 class MatcherService {
+  private cachedResult: MatchResult | null = null;
+
+  /**
+   * Get the cached match results
+   */
+  getCachedResult(): MatchResult | null {
+    return this.cachedResult;
+  }
 
   /**
    * Main entry point: Find matches for a specific person
@@ -56,6 +64,12 @@ class MatcherService {
     const circle = await this.createCircleFromCycle(bestCycle);
 
     console.log(`[Matcher] Created circle with ${circle.people.length} people`);
+
+    // Update cached result
+    if (!this.cachedResult) {
+      this.cachedResult = this.emptyResult();
+    }
+    this.cachedResult.circles.push(circle);
 
     return circle;
   }
@@ -243,6 +257,24 @@ RETURN ${returnItems.join(', ')}
     if (typeof val === 'bigint') return Number(val);
     if (val.toNumber) return val.toNumber(); // neo4j Integer type
     return Number(val);
+  }
+
+  /**
+   * Create an empty MatchResult structure
+   */
+  private emptyResult(): MatchResult {
+    return {
+      circles: [],
+      unmatchedPeople: [],
+      statistics: {
+        totalPeople: 0,
+        totalMatched: 0,
+        matchRate: 0,
+        choiceCounts: Array.from({ length: config.matching.maxPracticeChoices }, () => 0),
+        averageCircleSize: 0,
+        circleSizes: {},
+      },
+    };
   }
 }
 
