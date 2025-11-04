@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "service to provide huisartsen",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -14,6 +14,10 @@
   "devDependencies": {
     "@types/express": "5.0.5",
     "@types/pg": "8.15.6",
+    "csv-parser": "3.2.0",
+    "csv-stringify": "6.6.0",
+    "node-fetch": "3.3.2",
+    "ts-node": "10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {

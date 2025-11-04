@@ -3,13 +3,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRegistrationForm } from "@/context/registration-form";
+import { Huisarts } from "@/data/huisartsService";
 import { searchPGs } from "@/data/mocks/huisartsen";
+import { List, RowComponentProps } from "react-window";
 import {
   createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/registreren/$postcode/stap-3")({
   loader: ({ params }) => {
@@ -31,23 +33,30 @@ function Stap3() {
   const [searchQuery, setSearchQuery] = useState("");
   const [cityFilter, setCityFilter] = useState("");
   const [postalCodeFilter, setPostalCodeFilter] = useState("");
-  const [selectedPGId, setSelectedPGId] = useState(
-    formData.currentPG?.id || "",
-  );
+  const [selectedPGId, setSelectedPGId] = useState(formData.currentPG?.id);
   const [error, setError] = useState("");
+
+  const [filteredPGs, setFilteredPGs] = useState<Huisarts[]>([]);
+
+  useEffect(() => {
+    const fetchPGs = async () => {
+      const results = await searchPGs({
+        data: {
+          city: cityFilter,
+          name: searchQuery,
+          postalCode: postalCodeFilter,
+        },
+      });
+      setFilteredPGs(results);
+    };
+
+    fetchPGs();
+  }, [searchQuery, cityFilter, postalCodeFilter]);
 
   // Update form context with postcode if not already set
   if (!formData.postalCode && loaderPostcode) {
     updatePostalCode(loaderPostcode);
   }
-
-  // Filter and search PGs
-  const filteredPGs = useMemo(() => {
-    return searchPGs(searchQuery, {
-      city: cityFilter,
-      postalCode: postalCodeFilter,
-    });
-  }, [searchQuery, cityFilter, postalCodeFilter]);
 
   const handleNext = () => {
     if (!selectedPGId) {
@@ -66,7 +75,7 @@ function Stap3() {
   };
 
   const handleSelectPG = (pgId: string) => {
-    setSelectedPGId(pgId);
+    setSelectedPGId(parseInt(pgId));
     setError("");
   };
 
@@ -136,30 +145,18 @@ function Stap3() {
           {filteredPGs.length} resultaat{filteredPGs.length !== 1 ? "en" : ""}
         </p>
 
-        <RadioGroup value={selectedPGId} onValueChange={handleSelectPG}>
+        <RadioGroup
+          value={selectedPGId?.toString()}
+          onValueChange={handleSelectPG}
+        >
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {filteredPGs.length > 0 ? (
-              filteredPGs.map((pg) => (
-                <div
-                  key={pg.id}
-                  className={`rounded-lg border-2 p-3 transition-all cursor-pointer ${
-                    selectedPGId === pg.id
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 bg-white hover:border-gray-300"
-                  }`}
-                  onClick={() => handleSelectPG(pg.id)}
-                >
-                  <div className="flex items-start gap-3">
-                    <RadioGroupItem value={pg.id} className="mt-1" />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{pg.name}</h3>
-                      <p className="text-sm text-gray-600">
-                        {pg.address} • {pg.postalCode} {pg.city}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))
+              <List
+                rowComponent={RowComponent}
+                rowCount={filteredPGs.length}
+                rowHeight={80}
+                rowProps={{ filteredPGs, selectedPGId, handleSelectPG }}
+              />
             ) : (
               <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
                 <p className="text-sm text-gray-600">
@@ -181,6 +178,43 @@ function Stap3() {
         >
           Volgende
         </Button>
+      </div>
+    </div>
+  );
+}
+
+function RowComponent({
+  index,
+  filteredPGs,
+  handleSelectPG,
+  selectedPGId,
+  style,
+}: RowComponentProps<{
+  filteredPGs: Huisarts[];
+  selectedPGId?: number;
+  handleSelectPG: (id: string) => void;
+}>) {
+  const pg = filteredPGs[index];
+
+  return (
+    <div
+      key={pg.id}
+      className={`rounded-lg border-2 p-3 transition-all cursor-pointer ${
+        selectedPGId === pg.id
+          ? "border-blue-500 bg-blue-50"
+          : "border-gray-200 bg-white hover:border-gray-300"
+      }`}
+   style={{ ...style, marginTop: "8px", height: 72 }}
+      onClick={() => handleSelectPG(pg.id.toString())}
+    >
+      <div className="flex items-start gap-3">
+        <RadioGroupItem value={pg.id.toString()} className="mt-1" />
+        <div className="flex-1">
+          <h3 className="font-medium text-gray-900">{pg.naam}</h3>
+          <p className="text-sm text-gray-600">
+            {pg.street} • {pg.postalcode} {pg.city}
+          </p>
+        </div>
       </div>
     </div>
   );

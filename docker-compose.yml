@@ -98,12 +98,33 @@ services:
       retries: 3
       start_period: 40s
 
+  graphhopper:
+    image: israelhikingmap/graphhopper:latest
+    container_name: graphhopper
+    ports:
+      - "8989:8989"
+    volumes:
+      - ./graphhopper/config.yml:/graphhopper/config-example.yml:ro
+      - ./graphhopper/data:/graphhopper/data
+      - graphhopper-cache:/data/graph-cache
+    environment:
+      - JAVA_OPTS=-Xmx2g -Xms2g -Ddw.graphhopper.datareader.file=/graphhopper/data/netherlands-251103.osm.pbf -Ddw.graphhopper.graph.location=/data/graph-cache
+    mem_reservation: 2g
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8989/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
 volumes:
   pgdata:
   neo4j_data:
   neo4j_logs:
   neo4j_import:
   neo4j_plugins:
+  graphhopper-cache:
+    driver: local
 
 networks:
   ruilarts-network:
