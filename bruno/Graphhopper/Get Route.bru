@@ -1,0 +1,53 @@
+meta {
+  name: Get Route
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8989/route?key=
+  body: json
+  auth: inherit
+}
+
+params:query {
+  key: 
+}
+
+body:json {
+  {
+    "points": [
+      [
+        5.066408324622719,
+        52.11150663560625
+      ],
+      [
+        5.181649596521344,
+        52.026023133184427
+      ]
+    ],
+    "profile": "car",
+    "elevation": true,
+    "instructions": true,
+    "locale": "en_US",
+    "points_encoded": true,
+    "points_encoded_multiplier": 1000000,
+    "details": [
+      "road_class",
+      "road_environment",
+      "max_speed",
+      "average_speed"
+    ],
+    "snap_preventions": [
+      "ferry"
+    ],
+    "timeout_ms": 10000,
+    "alternative_route.max_paths": 3,
+    "algorithm": "alternative_route"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
