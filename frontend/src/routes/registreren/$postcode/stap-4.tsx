@@ -257,7 +257,7 @@ function Stap4() {
             <p className="font-semibold text-gray-700">Huidig:</p>
             {formData.currentPG ? (
               <p className="text-gray-600">
-                {formData.currentPG.naam} ({formData.currentPG.city})
+                {formData.currentPG.naam} ({formData.currentPG.adres})
               </p>
             ) : (
               <p className="text-gray-500">Niet geselecteerd</p>
@@ -272,7 +272,7 @@ function Stap4() {
               <ul className="list-inside list-disc text-gray-600">
                 {formData.targetPGs.map((pg) => (
                   <li key={pg.id}>
-                    {pg.naam} ({pg.city})
+                    {pg.naam} ({pg.adres})
                   </li>
                 ))}
               </ul>
