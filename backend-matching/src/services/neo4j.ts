@@ -190,6 +190,46 @@ class Neo4jService {
       await session.close();
     }
   }
+
+  /**
+   * Delete multiple persons from the graph (used after circle is saved to PostgreSQL)
+   */
+  async deletePersonsInCircle(personIds: string[]): Promise<void> {
+    const session = await this.getSession();
+    try {
+      const query = `
+        MATCH (p:Person) WHERE p.id IN $personIds
+        DETACH DELETE p
+      `;
+
+      await session.run(query, { personIds });
+      console.log(`[Neo4j] Deleted ${personIds.length} person node(s) from graph`);
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Clean up orphaned Practice nodes (practices with no people connected)
+   */
+  async cleanupOrphanedPractices(): Promise<void> {
+    const session = await this.getSession();
+    try {
+      const query = `
+        MATCH (pr:Practice)
+        WHERE NOT (pr)<-[:CURRENTLY_AT]-()
+          AND NOT (pr)<-[:WANTS]-()
+        DELETE pr
+        RETURN count(pr) as deletedCount
+      `;
+
+      const result = await session.run(query);
+      const deletedCount = result.records[0]?.get('deletedCount').toNumber() || 0;
+      console.log(`[Neo4j] Cleaned up ${deletedCount} orphaned practice node(s)`);
+    } finally {
+      await session.close();
+    }
+  }
 }
 
 export const neo4jService = new Neo4jService();

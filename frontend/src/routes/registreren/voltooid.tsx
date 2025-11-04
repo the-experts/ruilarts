@@ -85,9 +85,8 @@ function Voltooid() {
                 <p className="font-semibold text-gray-900">
                   {formData.currentPG?.naam || "Niet ingesteld"}
                 </p>
-                <p className="text-gray-600">
-                  {formData.currentPG?.street},{" "}
-                  {formData.currentPG?.postalcode} {formData.currentPG?.city}
+                <p className="text-sm font-normal text-gray-600">
+                  {formData.currentPG?.adres}
                 </p>
               </div>
 
@@ -99,7 +98,7 @@ function Voltooid() {
                       <li key={pg.id} className="font-semibold text-gray-900">
                         {index + 1}. {pg.naam}
                         <p className="text-sm font-normal text-gray-600">
-                          {pg.street}, {pg.postalcode} {pg.city}
+                          {pg.adres}
                         </p>
                       </li>
                     ))}

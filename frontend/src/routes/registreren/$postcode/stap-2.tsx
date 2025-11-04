@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRegistrationForm } from "@/context/registration-form";
-import { getNearbyPGs } from "@/data/mocks/huisartsen";
+import { getNearbyPGs } from "@/data/huisartsen";
 import { formatDistance } from "@/lib/form-utils";
 import {
   createFileRoute,
@@ -12,7 +12,7 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/registreren/$postcode/stap-2")({
   loader: async ({ params }) => {
-    return getNearbyPGs({data: {postalCode: params.postcode}});
+    return getNearbyPGs({ data: { postalCode: params.postcode } });
   },
   component: Stap2,
 });

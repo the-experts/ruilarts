@@ -1,0 +1,35 @@
+meta {
+  name: Get Match By ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/matches/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: your-circle-id-here
+}
+
+docs {
+  Get a specific matched circle by its ID from PostgreSQL database.
+
+  Returns detailed information about a single circle including:
+  - Circle metadata (id, size, preference scores, timestamps)
+  - All members in the circle with their details
+  - Current and desired practice IDs for each member
+  - Preference order used for each person
+
+  Path Parameters:
+  - id: UUID of the circle (e.g., "123e4567-e89b-12d3-a456-426614174000")
+
+  Returns:
+  - 200: Circle details with all members
+  - 404: Circle not found with the given ID
+
+  Example:
+  GET /api/matches/123e4567-e89b-12d3-a456-426614174000
+}

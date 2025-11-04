@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useRegistrationForm } from '@/context/registration-form'
 import { normalizePostalCode, isValidPostalCode } from '@/lib/form-utils'
-import { getNearbyPGs } from '@/data/mocks/huisartsen'
+import { getNearbyPGs } from '@/data/huisartsen'
 
 export const Route = createFileRoute('/registreren/stap-1')({
   component: Stap1,

@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRegistrationForm } from "@/context/registration-form";
 import { Huisarts } from "@/data/huisartsService";
-import { searchPGs } from "@/data/mocks/huisartsen";
+import { searchPGs } from "@/data/huisartsen";
 import { List, RowComponentProps } from "react-window";
 import {
   createFileRoute,
@@ -37,6 +37,12 @@ function Stap3() {
   const [error, setError] = useState("");
 
   const [filteredPGs, setFilteredPGs] = useState<Huisarts[]>([]);
+
+  useEffect(() => {
+    if (formData.targetPGs.length === 0) {
+      navigate({ to: `/registreren/${postcode}/stap-2` });
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPGs = async () => {
@@ -84,8 +90,8 @@ function Stap3() {
       {/* Help text */}
       <div className="rounded-lg bg-blue-50 p-4">
         <p className="text-sm text-gray-700">
-          Zoek en selecteer uw huidige huisartsenpraktijk. U kunt zoeken op naam,
-          adres, postcode en plaats.
+          Zoek en selecteer uw huidige huisartsenpraktijk. U kunt zoeken op
+          naam, adres, postcode en plaats.
         </p>
       </div>
 
@@ -101,7 +107,10 @@ function Stap3() {
             type="text"
             placeholder="bijv. Huisartsenpraktijk Centrum"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSelectedPGId(undefined);
+              setSearchQuery(e.target.value);
+            }}
             className="text-base"
           />
         </div>
@@ -117,7 +126,10 @@ function Stap3() {
               type="text"
               placeholder="bijv. Amsterdam"
               value={cityFilter}
-              onChange={(e) => setCityFilter(e.target.value)}
+              onChange={(e) => {
+                setSelectedPGId(undefined);
+                setCityFilter(e.target.value);
+              }}
               className="text-base"
             />
           </div>
@@ -130,7 +142,10 @@ function Stap3() {
               type="text"
               placeholder="bijv. 1012"
               value={postalCodeFilter}
-              onChange={(e) => setPostalCodeFilter(e.target.value)}
+              onChange={(e) => {
+                setSelectedPGId(undefined);
+                setPostalCodeFilter(e.target.value);
+              }}
               className="text-base"
             />
           </div>
@@ -142,7 +157,8 @@ function Stap3() {
       {/* Results */}
       <div>
         <p className="mb-3 text-sm text-gray-600">
-          {filteredPGs.length} resultaat{filteredPGs.length !== 1 ? "en" : ""}
+          {filteredPGs.length} resulta{filteredPGs.length === 1 ? "a" : ""}t
+          {filteredPGs.length !== 1 ? "en" : ""}
         </p>
 
         <RadioGroup
@@ -204,16 +220,14 @@ function RowComponent({
           ? "border-blue-500 bg-blue-50"
           : "border-gray-200 bg-white hover:border-gray-300"
       }`}
-   style={{ ...style, marginTop: "8px", height: 72 }}
+      style={{ ...style, marginTop: "8px", height: 72 }}
       onClick={() => handleSelectPG(pg.id.toString())}
     >
       <div className="flex items-start gap-3">
         <RadioGroupItem value={pg.id.toString()} className="mt-1" />
         <div className="flex-1">
           <h3 className="font-medium text-gray-900">{pg.naam}</h3>
-          <p className="text-sm text-gray-600">
-            {pg.adres}
-          </p>
+          <p className="text-sm text-gray-600">{pg.adres}</p>
         </div>
       </div>
     </div>

@@ -1,9 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getGeolocation } from "../geoService";
-import {
-  getClosestHuisarts,
-  getHuisartsen,
-} from "../huisartsService";
+import { getGeolocation } from "./geoService";
+import { getClosestHuisarts, getHuisartsen } from "./huisartsService";
 
 /**
  * Get nearby PGs based on postal code
@@ -17,7 +14,7 @@ export const getNearbyPGs = createServerFn()
 
       const closestHuisartsen = await getClosestHuisarts(
         geolocation.latitude,
-        geolocation.longitude
+        geolocation.longitude,
       );
 
       return closestHuisartsen;
@@ -30,11 +27,14 @@ export const getNearbyPGs = createServerFn()
 /**
  * Search Huisartsen with filters
  */
-export const searchPGs = createServerFn().inputValidator((data: { name: string,postalCode: string, city: string }) => data)
+export const searchPGs = createServerFn()
+  .inputValidator(
+    (data: { name: string; postalCode: string; city: string }) => data,
+  )
   .handler(async ({ data }) => {
     return getHuisartsen({
-    naam: data.name,
-    postcode: data.postalCode,
-    plaats: data.city,
-  })
-})
+      naam: data.name,
+      postcode: data.postalCode,
+      plaats: data.city,
+    });
+  });
