@@ -3,6 +3,8 @@ import { config } from '../config.js';
 import { Person, PersonCreate } from '../models/index.js';
 import { v4 as uuidv4 } from 'uuid';
 
+const PREFERENCE_RELATIONS = ['WANTS_FIRST', 'WANTS_SECOND'] as const;
+
 class Neo4jService {
   private readonly driver: Driver;
 
@@ -28,8 +30,20 @@ class Neo4jService {
   private recordToPerson(record: Record): Person {
     const personNode = record.get('p');
     const currentPractice = record.get('currentPractice');
-    const firstChoice = record.get('firstChoice');
-    const secondChoice = record.has('secondChoice') ? record.get('secondChoice') : null;
+    const choices: Person['choices'] = [];
+
+    PREFERENCE_RELATIONS.forEach((_, index) => {
+      const choiceKey = `choice${index}`;
+      if (record.has(choiceKey)) {
+        const choiceNode = record.get(choiceKey);
+        if (choiceNode) {
+          choices.push({
+            name: choiceNode.properties.name,
+            location: choiceNode.properties.location,
+          });
+        }
+      }
+    });
 
     return {
       id: personNode.properties.id,
@@ -38,16 +52,7 @@ class Neo4jService {
         name: currentPractice.properties.name,
         location: currentPractice.properties.location,
       },
-      desiredPracticeFirst: {
-        name: firstChoice.properties.name,
-        location: firstChoice.properties.location,
-      },
-      desiredPracticeSecond: secondChoice
-        ? {
-            name: secondChoice.properties.name,
-            location: secondChoice.properties.location,
-          }
-        : undefined,
+      choices,
     };
   }
 
@@ -55,15 +60,33 @@ class Neo4jService {
     const session = await this.getSession();
     try {
       const personId = uuidv4();
+      const normalizedChoices = (personData.choices ?? []).slice(0, PREFERENCE_RELATIONS.length);
+
+      if (normalizedChoices.length === 0) {
+        throw new Error('At least one desired practice choice is required');
+      }
+
+      const choiceMergeClauses = normalizedChoices
+        .map(
+          (_choice, index) =>
+            `MERGE (choice${index}:Practice {name: $choice${index}Name, location: $choice${index}Location})`
+        )
+        .join('\n        ');
+
+      const choiceRelationshipClauses = normalizedChoices
+        .map(
+          (_choice, index) =>
+            `CREATE (p)-[:${PREFERENCE_RELATIONS[index]} {location: $choice${index}Location}]->(choice${index})`
+        )
+        .join('\n        ');
+
+      const choiceReturnClause = normalizedChoices
+        .map((_choice, index) => `, choice${index}`)
+        .join('');
 
       const query = `
         MERGE (currentPr:Practice {name: $currentPracticeName, location: $currentLocation})
-        MERGE (firstPr:Practice {name: $desiredPracticeFirst, location: $desiredLocationFirst})
-        ${
-          personData.desiredPracticeSecond
-            ? 'MERGE (secondPr:Practice {name: $desiredPracticeSecond, location: $desiredLocationSecond})'
-            : ''
-        }
+        ${choiceMergeClauses}
 
         CREATE (p:Person {
           id: $personId,
@@ -72,25 +95,26 @@ class Neo4jService {
         })
 
         CREATE (p)-[:CURRENTLY_AT]->(currentPr)
-        CREATE (p)-[:WANTS_FIRST {location: $desiredLocationFirst}]->(firstPr)
-        ${personData.desiredPracticeSecond ? 'CREATE (p)-[:WANTS_SECOND {location: $desiredLocationSecond}]->(secondPr)' : ''}
+        ${choiceRelationshipClauses}
 
         RETURN p,
-               currentPr as currentPractice,
-               firstPr as firstChoice
-               ${personData.desiredPracticeSecond ? ', secondPr as secondChoice' : ''}
+               currentPr as currentPractice
+               ${choiceReturnClause}
       `;
 
-      const result = await session.run(query, {
+      const params: Record<string, unknown> = {
         personId,
         name: personData.name,
         currentPracticeName: personData.currentPracticeName,
         currentLocation: personData.currentLocation,
-        desiredPracticeFirst: personData.desiredPracticeFirst,
-        desiredLocationFirst: personData.desiredLocationFirst,
-        desiredPracticeSecond: personData.desiredPracticeSecond || null,
-        desiredLocationSecond: personData.desiredLocationSecond || null,
+      };
+
+      normalizedChoices.forEach((choice, index) => {
+        params[`choice${index}Name`] = choice.practiceName;
+        params[`choice${index}Location`] = choice.location;
       });
+
+      const result = await session.run(query, params);
 
       return this.recordToPerson(result.records[0]);
     } finally {
@@ -104,9 +128,9 @@ class Neo4jService {
       const query = `
         MATCH (p:Person {id: $personId})
         MATCH (p)-[:CURRENTLY_AT]->(currentPractice:Practice)
-        MATCH (p)-[:WANTS_FIRST]->(firstChoice:Practice)
-        OPTIONAL MATCH (p)-[:WANTS_SECOND]->(secondChoice:Practice)
-        RETURN p, currentPractice, firstChoice, secondChoice
+        MATCH (p)-[:WANTS_FIRST]->(choice0:Practice)
+        OPTIONAL MATCH (p)-[:WANTS_SECOND]->(choice1:Practice)
+        RETURN p, currentPractice, choice0, choice1
       `;
 
       const result = await session.run(query, { personId });
@@ -127,9 +151,9 @@ class Neo4jService {
       const query = `
         MATCH (p:Person)
         MATCH (p)-[:CURRENTLY_AT]->(currentPractice:Practice)
-        MATCH (p)-[:WANTS_FIRST]->(firstChoice:Practice)
-        OPTIONAL MATCH (p)-[:WANTS_SECOND]->(secondChoice:Practice)
-        RETURN p, currentPractice, firstChoice, secondChoice
+        MATCH (p)-[:WANTS_FIRST]->(choice0:Practice)
+        OPTIONAL MATCH (p)-[:WANTS_SECOND]->(choice1:Practice)
+        RETURN p, currentPractice, choice0, choice1
       `;
 
       const result = await session.run(query);

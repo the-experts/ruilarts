@@ -201,10 +201,16 @@ curl -X POST http://localhost:8000/api/people \
     "name": "John Doe",
     "currentPracticeName": "Huisartsen Amsterdam",
     "currentLocation": "Amsterdam",
-    "desiredPracticeFirst": "Huisartsen Utrecht",
-    "desiredLocationFirst": "Utrecht",
-    "desiredPracticeSecond": "Huisartsen Rotterdam",
-    "desiredLocationSecond": "Rotterdam"
+    "choices": [
+      {
+        "practiceName": "Huisartsen Utrecht",
+        "location": "Utrecht"
+      },
+      {
+        "practiceName": "Huisartsen Rotterdam",
+        "location": "Rotterdam"
+      }
+    ]
   }'
 ```
 
@@ -268,8 +274,12 @@ curl -X POST http://localhost:8000/api/people \
     "name": "Jan de Vries",
     "currentPracticeName": "Huisartsen Amsterdam",
     "currentLocation": "Amsterdam",
-    "desiredPracticeFirst": "Huisartsen Utrecht",
-    "desiredLocationFirst": "Utrecht"
+    "choices": [
+      {
+        "practiceName": "Huisartsen Utrecht",
+        "location": "Utrecht"
+      }
+    ]
   }'
 
 # 4. Run the matching algorithm

@@ -67,6 +67,8 @@ async function importSampleData(): Promise<void> {
     neo4j.auth.basic(config.neo4j.username, config.neo4j.password)
   );
 
+  const PREFERENCE_RELATIONS = ['WANTS_FIRST', 'WANTS_SECOND'] as const;
+
   try {
     // Verify connectivity
     console.log('🔌 Connecting to Neo4j...');
@@ -96,13 +98,27 @@ async function importSampleData(): Promise<void> {
     try {
       for (const row of rows) {
         try {
-          // Build the query based on whether second choice exists
-          const hasSecondChoice = row.desired_huisarts_2 && row.new_location_2;
+          const rawChoices = [
+            { practiceName: row.desired_huisarts, location: row.new_location },
+            { practiceName: row.desired_huisarts_2, location: row.new_location_2 },
+          ]
+            .filter(choice => choice.practiceName && choice.location)
+            .slice(0, 2);
+
+          if (rawChoices.length === 0) {
+            throw new Error(`No valid choices supplied for ${row.name}`);
+          }
+
+          const choices = rawChoices.slice(0, PREFERENCE_RELATIONS.length);
 
           const query = `
             MERGE (currentPr:Practice {name: $currentPracticeName, location: $currentLocation})
-            MERGE (firstPr:Practice {name: $desiredPracticeFirst, location: $desiredLocationFirst})
-            ${hasSecondChoice ? 'MERGE (secondPr:Practice {name: $desiredPracticeSecond, location: $desiredLocationSecond})' : ''}
+            ${choices
+              .map(
+                (_choice, index) =>
+                  `MERGE (choice${index}:Practice {name: $choice${index}Name, location: $choice${index}Location})`
+              )
+              .join('\n            ')}
 
             CREATE (p:Person {
               id: $personId,
@@ -111,22 +127,29 @@ async function importSampleData(): Promise<void> {
             })
 
             CREATE (p)-[:CURRENTLY_AT]->(currentPr)
-            CREATE (p)-[:WANTS_FIRST {location: $desiredLocationFirst}]->(firstPr)
-            ${hasSecondChoice ? 'CREATE (p)-[:WANTS_SECOND {location: $desiredLocationSecond}]->(secondPr)' : ''}
+            ${choices
+              .map(
+                (_choice, index) =>
+                  `CREATE (p)-[:${PREFERENCE_RELATIONS[index]} {location: $choice${index}Location}]->(choice${index})`
+              )
+              .join('\n            ')}
 
             RETURN p
           `;
 
-          await session.run(query, {
+          const params: Record<string, unknown> = {
             personId: row.person_id,
             name: row.name,
             currentPracticeName: row.current_huisarts,
             currentLocation: row.current_location,
-            desiredPracticeFirst: row.desired_huisarts,
-            desiredLocationFirst: row.new_location,
-            desiredPracticeSecond: hasSecondChoice ? row.desired_huisarts_2 : null,
-            desiredLocationSecond: hasSecondChoice ? row.new_location_2 : null,
+          };
+
+          choices.forEach((choice, index) => {
+            params[`choice${index}Name`] = choice.practiceName;
+            params[`choice${index}Location`] = choice.location;
           });
+
+          await session.run(query, params);
 
           successCount++;
           process.stdout.write(`\r⏳ Importing... ${successCount}/${rows.length} people`);
