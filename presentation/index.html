@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ruilarts · Reveal.js Deck</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css"
+      id="theme"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css"
+    />
+    <style>
+      :root {
+        --r-link-color: #2fa4ff;
+        --r-link-color-hover: #7fd4ff;
+      }
+      .reveal .slides {
+        text-align: left;
+      }
+      .reveal section h1,
+      .reveal section h2,
+      .reveal section h3 {
+        text-transform: none;
+      }
+      .reveal .hackathon-meta {
+        font-size: 0.7em;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <section>
+            <img src="logo.svg" />
+          </section>
+          <section>
+            <h3>The Team</h3>
+            <ul>
+              <li>Lennard van den Berg</li>
+              <li>Jan Philipp Kohrs</li>
+              <li>Jan Martijn</li>
+              <li>Tobias Termeczky</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Tech Toolkit</h3>
+            <ul>
+              <li>TypeScript &middot; React &middot; Hono</li>
+              <li>PostgreSQL &middot; Neo4j</li>
+              <li>Docker</li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+      async function loadIncludes() {
+        const targets = Array.from(document.querySelectorAll("[data-include]"));
+        await Promise.all(
+          targets.map(async (target) => {
+            const src = target.getAttribute("data-include");
+            if (!src) {
+              return;
+            }
+            const response = await fetch(src);
+            target.innerHTML = await response.text();
+          })
+        );
+      }
+
+      loadIncludes().then(() => {
+        Reveal.initialize({
+          hash: true,
+          slideNumber: true,
+          transition: "slide",
+          navigationMode: "linear",
+          plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+          markdown: {
+            smartypants: true,
+            hashSeparator: "",
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
