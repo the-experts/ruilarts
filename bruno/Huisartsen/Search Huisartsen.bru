@@ -1,0 +1,39 @@
+meta {
+  name: Search Huisartsen
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{huisartsenApiUrl}}/huisartsen?naam=&locatie=
+  body: none
+  auth: none
+}
+
+params:query {
+  naam:
+  locatie:
+}
+
+docs {
+  Search for huisartsen (GP practices) by name or location.
+
+  Query Parameters:
+  - naam (optional): Search by practice name (case-insensitive)
+  - locatie (optional): Search by location/city (case-insensitive)
+
+  You can use either parameter alone or combine them for more specific results.
+
+  Returns:
+  - Array of huisarts objects with:
+    - naam: Practice name
+    - adres: Address
+    - latitude: Latitude coordinate
+    - longitude: Longitude coordinate
+    - link: URL link
+
+  Examples:
+  - /huisartsen?naam=Amsterdam
+  - /huisartsen?locatie=Utrecht
+  - /huisartsen?naam=Huisartsen&locatie=Amsterdam
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Get Cached Matches
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/matches
+  body: none
+  auth: none
+}
+
+docs {
+  Get the most recent matching results (from cache).
+
+  Returns the last computed matching results without re-running the algorithm.
+  If no matches have been computed yet, returns a 404.
+
+  Returns:
+  - 200: Cached match results
+  - 404: No matches found. Run POST /api/matches first.
+}

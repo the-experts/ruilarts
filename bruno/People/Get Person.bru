@@ -1,0 +1,25 @@
+meta {
+  name: Get Person
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/people/:personId
+  body: none
+  auth: none
+}
+
+params:path {
+  personId:
+}
+
+docs {
+  Get a specific person by ID.
+
+  Returns the person's current and desired practices.
+
+  Returns:
+  - 200: Person found
+  - 404: Person not found
+}
