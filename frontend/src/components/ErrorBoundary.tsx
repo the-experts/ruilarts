@@ -1,5 +1,5 @@
-import { useRouter } from "@tanstack/react-router";
-import { RootRouteError } from "@tanstack/react-router";
+import { RootRouteError, useRouter } from "@tanstack/react-router";
+import LetterGlitch from "./bg/LetterGlitch";
 
 export function ErrorBoundary({ error }: { error: RootRouteError }) {
   const router = useRouter();
@@ -118,23 +118,40 @@ export function ErrorBoundary({ error }: { error: RootRouteError }) {
         `}</style>
       </head>
       <body>
-        <div className="container">
+        <div className="absolute top-0 left-0 right-0 bottom-0 z-0">
+          <LetterGlitch
+            glitchSpeed={1}
+            centerVignette={false}
+            outerVignette={true}
+            smooth={true}
+          />
+        </div>
+        <div className="container z-10">
           <div className="icon">⚠️</div>
           <h1>Oeps, iets ging fout</h1>
           <p className="subtitle">
-            We hebben een onverwacht probleem tegengekomen. Dit kan voorkomen.
+            We kwamen nu net even niet door de vibe check. Dit kan voorkomen.
             Probeer het opnieuw of ga terug naar het begin.
           </p>
 
           <div className="message">
-            Het spijt ons. Onze servers werken eraan om dit op te lossen.
-            Probeer het over een paar seconden opnieuw.
+            Het spijt ons. Onze AI-bots werken eraan om dit op te lossen. Tobias
+            geeft Codex de schuld. Maar... Dat is ook alleen maar zo omdat hij
+            uit de tokens is voor Claude. Probeer het over een paar seconden
+            opnieuw.
           </div>
 
           {isDevMode && error && (
             <details>
-              <summary style={{ cursor: "pointer", color: "#667eea", fontWeight: "bold", marginBottom: "8px" }}>
-                Technische details (alleen ontwikkelaars)
+              <summary
+                style={{
+                  cursor: "pointer",
+                  color: "#667eea",
+                  fontWeight: "bold",
+                  marginBottom: "8px",
+                }}
+              >
+                Technische details (alleen Experts)
               </summary>
               <div className="error-details">
                 {error.message && `Bericht: ${error.message}\n\n`}
