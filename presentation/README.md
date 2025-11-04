@@ -68,6 +68,13 @@ Read all files in order (00 → 13)
 
 ## 🎨 Viewing Options
 
+### 0. Reveal.js Deck (built-in)
+
+- Open `presentation/index.html` in a browser via a local web server (e.g. `npx http-server presentation` or `python -m http.server` from the repo root).
+- Use arrow keys to navigate horizontally; vertical stacks are separated with `--` markers.
+- Append `#/` fragments to the URL when deep-linking to specific slides (hash navigation is enabled).
+- The opening slide stack is sourced from `00-cover.html`, which keeps Reveal-specific markup separate from the original markdown content.
+
 ### 1. Markdown Readers
 
 **GitHub/GitLab:**
