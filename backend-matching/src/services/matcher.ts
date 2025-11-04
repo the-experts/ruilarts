@@ -1,5 +1,8 @@
 import { neo4jService } from './neo4j.js';
-import { Person, Circle, CirclePerson, MatchResult, PreferenceLevel } from '../models/index.js';
+import { Person, Circle, CirclePerson, MatchResult } from '../models/index.js';
+
+const PREFERENCE_RELATIONS = ['WANTS_FIRST', 'WANTS_SECOND'] as const;
+type PreferenceRelation = typeof PREFERENCE_RELATIONS[number];
 
 interface CycleNode {
   personId: string;
@@ -11,7 +14,8 @@ interface CycleNode {
 
 interface RawCycle {
   nodes: CycleNode[];
-  preferenceType: 'WANTS_FIRST' | 'WANTS_SECOND';
+  preferenceType: PreferenceRelation;
+  preferenceIndex: number;
 }
 
 class MatcherService {
@@ -25,35 +29,24 @@ class MatcherService {
       return this.emptyResult();
     }
 
-    // Find cycles with first preferences
-    const firstChoiceCycles = await this.findCyclesWithPreference('WANTS_FIRST', 4);
+    const matchedPersonIds = new Set<string>();
+    const allSelectedCycles: RawCycle[] = [];
 
-    // Select non-overlapping cycles from first choices
-    const selectedFirstChoices = this.selectNonOverlappingCycles(firstChoiceCycles);
+    for (const [preferenceIndex, preferenceType] of PREFERENCE_RELATIONS.entries()) {
+      const rawCycles = await this.findCyclesWithPreference(preferenceType, preferenceIndex, 4);
 
-    // Get people who are already matched
-    const matchedPersonIds = new Set(
-      selectedFirstChoices.flatMap(cycle => cycle.nodes.map(n => n.personId))
-    );
+      const availableCycles = rawCycles.filter(cycle =>
+        cycle.nodes.every(node => !matchedPersonIds.has(node.personId))
+      );
 
-    // Find cycles with second preferences for unmatched people
-    const secondChoiceCycles = await this.findCyclesWithPreference('WANTS_SECOND', 4);
+      const selectedCycles = this.selectNonOverlappingCycles(availableCycles);
 
-    // Filter out cycles that include already matched people
-    const availableSecondChoices = secondChoiceCycles.filter(cycle =>
-      !cycle.nodes.some(node => matchedPersonIds.has(node.personId))
-    );
+      selectedCycles.forEach(cycle => {
+        cycle.nodes.forEach(node => matchedPersonIds.add(node.personId));
+      });
 
-    // Select non-overlapping cycles from second choices
-    const selectedSecondChoices = this.selectNonOverlappingCycles(availableSecondChoices);
-
-    // Combine all selected cycles
-    const allSelectedCycles = [...selectedFirstChoices, ...selectedSecondChoices];
-
-    // Update matched person IDs
-    allSelectedCycles.forEach(cycle => {
-      cycle.nodes.forEach(node => matchedPersonIds.add(node.personId));
-    });
+      allSelectedCycles.push(...selectedCycles);
+    }
 
     // Build the result
     const result = await this.buildMatchResult(allPeople, allSelectedCycles, matchedPersonIds);
@@ -69,7 +62,8 @@ class MatcherService {
   }
 
   private async findCyclesWithPreference(
-    preferenceType: 'WANTS_FIRST' | 'WANTS_SECOND',
+    preferenceType: PreferenceRelation,
+    preferenceIndex: number,
     maxCycleLength: number
   ): Promise<RawCycle[]> {
     const session = await neo4jService.getSession();
@@ -99,7 +93,7 @@ class MatcherService {
             });
           }
 
-          cycles.push({ nodes, preferenceType });
+          cycles.push({ nodes, preferenceType, preferenceIndex });
         }
       }
     } finally {
@@ -168,28 +162,24 @@ class MatcherService {
 
     // Build circles
     const circles: Circle[] = selectedCycles.map(rawCycle => {
+      const choiceIndex = rawCycle.preferenceIndex;
+
       const people: CirclePerson[] = rawCycle.nodes.map((node, index) => {
         const person = personMap.get(node.personId)!;
         const prevIndex = (index - 1 + rawCycle.nodes.length) % rawCycle.nodes.length;
         const getsSpotFrom = rawCycle.nodes[prevIndex].personName;
-        const preferenceLevel =
-          rawCycle.preferenceType === 'WANTS_FIRST' ? PreferenceLevel.FIRST : PreferenceLevel.SECOND;
 
         return {
           person,
-          preferenceLevel,
+          choiceIndex,
           getsSpotFrom,
         };
       });
 
-      const isFirstChoiceOnly = rawCycle.preferenceType === 'WANTS_FIRST';
-      const isSecondChoiceOnly = rawCycle.preferenceType === 'WANTS_SECOND';
-
       return {
         size: people.length,
         people,
-        isFirstChoiceOnly,
-        isSecondChoiceOnly,
+        choiceIndex,
       };
     });
 
@@ -201,24 +191,21 @@ class MatcherService {
     const totalMatched = matchedPersonIds.size;
     const matchRate = totalPeople > 0 ? totalMatched / totalPeople : 0;
 
-    let firstChoiceCount = 0;
-    let secondChoiceCount = 0;
+    const choiceCounts: number[] = [];
     const circleSizes: Record<number, number> = {};
 
     for (const circle of circles) {
       circleSizes[circle.size] = (circleSizes[circle.size] || 0) + 1;
 
       for (const circlePerson of circle.people) {
-        if (circlePerson.preferenceLevel === PreferenceLevel.FIRST) {
-          firstChoiceCount++;
-        } else {
-          secondChoiceCount++;
-        }
+        const index = circlePerson.choiceIndex;
+        choiceCounts[index] = (choiceCounts[index] || 0) + 1;
       }
     }
 
     const totalCircleSize = circles.reduce((sum, c) => sum + c.size, 0);
     const averageCircleSize = circles.length > 0 ? totalCircleSize / circles.length : 0;
+    const normalizedChoiceCounts = PREFERENCE_RELATIONS.map((_, index) => choiceCounts[index] || 0);
 
     return {
       circles,
@@ -227,8 +214,7 @@ class MatcherService {
         totalPeople,
         totalMatched,
         matchRate,
-        firstChoiceCount,
-        secondChoiceCount,
+        choiceCounts: normalizedChoiceCounts,
         averageCircleSize,
         circleSizes,
       },
@@ -243,8 +229,7 @@ class MatcherService {
         totalPeople: 0,
         totalMatched: 0,
         matchRate: 0,
-        firstChoiceCount: 0,
-        secondChoiceCount: 0,
+        choiceCounts: PREFERENCE_RELATIONS.map(() => 0),
         averageCircleSize: 0,
         circleSizes: {},
       },

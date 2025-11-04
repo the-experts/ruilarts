@@ -3,20 +3,6 @@ import { matcherService } from '../services/matcher.js';
 
 export const matchesRoutes = new Hono();
 
-// Run the matching algorithm
-matchesRoutes.post('/', async (c) => {
-  try {
-    const result = await matcherService.findMatches();
-    return c.json(result);
-  } catch (error) {
-    console.error('Error running matcher:', error);
-    return c.json(
-      { error: 'Failed to run matching algorithm' },
-      500
-    );
-  }
-});
-
 // Get cached matching results
 matchesRoutes.get('/', async (c) => {
   try {
@@ -24,7 +10,7 @@ matchesRoutes.get('/', async (c) => {
 
     if (!cachedResult) {
       return c.json(
-        { error: 'No cached results available. Run POST /api/matches first.' },
+        { error: 'No match results available yet. Matches are calculated automatically when people are added.' },
         404
       );
     }

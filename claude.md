@@ -34,3 +34,5 @@ When the system detects this circular pattern (A→B→C→D→A), it creates a 
 - Detect circular swap opportunities automatically
 - Notify users when a match is found
 - Leverage scraped huisarts data for location-based matching
+- never run npm run build for checking
+- texts on the frontend should be in taalniveau B1 in dutch

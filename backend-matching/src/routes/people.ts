@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { neo4jService } from '../services/neo4j.js';
+import { matcherService } from '../services/matcher.js';
 import { PersonCreate } from '../models/index.js';
 
 export const peopleRoutes = new Hono();
@@ -14,8 +15,10 @@ peopleRoutes.post('/', async (c) => {
       !body.name ||
       !body.currentPracticeName ||
       !body.currentLocation ||
-      !body.desiredPracticeFirst ||
-      !body.desiredLocationFirst
+      !Array.isArray(body.choices) ||
+      body.choices.length === 0 ||
+      !body.choices[0]?.practiceName ||
+      !body.choices[0]?.location
     ) {
       return c.json(
         { error: 'Missing required fields' },
@@ -23,7 +26,28 @@ peopleRoutes.post('/', async (c) => {
       );
     }
 
-    const person = await neo4jService.addPerson(body);
+    const normalizedChoices = body.choices
+      .filter(choice => choice && choice.practiceName && choice.location)
+      .map(choice => ({
+        practiceName: choice.practiceName.trim(),
+        location: choice.location.trim(),
+      }))
+      .slice(0, 2);
+
+    if (normalizedChoices.length === 0) {
+      return c.json({ error: 'At least one valid choice is required' }, 400);
+    }
+
+    const person = await neo4jService.addPerson({
+      ...body,
+      choices: normalizedChoices,
+    });
+
+    // Trigger match calculation asynchronously (don't await)
+    matcherService.findMatches().catch((error) => {
+      console.error('Error calculating matches after adding person:', error);
+    });
+
     return c.json(person, 201);
   } catch (error) {
     console.error('Error adding person:', error);
