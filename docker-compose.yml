@@ -57,6 +57,17 @@ services:
     networks:
       - ruilarts-network
 
+  # Location API (NODE)
+  ruilarts-geo:
+    build: ./backend-geo
+    container_name: ruilarts-geo
+    environment:
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    networks:
+      - ruilarts-network
+
   # Backend Matching API (Hono + Node.js + Neo4j)
   backend-matching:
     build: ./backend-matching
