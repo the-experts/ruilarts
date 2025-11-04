@@ -24,7 +24,7 @@ function Stap2() {
   const nearbyPGs = Route.useLoaderData();
 
   const [selectedIds, setSelectedIds] = useState<Set<number>>(
-    new Set(formData.targetPGs.map((pg) => pg.id)),
+    new Set(formData.targetPGs.map((pg) => pg.id))
   );
   const [error, setError] = useState("");
 
@@ -86,9 +86,9 @@ function Stap2() {
               />
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-900">{pg.naam}</h3>
+                <p className="mt-1 text-sm text-gray-600">{pg.adres}</p>
                 <p className="mt-1 text-sm text-gray-600">
-                  {pg.adres}
-                  {/* {pg.address}, {pg.postalCode} {pg.city} */}
+                  {pg.street}, {pg.postalcode} {pg.city}
                 </p>
                 {pg.distance_m && (
                   <p className="mt-2 text-xs text-blue-600 font-medium">

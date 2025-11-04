@@ -170,7 +170,7 @@ function Stap3() {
               <List
                 rowComponent={RowComponent}
                 rowCount={filteredPGs.length}
-                rowHeight={80}
+                rowHeight={100}
                 rowProps={{ filteredPGs, selectedPGId, handleSelectPG }}
               />
             ) : (
@@ -220,7 +220,7 @@ function RowComponent({
           ? "border-blue-500 bg-blue-50"
           : "border-gray-200 bg-white hover:border-gray-300"
       }`}
-      style={{ ...style, marginTop: "8px", height: 72 }}
+      style={{ ...style, marginTop: "8px", height: 92 }}
       onClick={() => handleSelectPG(pg.id.toString())}
     >
       <div className="flex items-start gap-3">
@@ -228,6 +228,9 @@ function RowComponent({
         <div className="flex-1">
           <h3 className="font-medium text-gray-900">{pg.naam}</h3>
           <p className="text-sm text-gray-600">{pg.adres}</p>
+             <p className="mt-1 text-sm text-gray-600">
+                  {pg.street}, {pg.postalcode} {pg.city}
+                </p>
         </div>
       </div>
     </div>

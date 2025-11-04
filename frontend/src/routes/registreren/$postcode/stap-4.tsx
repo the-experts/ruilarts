@@ -275,13 +275,13 @@ function Stap4() {
               Gewenste ({formData.targetPGs.length}):
             </p>
             {formData.targetPGs.length > 0 ? (
-              <ul className="list-inside list-disc text-gray-600">
+              <ol className="list-inside list-decimal text-gray-600">
                 {formData.targetPGs.map((pg) => (
                   <li key={pg.id}>
                     {pg.naam} ({pg.adres})
                   </li>
                 ))}
-              </ul>
+              </ol>
             ) : (
               <p className="text-gray-500">Geen geselecteerd</p>
             )}
