@@ -7,7 +7,7 @@ import { ArrowRight, Heart, MapPin, Users } from "lucide-react";
 import { useState } from "react";
 import Logo from "../logo.svg";
 
-import Dither from "@/components/bg/Dither";
+import Dither from "@/components/bg/Auroraher";
 import { getNearbyPGs } from "@/data/huisartsen";
 import { isValidPostalCode, normalizePostalCode } from "@/lib/form-utils";
 
