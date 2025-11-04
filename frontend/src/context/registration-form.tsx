@@ -1,4 +1,5 @@
 import { ClosestHuisarts, Huisarts } from "@/data/huisartsService";
+import { createMatch } from "@/data/matchService";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface ContactDetails {
@@ -22,7 +23,7 @@ interface RegistrationFormContextType {
   updatePostalCode: (postalCode: string) => void;
   updateTargetPGs: (pgs: ClosestHuisarts[]) => void;
   updateCurrentPG: (pg: Huisarts) => void;
-  updateContactDetails: (details: Partial<ContactDetails>) => void;
+  updateContactDetails: (details: ContactDetails) => Promise<void>;
   reset: () => void;
 }
 
@@ -64,11 +65,21 @@ export function RegistrationFormProvider({
     setFormData((prev) => ({ ...prev, currentPG: pg }));
   };
 
-  const updateContactDetails = (details: Partial<ContactDetails>) => {
+  const updateContactDetails = async (details: ContactDetails) => {
     setFormData((prev) => ({
       ...prev,
       contactDetails: { ...prev.contactDetails, ...details },
     }));
+
+    const choices = formData.targetPGs.map(targetPG => targetPG.id)
+
+    await createMatch({
+      data: {
+        name: details.name.trim(),
+        currentPracticeId: formData.currentPG!.id,
+        choices
+      },
+    });
   };
 
   const reset = () => {

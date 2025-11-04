@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRegistrationForm } from "@/context/registration-form";
+
 import { lookupPDOKAddress } from "@/data/pdok.server";
 import {
   isValidEmail,
@@ -27,10 +28,10 @@ function Stap4() {
 
   const [name, setName] = useState(formData.contactDetails.name || "");
   const [postalCode, setPostalCode] = useState(
-    formData.contactDetails.postalCode || postcode || "",
+    formData.contactDetails.postalCode || postcode || ""
   );
   const [houseNumber, setHouseNumber] = useState(
-    formData.contactDetails.houseNumber || "",
+    formData.contactDetails.houseNumber || ""
   );
   const [street, setStreet] = useState(formData.contactDetails.street || "");
   const [city, setCity] = useState(formData.contactDetails.city || "");
@@ -107,7 +108,7 @@ function Stap4() {
 
     setIsLoading(true);
     try {
-      updateContactDetails({
+      await updateContactDetails({
         name: name.trim(),
         postalCode: normalizePostalCode(postalCode),
         houseNumber: houseNumber.trim(),
