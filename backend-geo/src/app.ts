@@ -1,7 +1,14 @@
 import express from 'express';
+import parser from 'body-parser';
 
 const app = express();
 const port = 4000;
+
+
+app.use(parser.urlencoded({
+    extended: true
+}));
+app.use(parser.json());
 
 /**
  * !! Please take care when calling it multiple times (include some delay..), pdok rate limit not known !!
@@ -11,15 +18,13 @@ const port = 4000;
  *
  */
 app.get('/location', async (req, res) => {
-    console.log('receiving')
     const postcode = req.query.postcode
 
     const address = req.query.address
     const addressNumber = req.query.addressNumber
     const queryAdressNumber = addressNumber ? '%20and%20' + addressNumber : ''
     const queryAddress = address ? '%20and%20%27' + address + '%27' : ''
-    console.log(queryAdressNumber)
-    console.log(queryAddress)
+
     const response = await fetch('https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=' + postcode + queryAddress + queryAdressNumber + '&fl=id%20identificatie%20weergavenaam%20bron%20type%20openbareruimte_id%20nwb_id%20openbareruimtetype%20straatnaam%20straatnaam_verkort%20adresseerbaarobject_id%20nummeraanduiding_id%20huisnummer%20huisletter%20huisnummertoevoeging%20huis_nlt%20postcode%20buurtnaam%20buurtcode%20wijknaam%20wijkcode%20woonplaatscode%20woonplaatsnaam%20gemeentecode%20gemeentenaam%20provinciecode%20provincienaam%20provincieafkorting%20kadastrale_gemeentecode%20kadastrale_gemeentenaam%20kadastrale_sectie%20perceelnummer%20kadastrale_grootte%20gekoppeld_perceel%20kadastrale_aanduiding%20volgnummer%20gekoppeld_appartement%20wegnummer%20hectometernummer%20zijde%20hectometerletter%20waterschapsnaam%20waterschapscode%20rdf_seealso%20centroide_ll%20centroide_rd%20score&fq=type%3A%28adres%29&df=tekst&bq=type%3Aprovincie%5E1.5&bq=type%3Agemeente%5E1.5&bq=type%3Awoonplaats%5E1.5&bq=type%3Aweg%5E1.5&bq=type%3Apostcode%5E0.5&bq=type%3Aadres%5E1&start=0&rows=10&sort=score%20desc%2Csortering%20asc%2Cweergavenaam%20asc&wt=json'
     );
     //extract JSON from the http response
@@ -47,7 +52,6 @@ app.get('/location', async (req, res) => {
  * returns weight + distance
  */
 app.get('/route', async (req, res) => {
-    console.log('receiving')
     const fromLon = parseFloat(req.query.fromLon)
     const fromLat = parseFloat(req.query.fromLat)
     const toLon = parseFloat(req.query.toLon)
@@ -97,7 +101,7 @@ app.get('/route', async (req, res) => {
         }
         res.send(jsonResponse)
     } else {
-        console.log("route error happened: "+response)
+        console.log("route error happened: " + response)
     }
     res.send(response.statusText)
 });
@@ -113,38 +117,9 @@ app.get('/route-local', async (req, res) => {
     const toLon = parseFloat(req.query.toLon)
     const toLat = parseFloat(req.query.toLat)
     const transportProfile = req.query.profile
-    let body = JSON.stringify({
-        points: [
-            [
-                fromLon,
-                fromLat
-            ],
-            [
-                toLon,
-                toLat
-            ]
-        ],
-        profile: transportProfile ? transportProfile : 'car',
-        elevation: true,
-        instructions: true,
-        locale: "en_US",
-        points_encoded: true,
-        points_encoded_multiplier: 1000000,
-        details: [
-           "road_class",
-           "road_environment",
-            "max_speed",
-            "average_speed"
-        ],
-        snap_preventions: [
-            "ferry"
-        ],
-        timeout_ms: 10000,
-        alternative_route : {
-            max_paths: 3,
-        },
-        algorithm: "alternative_route"
-    });
+
+
+    let body = getBodyRouteApi(fromLon, fromLat, toLon, toLat, transportProfile);
     const response = await fetch(
         'http://localhost:8989/route?key=', {
             headers: {
@@ -164,10 +139,111 @@ app.get('/route-local', async (req, res) => {
         }
         res.send(jsonResponse)
     } else {
-        console.log("route-local error happened : " +response )
+        console.log("route-local error happened : " + response)
     }
     res.send(response.statusText)
 });
+/**
+ * Example usage:
+ * http://localhost:4000/post-code-distance
+ * body:
+ * {
+ *   "postCodeA": "1011AG",
+ *   "postCodeB": "1011AB",
+ *   "travelType": "car"
+ * }
+ * travel type options are 'bike' and 'car'
+ *
+ */
+app.post('/post-code-distance', async (req, res) => {
+    const postCodeA = req.body.postCodeA
+    const responseA = await fetch('https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=' + postCodeA + '&fl=id%20identificatie%20weergavenaam%20bron%20type%20openbareruimte_id%20nwb_id%20openbareruimtetype%20straatnaam%20straatnaam_verkort%20adresseerbaarobject_id%20nummeraanduiding_id%20huisnummer%20huisletter%20huisnummertoevoeging%20huis_nlt%20postcode%20buurtnaam%20buurtcode%20wijknaam%20wijkcode%20woonplaatscode%20woonplaatsnaam%20gemeentecode%20gemeentenaam%20provinciecode%20provincienaam%20provincieafkorting%20kadastrale_gemeentecode%20kadastrale_gemeentenaam%20kadastrale_sectie%20perceelnummer%20kadastrale_grootte%20gekoppeld_perceel%20kadastrale_aanduiding%20volgnummer%20gekoppeld_appartement%20wegnummer%20hectometernummer%20zijde%20hectometerletter%20waterschapsnaam%20waterschapscode%20rdf_seealso%20centroide_ll%20centroide_rd%20score&fq=type%3A%28adres%29&df=tekst&bq=type%3Aprovincie%5E1.5&bq=type%3Agemeente%5E1.5&bq=type%3Awoonplaats%5E1.5&bq=type%3Aweg%5E1.5&bq=type%3Apostcode%5E0.5&bq=type%3Aadres%5E1&start=0&rows=10&sort=score%20desc%2Csortering%20asc%2Cweergavenaam%20asc&wt=json'
+    );
+
+    const postCodeB = req.body.postCodeB
+    const responseB = await fetch('https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=' + postCodeB + '&fl=id%20identificatie%20weergavenaam%20bron%20type%20openbareruimte_id%20nwb_id%20openbareruimtetype%20straatnaam%20straatnaam_verkort%20adresseerbaarobject_id%20nummeraanduiding_id%20huisnummer%20huisletter%20huisnummertoevoeging%20huis_nlt%20postcode%20buurtnaam%20buurtcode%20wijknaam%20wijkcode%20woonplaatscode%20woonplaatsnaam%20gemeentecode%20gemeentenaam%20provinciecode%20provincienaam%20provincieafkorting%20kadastrale_gemeentecode%20kadastrale_gemeentenaam%20kadastrale_sectie%20perceelnummer%20kadastrale_grootte%20gekoppeld_perceel%20kadastrale_aanduiding%20volgnummer%20gekoppeld_appartement%20wegnummer%20hectometernummer%20zijde%20hectometerletter%20waterschapsnaam%20waterschapscode%20rdf_seealso%20centroide_ll%20centroide_rd%20score&fq=type%3A%28adres%29&df=tekst&bq=type%3Aprovincie%5E1.5&bq=type%3Agemeente%5E1.5&bq=type%3Awoonplaats%5E1.5&bq=type%3Aweg%5E1.5&bq=type%3Apostcode%5E0.5&bq=type%3Aadres%5E1&start=0&rows=10&sort=score%20desc%2Csortering%20asc%2Cweergavenaam%20asc&wt=json'
+    );
+
+    const travelType = req.body.travelType
+
+    function getLatLon(jsonPdok) {
+        let centroideLl = jsonPdok.response.docs[0].centroide_ll;
+        let converted1 = centroideLl.replace("POINT(", "")
+        converted1 = converted1.replace(")", "")
+        const coords: string[] = converted1.split(" ")
+        const jsonResponse = {
+            longitude: coords[0],
+            latitude: coords[1]
+        }
+        return jsonResponse;
+    }
+
+    if (responseA.ok && responseB.ok) {
+        let jsonAPdok = await responseA.json();
+        let jsonBPdok = await responseB.json();
+        const latLonA = getLatLon(jsonAPdok);
+        const latLonB = getLatLon(jsonBPdok);
+
+        let body = getBodyRouteApi(latLonA.longitude,latLonA.latitude,latLonB.longitude,latLonB.latitude,travelType)
+        const response = await fetch(
+            'https://graphhopper.com/api/1/route?key=5c35b258-d4f2-4556-8df8-9da8d5011909', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: body,
+            }
+        );
+        if (response.ok) {
+            let routeResponse = await response.json();
+            const jsonResponse = {
+                time: routeResponse.paths[0].time,
+                distance: routeResponse.paths[0].distance
+            }
+            res.send(jsonResponse)
+        }
+    } else {
+        console.log("location error happened")
+    }
+});
+
+function getBodyRouteApi(fromLon, fromLat, toLon, toLat, transportProfile) {
+    let body = JSON.stringify({
+        points: [
+            [
+                fromLon,
+                fromLat
+            ],
+            [
+                toLon,
+                toLat
+            ]
+        ],
+        profile: transportProfile ? transportProfile : 'car',
+        elevation: true,
+        instructions: true,
+        locale: "en_US",
+        points_encoded: true,
+        points_encoded_multiplier: 1000000,
+        details: [
+            "road_class",
+            "road_environment",
+            "max_speed",
+            "average_speed"
+        ],
+        snap_preventions: [
+            "ferry"
+        ],
+        timeout_ms: 10000,
+        alternative_route: {
+            max_paths: 3,
+        },
+        algorithm: "alternative_route"
+    });
+    return body;
+}
+
 
 app.listen(port, () => {
     return console.log(`Express is listening at http://localhost:${port}`);
