@@ -355,7 +355,7 @@ function App() {
             <a href="#" className="hover:text-slate-900 transition">
               Over ons
             </a>
-            <a href="#" className="hover:text-slate-900 transition">
+            <a href="/privacy-statement" className="hover:text-slate-900 transition">
               Privacy
             </a>
             <a href="#" className="hover:text-slate-900 transition">
