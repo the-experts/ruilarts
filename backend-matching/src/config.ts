@@ -4,6 +4,14 @@ export const config = {
     username: process.env.NEO4J_USERNAME || 'neo4j',
     password: process.env.NEO4J_PASSWORD || 'ruilarts123',
   },
+  postgres: {
+    host: process.env.POSTGRES_HOST || 'localhost',
+    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
+    database: process.env.POSTGRES_DB || 'huisartsen',
+    user: process.env.POSTGRES_USER || 'admin',
+    password: process.env.POSTGRES_PASSWORD || 'secret',
+    max: parseInt(process.env.POSTGRES_POOL_MAX || '10', 10),
+  },
   server: {
     port: parseInt(process.env.PORT || '8000', 10),
   },
