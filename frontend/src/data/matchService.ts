@@ -1,3 +1,4 @@
+import { GetMatchesResponse } from "@/interfaces/Matches";
 import { createServerFn } from "@tanstack/react-start";
 
 interface CreateMatchRequest {
@@ -19,4 +20,13 @@ export const createMatch = createServerFn()
     if (!response.ok) {
       throw new Error("Failed to create match");
     }
+  });
+
+  export const getMatches = createServerFn()
+  .handler(async () => {
+    const response = await fetch(`${BASE_URL}/api/matches`);
+
+    const data= (await response.json()) as GetMatchesResponse
+
+    return data
   });

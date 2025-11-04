@@ -55,7 +55,7 @@ const convertRow = (row: Record<string, string | number>) => ({
 app.get("/huisartsen", async (req: Request, res: Response) => {
   const { naam, locatie, straat, postcode, plaats } = req.query;
   let query = `
-    SELECT id, naam, adres, latitude, longitude, link 
+    SELECT id, naam, adres, latitude, longitude, link, street, postalcode, city
     FROM huisartsen
   `;
   const filters: string[] = [];
@@ -113,7 +113,7 @@ app.get("/huisartsen/closest", async (req: Request, res: Response) => {
 
   try {
     const result = await pool.query(
-      "SELECT id, naam, adres, latitude, longitude, link FROM huisartsen"
+      "SELECT id, naam, adres, latitude, longitude, link, street, postalcode, city FROM huisartsen"
     );
     const distances = result.rows
       .filter((row) => row.latitude !== null && row.longitude !== null)
@@ -137,7 +137,7 @@ app.get("/huisartsen/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const query =
-    "SELECT id, naam, adres, latitude, longitude, link FROM huisartsen WHERE id = $1";
+    "SELECT id, naam, adres, latitude, longitude, link, street, postalcode, city FROM huisartsen WHERE id = $1";
 
   try {
     const result = await pool.query(query, [id]);
