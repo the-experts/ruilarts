@@ -1,6 +1,7 @@
 import { neo4jService } from './neo4j.js';
-import { Person, Circle, CirclePerson, MatchResult } from '../models/index.js';
+import { Circle, CirclePerson, MatchResult } from '../models/index.js';
 import { config } from '../config.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const MAX_PREFERENCE_INDEX = config.matching.maxPracticeChoices;
 
@@ -21,18 +22,18 @@ interface RawCycle {
 class MatcherService {
   private cachedResult: MatchResult | null = null;
 
-  async findMatches(): Promise<MatchResult> {
-    // Get all people
-    const allPeople = await neo4jService.getAllPeople();
+  async findMatchesForPerson(personId: string): Promise<Circle | null> {
+    console.log(`[Matcher] Finding matches for person ${personId}`);
 
-    if (allPeople.length === 0) {
-      return this.emptyResult();
+    // Find all cycles that include this person
+    const allCycles = await this.findAllCyclesForPerson(personId, config.matching.maxCircleSize);
+
+    console.log(`[Matcher] Found ${allCycles.length} cycles for person ${personId}`);
+
+    if (allCycles.length === 0) {
+      console.log(`[Matcher] No matches found for person ${personId}`);
+      return null;
     }
-
-    // Find all possible cycles (regardless of preference order)
-    const allCycles = await this.findAllCycles(config.matching.maxCircleSize);
-
-    console.log(`[Matcher] Found ${allCycles.length} total cycles`);
 
     // Sort cycles by preference score (best matches first)
     // Priority: maxPreferenceOrder (lower is better), totalPreferenceScore (lower is better), size (smaller is better)
@@ -46,32 +47,55 @@ class MatcherService {
       return a.nodes.length - b.nodes.length;
     });
 
-    console.log(`[Matcher] Sorted cycles by preference order (best first)`);
+    // Take the best cycle
+    const bestCycle = sortedCycles[0];
+    const circleId = uuidv4();
 
-    // Select non-overlapping cycles
-    const selectedCycles = this.selectNonOverlappingCycles(sortedCycles);
-    const matchedPersonIds = new Set<string>();
+    console.log(`[Matcher] Best cycle: size=${bestCycle.nodes.length}, maxPref=${bestCycle.maxPreferenceOrder}, totalScore=${bestCycle.totalPreferenceScore}`);
 
-    selectedCycles.forEach(cycle => {
-      cycle.nodes.forEach(node => matchedPersonIds.add(node.personId));
+    // Mark all people in this cycle as matched
+    const personIds = bestCycle.nodes.map(node => node.personId);
+    await neo4jService.markPeopleAsMatched(personIds, circleId);
+
+    console.log(`[Matcher] Marked ${personIds.length} people as matched in circle ${circleId}`);
+
+    // Build and return the Circle
+    const allPeople = await neo4jService.getAllPeople();
+    const personMap = new Map(allPeople.map(p => [p.id, p]));
+
+    const people: CirclePerson[] = bestCycle.nodes.map((node, index) => {
+      const person = personMap.get(node.personId)!;
+      const prevIndex = (index - 1 + bestCycle.nodes.length) % bestCycle.nodes.length;
+      const getsSpotFrom = bestCycle.nodes[prevIndex].personName;
+
+      return {
+        person,
+        choiceIndex: node.preferenceOrder,
+        getsSpotFrom,
+      };
     });
 
-    console.log(`[Matcher] Selected ${selectedCycles.length} non-overlapping cycles, matched ${matchedPersonIds.size} people`);
+    const circle: Circle = {
+      size: people.length,
+      people,
+      choiceIndex: bestCycle.maxPreferenceOrder,
+    };
 
-    // Build the result
-    const result = await this.buildMatchResult(allPeople, selectedCycles, matchedPersonIds);
+    // Update cached result
+    if (!this.cachedResult) {
+      this.cachedResult = this.emptyResult();
+    }
+    this.cachedResult.circles.push(circle);
 
-    // Cache the result
-    this.cachedResult = result;
-
-    return result;
+    return circle;
   }
 
   getCachedResult(): MatchResult | null {
     return this.cachedResult;
   }
 
-  private async findAllCycles(
+  private async findAllCyclesForPerson(
+    anchorPersonId: string,
     maxCycleLength: number
   ): Promise<RawCycle[]> {
     const session = await neo4jService.getSession();
@@ -89,8 +113,8 @@ class MatcherService {
     try {
       // Find cycles of different sizes (2, 3, 4, etc.)
       for (let size = 2; size <= maxCycleLength; size++) {
-        const query = this.buildCycleQuery(size);
-        const result = await session.run(query);
+        const query = this.buildCycleQuery(size, anchorPersonId);
+        const result = await session.run(query, { anchorPersonId });
 
         for (const record of result.records) {
           const nodes: CycleNode[] = [];
@@ -128,25 +152,33 @@ class MatcherService {
     return cycles;
   }
 
-  private buildCycleQuery(size: number): string {
+  private buildCycleQuery(size: number, _anchorPersonId: string): string {
     const patterns: string[] = [];
     const conditions: string[] = [];
+
+    // Anchor first person to the specific ID
+    conditions.push(`p0.id = $anchorPersonId`);
 
     for (let i = 0; i < size; i++) {
       const nextIdx = (i + 1) % size;
       patterns.push(`(p${i}:Person)-[:CURRENTLY_AT]->(pr${i}:Practice)`);
-      patterns.push(`(p${i})-[w${i}:WANTS]->(pr${nextIdx})`); // No order filter
+      patterns.push(`(p${i})-[w${i}:WANTS]->(pr${nextIdx})`);
+
+      // Exclude already matched people (except p0 who is the anchor)
+      if (i > 0) {
+        conditions.push(`(p${i}.matchedInCircleId IS NULL OR p${i}.matchedInCircleId = '')`);
+      }
     }
 
-    // Ensure all persons are distinct
-    for (let i = 0; i < size; i++) {
+    // Ensure all persons are distinct (but skip p0 comparisons since it's fixed)
+    for (let i = 1; i < size; i++) {
       for (let j = i + 1; j < size; j++) {
         conditions.push(`id(p${i}) < id(p${j})`);
       }
     }
 
     const matchClause = `MATCH ${patterns.join(', ')}`;
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
     const returns: string[] = [];
     for (let i = 0; i < size; i++) {
@@ -155,96 +187,6 @@ class MatcherService {
     const returnClause = `RETURN ${returns.join(', ')}`;
 
     return `${matchClause} ${whereClause} ${returnClause}`;
-  }
-
-  private selectNonOverlappingCycles(cycles: RawCycle[]): RawCycle[] {
-    // Cycles are already sorted by preference score (best first)
-    // Select non-overlapping cycles in order
-
-    const selected: RawCycle[] = [];
-    const usedPersonIds = new Set<string>();
-
-    for (const cycle of cycles) {
-      // Check if any person in this cycle is already used
-      const hasOverlap = cycle.nodes.some(node => usedPersonIds.has(node.personId));
-
-      if (!hasOverlap) {
-        selected.push(cycle);
-        cycle.nodes.forEach(node => usedPersonIds.add(node.personId));
-      }
-    }
-
-    return selected;
-  }
-
-  private async buildMatchResult(
-    allPeople: Person[],
-    selectedCycles: RawCycle[],
-    matchedPersonIds: Set<string>
-  ): Promise<MatchResult> {
-    // Create a map for quick person lookup
-    const personMap = new Map(allPeople.map(p => [p.id, p]));
-
-    // Build circles
-    const circles: Circle[] = selectedCycles.map(rawCycle => {
-      console.log(`[Matcher] Building circle with maxPreferenceOrder: ${rawCycle.maxPreferenceOrder}, totalScore: ${rawCycle.totalPreferenceScore}, size: ${rawCycle.nodes.length}`);
-
-      const people: CirclePerson[] = rawCycle.nodes.map((node, index) => {
-        const person = personMap.get(node.personId)!;
-        const prevIndex = (index - 1 + rawCycle.nodes.length) % rawCycle.nodes.length;
-        const getsSpotFrom = rawCycle.nodes[prevIndex].personName;
-
-        // Use the person's individual preference order
-        return {
-          person,
-          choiceIndex: node.preferenceOrder,
-          getsSpotFrom,
-        };
-      });
-
-      return {
-        size: people.length,
-        people,
-        choiceIndex: rawCycle.maxPreferenceOrder, // Circle's overall choice index is the worst preference
-      };
-    });
-
-    // Find unmatched people
-    const unmatchedPeople = allPeople.filter(p => !matchedPersonIds.has(p.id));
-
-    // Calculate statistics
-    const totalPeople = allPeople.length;
-    const totalMatched = matchedPersonIds.size;
-    const matchRate = totalPeople > 0 ? totalMatched / totalPeople : 0;
-
-    const choiceCounts: number[] = [];
-    const circleSizes: Record<number, number> = {};
-
-    for (const circle of circles) {
-      circleSizes[circle.size] = (circleSizes[circle.size] || 0) + 1;
-
-      for (const circlePerson of circle.people) {
-        const index = circlePerson.choiceIndex;
-        choiceCounts[index] = (choiceCounts[index] || 0) + 1;
-      }
-    }
-
-    const totalCircleSize = circles.reduce((sum, c) => sum + c.size, 0);
-    const averageCircleSize = circles.length > 0 ? totalCircleSize / circles.length : 0;
-    const normalizedChoiceCounts = Array.from({ length: MAX_PREFERENCE_INDEX }, (_, index) => choiceCounts[index] || 0);
-
-    return {
-      circles,
-      unmatchedPeople,
-      statistics: {
-        totalPeople,
-        totalMatched,
-        matchRate,
-        choiceCounts: normalizedChoiceCounts,
-        averageCircleSize,
-        circleSizes,
-      },
-    };
   }
 
   private emptyResult(): MatchResult {

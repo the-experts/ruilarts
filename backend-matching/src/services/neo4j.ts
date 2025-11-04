@@ -55,6 +55,7 @@ class Neo4jService {
         id: toNumber(currentPractice.properties.id),
       },
       choices,
+      matchedInCircleId: personNode.properties.matchedInCircleId || null,
     };
   }
 
@@ -171,6 +172,20 @@ class Neo4jService {
       `;
 
       await session.run(query, { personId });
+    } finally {
+      await session.close();
+    }
+  }
+
+  async markPeopleAsMatched(personIds: string[], circleId: string): Promise<void> {
+    const session = await this.getSession();
+    try {
+      const query = `
+        MATCH (p:Person) WHERE p.id IN $personIds
+        SET p.matchedInCircleId = $circleId
+      `;
+
+      await session.run(query, { personIds, circleId });
     } finally {
       await session.close();
     }

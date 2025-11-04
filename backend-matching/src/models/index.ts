@@ -7,6 +7,7 @@ export interface Person {
   name: string;
   currentPractice: Practice;
   choices: Practice[];
+  matchedInCircleId?: string | null;
 }
 
 export interface CirclePerson {

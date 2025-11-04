@@ -53,10 +53,18 @@ peopleRoutes.post('/', async (c) => {
       choices: normalizedChoices,
     });
 
-    // Trigger match calculation asynchronously (don't await)
-    matcherService.findMatches().catch((error) => {
-      console.error('Error calculating matches after adding person:', error);
-    });
+    // Trigger person-specific match calculation asynchronously (don't await)
+    matcherService.findMatchesForPerson(person.id)
+      .then((circle) => {
+        if (circle) {
+          console.log(`[API] Person ${person.id} matched in circle of size ${circle.size}`);
+        } else {
+          console.log(`[API] No match found for person ${person.id}`);
+        }
+      })
+      .catch((error) => {
+        console.error(`[API] Error finding matches for person ${person.id}:`, error);
+      });
 
     return c.json(person, 201);
   } catch (error) {

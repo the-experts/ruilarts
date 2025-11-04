@@ -2,7 +2,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import neo4j, { Driver } from 'neo4j-driver';
+
+const DEFAULT_API_BASE_PATH = '/api';
 
 async function loadConfig() {
   try {
@@ -25,8 +26,18 @@ interface CSVRow {
   person_id: string;
   name: string;
   current_practice_id: string;
-  desired_practice_id_1: string;
-  desired_practice_id_2: string;
+  [key: string]: string;
+}
+
+interface PersonSummary {
+  id: string;
+  name: string;
+}
+
+interface PersonCreatePayload {
+  name: string;
+  currentPracticeId: number;
+  choices: number[];
 }
 
 // Simple CSV parser (handles basic CSV without complex escaping)
@@ -39,7 +50,8 @@ function parseCSV(content: string): CSVRow[] {
     const values = lines[i].split(',');
     const row: any = {};
     headers.forEach((header, index) => {
-      row[header] = values[index]?.trim() || '';
+      const rawValue = values[index] ?? '';
+      row[header] = rawValue.replace(/^"(.*)"$/, '$1').trim();
     });
     rows.push(row as CSVRow);
   }
@@ -47,29 +59,100 @@ function parseCSV(content: string): CSVRow[] {
   return rows;
 }
 
-async function clearDatabase(driver: Driver): Promise<void> {
-  const session = driver.session();
+function normalizeBaseUrl(baseUrl: string): string {
+  return baseUrl.endsWith('/')
+    ? baseUrl.slice(0, -1)
+    : baseUrl;
+}
+
+async function deleteExistingPeople(apiBaseUrl: string): Promise<number> {
+  console.log('🧹 Clearing existing people via API...');
+
   try {
-    console.log('⚠️  Clearing existing data from Neo4j...');
-    await session.run('MATCH (n) DETACH DELETE n');
-    console.log('✅ Database cleared');
-  } finally {
-    await session.close();
+    const response = await fetch(`${apiBaseUrl}/people`);
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`Failed to list people (${response.status}). Response: ${body}`);
+    }
+
+    const people = (await response.json()) as PersonSummary[];
+
+    if (people.length === 0) {
+      console.log('ℹ️  No existing people found, skipping delete.');
+      return 0;
+    }
+
+    let deletedCount = 0;
+
+    for (const person of people) {
+      const deleteResponse = await fetch(
+        `${apiBaseUrl}/people/${encodeURIComponent(person.id)}`,
+        { method: 'DELETE' }
+      );
+
+      if (!deleteResponse.ok) {
+        const deleteBody = await deleteResponse.text();
+        console.error(`❌ Failed to delete person ${person.id} (${person.name}): ${deleteBody}`);
+        continue;
+      }
+
+      deletedCount++;
+    }
+
+    console.log(`✅ Deleted ${deletedCount} people`);
+    return deletedCount;
+  } catch (error) {
+    console.error('❌ Failed to clear existing people:', error);
+    throw error;
   }
 }
 
+function buildChoices(row: CSVRow): number[] {
+  const rawChoices = Object.entries(row)
+    .filter(([key]) => key.startsWith('desired_practice_id'))
+    .map(([, value]) => parseInt(value, 10))
+    .filter(id => !Number.isNaN(id));
+
+  const uniqueChoices: number[] = [];
+  for (const id of rawChoices) {
+    if (!uniqueChoices.includes(id)) {
+      uniqueChoices.push(id);
+    }
+  }
+
+  return uniqueChoices;
+}
+
+function buildPersonPayload(row: CSVRow): PersonCreatePayload {
+  const currentPracticeId = parseInt(row.current_practice_id, 10);
+
+  if (Number.isNaN(currentPracticeId)) {
+    throw new Error(`Invalid current practice id for ${row.name}`);
+  }
+
+  const choices = buildChoices(row);
+
+  if (choices.length === 0) {
+    throw new Error(`No valid choices supplied for ${row.name}`);
+  }
+
+  return {
+    name: row.name,
+    currentPracticeId,
+    choices,
+  };
+}
+
 async function importSampleData(): Promise<void> {
-  const driver = neo4j.driver(
-    config.neo4j.uri,
-    neo4j.auth.basic(config.neo4j.username, config.neo4j.password)
+  const apiBaseUrl = normalizeBaseUrl(
+    process.env.API_BASE_URL ||
+      `http://localhost:${config.server.port}${DEFAULT_API_BASE_PATH}`
   );
 
-  try {
-    // Verify connectivity
-    console.log('🔌 Connecting to Neo4j...');
-    await driver.verifyConnectivity();
-    console.log('✅ Connected to Neo4j');
+  console.log(`🌐 Using API base URL: ${apiBaseUrl}`);
 
+  try {
     // Read CSV file
     const csvPath = path.join(__dirname, '../../data/sample_circle.csv');
     console.log(`📂 Reading CSV from: ${csvPath}`);
@@ -82,107 +165,48 @@ async function importSampleData(): Promise<void> {
     const rows = parseCSV(csvContent);
     console.log(`📊 Found ${rows.length} people to import`);
 
-    // Clear existing data
-    await clearDatabase(driver);
+    if (process.env.SKIP_CLEAR !== '1') {
+      await deleteExistingPeople(apiBaseUrl);
+    } else {
+      console.log('⏭️  Skipping clear step because SKIP_CLEAR=1');
+    }
 
-    // Import data
-    const session = driver.session();
     let successCount = 0;
     let errorCount = 0;
 
-    try {
-      for (const row of rows) {
-        try {
-          const rawChoices = [
-            row.desired_practice_id_1,
-            row.desired_practice_id_2,
-          ]
-            .filter(id => id && !isNaN(parseInt(id)))
-            .map(id => parseInt(id));
+    for (const row of rows) {
+      try {
+        const payload = buildPersonPayload(row);
 
-          if (rawChoices.length === 0) {
-            throw new Error(`No valid choices supplied for ${row.name}`);
-          }
+        const response = await fetch(`${apiBaseUrl}/people`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
 
-          const choices = rawChoices;
-
-          const query = `
-            MERGE (currentPr:Practice {id: $currentPracticeId})
-            ${choices
-              .map(
-                (_choice, index) =>
-                  `MERGE (choice${index}:Practice {id: $choice${index}Id})`
-              )
-              .join('\n            ')}
-
-            CREATE (p:Person {
-              id: $personId,
-              name: $name
-            })
-
-            CREATE (p)-[:CURRENTLY_AT]->(currentPr)
-            ${choices
-              .map(
-                (_choice, index) =>
-                  `CREATE (p)-[:WANTS {order: ${index}}]->(choice${index})`
-              )
-              .join('\n            ')}
-
-            RETURN p
-          `;
-
-          const params: Record<string, unknown> = {
-            personId: row.person_id,
-            name: row.name,
-            currentPracticeId: parseInt(row.current_practice_id),
-          };
-
-          choices.forEach((choiceId, index) => {
-            params[`choice${index}Id`] = choiceId;
-          });
-
-          await session.run(query, params);
-
-          successCount++;
-          process.stdout.write(`\r⏳ Importing... ${successCount}/${rows.length} people`);
-        } catch (error) {
-          errorCount++;
-          console.error(`\n❌ Error importing person ${row.name}:`, error);
+        if (!response.ok) {
+          const body = await response.text();
+          throw new Error(`API responded with ${response.status}: ${body}`);
         }
+
+        await response.json();
+
+        successCount++;
+        process.stdout.write(`\r⏳ Importing... ${successCount}/${rows.length} people`);
+      } catch (error) {
+        errorCount++;
+        console.error(`\n❌ Error importing person ${row.name}:`, error);
       }
-
-      console.log(`\n\n✅ Import completed successfully!`);
-      console.log(`   • People imported: ${successCount}`);
-      console.log(`   • Errors: ${errorCount}`);
-
-      // Show statistics
-      const stats = await session.run(`
-        MATCH (p:Person)
-        WITH count(p) as peopleCount
-        MATCH (pr:Practice)
-        RETURN peopleCount, count(pr) as practiceCount
-      `);
-
-      if (stats.records.length > 0) {
-        const record = stats.records[0];
-        console.log(`\n📊 Database Statistics:`);
-        console.log(`   • Total People: ${record.get('peopleCount')}`);
-        console.log(`   • Total Practices: ${record.get('practiceCount')}`);
-      }
-
-      // Show sample query
-      console.log(`\n💡 Try this query in Neo4j Browser:`);
-      console.log(`   MATCH (p:Person)-[r]->(pr:Practice) RETURN p, r, pr LIMIT 25`);
-
-    } finally {
-      await session.close();
     }
+
+    console.log(`\n\n✅ Import completed!`);
+    console.log(`   • People imported: ${successCount}`);
+    console.log(`   • Errors: ${errorCount}`);
   } catch (error) {
     console.error('❌ Import failed:', error);
     process.exit(1);
-  } finally {
-    await driver.close();
-    console.log('\n👋 Connection closed');
   }
 }
 
