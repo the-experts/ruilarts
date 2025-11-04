@@ -3,6 +3,7 @@ import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import appCss from "../styles.css?url";
+import { RegistrationFormProvider } from "../context/registration-form";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -36,7 +37,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <RegistrationFormProvider>
+          {children}
+        </RegistrationFormProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",
