@@ -4,7 +4,7 @@ import { Person, PersonCreate } from '../models/index.js';
 import { v4 as uuidv4 } from 'uuid';
 
 class Neo4jService {
-  private driver: Driver;
+  private readonly driver: Driver;
 
   constructor() {
     this.driver = neo4j.driver(
@@ -22,7 +22,7 @@ class Neo4jService {
   }
 
   async verifyConnectivity(): Promise<void> {
-    await this.driver.verifyConnectivity();
+    await this.driver.getServerInfo();
   }
 
   private recordToPerson(record: Record): Person {
