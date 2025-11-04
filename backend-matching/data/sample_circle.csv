@@ -1,0 +1,57 @@
+person_id,name,current_huisarts,current_location,desired_huisarts,new_location,desired_huisarts_2,new_location_2
+1,Anna de Vries,Huisartsenpraktijk Centrum,Amsterdam,Huisartsen Groep Zuid,Utrecht,Medisch Huis Zuid,Haarlem
+2,Bram Jansen,Huisartsen Groep Zuid,Utrecht,Medisch Centrum Oost,Rotterdam,Dokters Praktijk West,Den Haag
+3,Clara Bakker,Medisch Centrum Oost,Rotterdam,Dokters Praktijk West,Den Haag,Huisartsen Noord,Eindhoven
+4,Daan Visser,Dokters Praktijk West,Den Haag,Huisartsen Noord,Eindhoven,Praktijk de Berg,Tilburg
+5,Emma Mulder,Huisartsen Noord,Eindhoven,Gezondheidscentrum Park,Groningen,Artsen Praktijk Centrum,Leiden
+6,Finn de Boer,Gezondheidscentrum Park,Groningen,Artsen Praktijk Centrum,Leiden,Huisartsenpraktijk Centrum,Amsterdam
+7,Greta van Dijk,Artsen Praktijk Centrum,Leiden,Medisch Huis Zuid,Haarlem,Huisartsen Groep Zuid,Utrecht
+8,Hugo Smit,Medisch Huis Zuid,Haarlem,Huisartsen Vereniging Oost,Nijmegen,Praktijk de Berg,Tilburg
+9,Iris Meijer,Huisartsen Vereniging Oost,Nijmegen,Praktijk de Berg,Tilburg,Huisartsenpraktijk Centrum,Amsterdam
+10,Jan Vermeulen,Praktijk de Berg,Tilburg,Huisartsenpraktijk Centrum,Amsterdam,Huisartsen Groep Zuid,Utrecht
+11,Karen Peters,Huisartsen de Laan,Arnhem,Praktijk van Houten,Zwolle,Medisch Centrum West,Breda
+12,Lars van Houten,Praktijk van Houten,Zwolle,Huisartsen de Laan,Arnhem,Huisartsen Partners,Dordrecht
+13,Maria Koster,Medisch Centrum West,Breda,Gezondheidscentrum Nieuw,Apeldoorn,Huisartsen de Laan,Arnhem
+14,Nina Bakker,Praktijk de Vries,Enschede,Huisartsen Centrum Oost,Almere,Medisch Praktijk Zuid,Amersfoort
+15,Oscar de Jong,Huisartsen Centrum Oost,Almere,Medisch Praktijk Zuid,Amersfoort,Praktijk de Vries,Enschede
+16,Paula Hendriks,Medisch Praktijk Zuid,Amersfoort,Praktijk de Vries,Enschede,Huisartsen Centrum Oost,Almere
+17,Quinn Vermeer,Artsen Groep West,Venlo,Gezondheidscentrum de Brug,Maastricht,Huisartsen Partners,Dordrecht
+18,Rosa de Wit,Gezondheidscentrum de Brug,Maastricht,Huisartsen Centrum Oost,Almere,Artsen Groep West,Venlo
+19,Sam Willems,Huisartsen Partners,Dordrecht,Artsen Groep West,Venlo,Gezondheidscentrum de Brug,Maastricht
+20,Tessa van Dalen,Huisartsen de Markt,Zaandam,Praktijk Jansen,Purmerend,Praktijk de Boer,Alkmaar
+21,Umar Yilmaz,Praktijk Jansen,Purmerend,Huisartsen de Markt,Zaandam,Huisartsen Groep Noord,Hoorn
+22,Victor Peeters,Medisch Centrum Nieuw,Hilversum,Dokters Huis,Bussum,Huisartsen Praktijk Laren,Laren
+23,Wilma de Graaf,Dokters Huis,Bussum,Huisartsen Praktijk Laren,Laren,Gezondheidscentrum Vecht,Weesp
+24,Xavier Rutten,Huisartsen Praktijk Laren,Laren,Gezondheidscentrum Vecht,Weesp,Medisch Centrum Nieuw,Hilversum
+25,Yasmin El Amrani,Gezondheidscentrum Vecht,Weesp,Medisch Centrum Nieuw,Hilversum,Dokters Huis,Bussum
+26,Zara Koolen,Praktijk de Boer,Alkmaar,Huisartsen Groep Noord,Hoorn,Medisch Huis Bergen,Bergen
+27,Anouk Verhoeven,Huisartsen Groep Noord,Hoorn,Medisch Huis Bergen,Bergen,Artsen Praktijk Egmond,Egmond
+28,Boris van Leeuwen,Medisch Huis Bergen,Bergen,Artsen Praktijk Egmond,Egmond,Praktijk de Boer,Alkmaar
+29,Celine Martens,Artsen Praktijk Egmond,Egmond,Praktijk de Boer,Alkmaar,Huisartsen Groep Noord,Hoorn
+30,David Schouten,Huisartsen Centrum West,Leiden,Praktijk van Dam,Voorschoten,Artsen Praktijk Centrum,Leiden
+31,Eva Vermeulen,Praktijk van Dam,Voorschoten,Huisartsen Centrum West,Leiden,Medisch Centrum de Lier,Delft
+32,Frank Rietbergen,Medisch Centrum de Lier,Delft,Huisartsen Groep Pijnacker,Pijnacker,Praktijk Westland,Naaldwijk
+33,Gina Timmermans,Huisartsen Groep Pijnacker,Pijnacker,Praktijk Westland,Naaldwijk,Medisch Centrum de Lier,Delft
+34,Hidde Bos,Praktijk Westland,Naaldwijk,Medisch Centrum de Lier,Delft,Huisartsen Groep Pijnacker,Pijnacker
+35,Ilse Pieters,Dokters Praktijk Gouda,Gouda,Huisartsen Waddinxveen,Waddinxveen,Medisch Centrum Woerden,Woerden
+36,Jasper de Koning,Huisartsen Waddinxveen,Waddinxveen,Medisch Centrum Woerden,Woerden,Praktijk Montfoort,Montfoort
+37,Kim Dekker,Medisch Centrum Woerden,Woerden,Praktijk Montfoort,Montfoort,Huisartsen IJsselstein,IJsselstein
+38,Leon Visser,Praktijk Montfoort,Montfoort,Huisartsen IJsselstein,IJsselstein,Dokters Praktijk Gouda,Gouda
+39,Mira Schultz,Huisartsen IJsselstein,IJsselstein,Dokters Praktijk Gouda,Gouda,Huisartsen Waddinxveen,Waddinxveen
+40,Nora Jansen,Artsen Praktijk Zeist,Zeist,Huisartsen Driebergen,Driebergen,Medisch Centrum Doorn,Doorn
+41,Owen Vermeer,Huisartsen Driebergen,Driebergen,Medisch Centrum Doorn,Doorn,Praktijk Veenendaal,Veenendaal
+42,Petra Lubbers,Medisch Centrum Doorn,Doorn,Praktijk Veenendaal,Veenendaal,Huisartsen Rhenen,Rhenen
+43,Quinten Smeets,Praktijk Veenendaal,Veenendaal,Huisartsen Rhenen,Rhenen,Dokters Huis Wageningen,Wageningen
+44,Romy Willems,Huisartsen Rhenen,Rhenen,Dokters Huis Wageningen,Wageningen,Huisartsen Bennekom,Bennekom
+45,Sven de Bruin,Dokters Huis Wageningen,Wageningen,Huisartsen Bennekom,Bennekom,Artsen Praktijk Zeist,Zeist
+46,Tara Janssen,Huisartsen Bennekom,Bennekom,Artsen Praktijk Zeist,Zeist,Huisartsen Driebergen,Driebergen
+47,Udo Hendriks,Medisch Centrum Oss,Oss,Huisartsen Uden,Uden,Medisch Centrum Weert,Weert
+48,Vera van Beek,Huisartsen Uden,Uden,Medisch Centrum Oss,Oss,Huisartsen Roermond,Roermond
+49,Wesley Driessen,Praktijk de Heuvel,Boxtel,Gezondheidscentrum Vught,Vught,Medisch Centrum Oss,Oss
+50,Xena Kuipers,Gezondheidscentrum Vught,Vught,Praktijk de Heuvel,Boxtel,Huisartsen Uden,Uden
+51,Yannick Brands,Huisartsen Valkenswaard,Valkenswaard,Dokters Huis Eersel,Eersel,Medisch Centrum Bladel,Bladel
+52,Zoë Claassen,Dokters Huis Eersel,Eersel,Medisch Centrum Bladel,Bladel,Huisartsen Valkenswaard,Valkenswaard
+53,Abel Hermans,Medisch Centrum Bladel,Bladel,Huisartsen Valkenswaard,Valkenswaard,Dokters Huis Eersel,Eersel
+54,Bianca Vos,Artsen Praktijk Helmond,Helmond,Onbekende Praktijk,Someren,Medisch Centrum Weert,Weert
+55,Colin Bakker,Medisch Centrum Weert,Weert,Huisartsen Roermond,Roermond,Artsen Praktijk Helmond,Helmond
+56,Daphne Kuijpers,Huisartsen Sittard,Sittard,Dokters Huis Geleen,Geleen,Huisartsen Roermond,Roermond

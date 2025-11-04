@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 8000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npm run build && node dist/scripts/import-sample-data.js && npm start"]
