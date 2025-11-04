@@ -202,7 +202,7 @@ class Neo4jService {
         DETACH DELETE p
       `;
 
-      const result = await session.run(query, { personIds });
+      await session.run(query, { personIds });
       console.log(`[Neo4j] Deleted ${personIds.length} person node(s) from graph`);
     } finally {
       await session.close();
