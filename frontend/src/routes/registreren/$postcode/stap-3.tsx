@@ -60,7 +60,7 @@ function Stap3() {
 
   const handleNext = () => {
     if (!selectedPGId) {
-      setError("Selecteer alstublieft uw huiige huisartsenpraktijk");
+      setError("Selecteer alstublieft uw huidige huisartsenpraktijk");
       return;
     }
 
@@ -84,7 +84,7 @@ function Stap3() {
       {/* Help text */}
       <div className="rounded-lg bg-blue-50 p-4">
         <p className="text-sm text-gray-700">
-          Zoek en selecteer uw huiige huisartsenpraktijk. U kunt zoeken op naam,
+          Zoek en selecteer uw huidige huisartsenpraktijk. U kunt zoeken op naam,
           adres, postcode en plaats.
         </p>
       </div>
