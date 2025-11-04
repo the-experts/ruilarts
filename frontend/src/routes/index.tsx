@@ -6,17 +6,42 @@ import { ArrowRight, Heart, MapPin, Users } from "lucide-react";
 import { useState } from "react";
 import Logo from "../logo.svg";
 
+import { normalizePostalCode, isValidPostalCode } from "@/lib/form-utils";
+import { getNearbyPGs } from "@/data/huisartsen";
+
 export const Route = createFileRoute("/")({ component: App });
 
 function App() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   const [postalCodeInput, setPostalCodeInput] = useState("");
 
-  const handleStartClick = () => {
-    navigate({
-      to: "/registreren/$postcode/stap-2",
-      params: { postcode: postalCodeInput },
-    });
+  const handleStartClick = async () => {
+    const normalized = normalizePostalCode(postalCodeInput);
+
+    // Validate
+    if (!normalized) {
+      setError("Voer alstublieft uw postcode in");
+      return;
+    }
+
+    if (!isValidPostalCode(normalized)) {
+      setError(
+        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)"
+      );
+      return;
+    }
+
+    try {
+      await getNearbyPGs({ data: { postalCode: normalized } });
+
+      navigate({
+        to: "/registreren/$postcode/stap-2",
+        params: { postcode: postalCodeInput },
+      });
+    } catch {
+      setError("Er is een fout opgetreden. Probeer het opnieuw.");
+    }
   };
 
   return (
@@ -24,7 +49,7 @@ function App() {
       {/* Hero Section */}
       <section className="relative py-24 px-6 text-center overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5"></div>
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-4xl mx-auto z-10">
           <div className="mb-6 flex justify-center">
             <img src={Logo} width={400} alt="Ruil Arts" />
           </div>
@@ -44,6 +69,32 @@ function App() {
             Ruilarts helpt je een huisarts te vinden door mensen die verhuizen
             slim met elkaar te verbinden.
           </p>
+        </div>
+
+        <div className="relative z-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
+          <div className="flex-1">
+            <Input
+              type="text"
+              name="postcode"
+              placeholder="1234AB"
+              className="w-full h-12 text-base pl-4"
+              maxLength={7}
+              value={postalCodeInput}
+              onChange={(e) => setPostalCodeInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleStartClick();
+                }
+              }}
+            />
+            {error && <p className="text-sm text-red-600 text-left">{error}</p>}
+          </div>
+          <Button
+            onClick={handleStartClick}
+            className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold whitespace-nowrap"
+          >
+            Starten <ArrowRight className="ml-2 w-4 h-4" />
+          </Button>
         </div>
       </section>
 
@@ -219,8 +270,16 @@ function App() {
                 className="w-full h-12 text-base pl-4"
                 maxLength={7}
                 value={postalCodeInput}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleStartClick();
+                  }
+                }}
                 onChange={(e) => setPostalCodeInput(e.target.value)}
               />
+              {error && (
+                <p className="text-sm text-red-600 text-left">{error}</p>
+              )}
             </div>
             <Button
               onClick={handleStartClick}
