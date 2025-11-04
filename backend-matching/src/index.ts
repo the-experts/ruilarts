@@ -5,7 +5,6 @@ import { config } from './config.js';
 import { neo4jService } from './services/neo4j.js';
 import { peopleRoutes } from './routes/people.js';
 import { matchesRoutes } from './routes/matches.js';
-import { statisticsRoutes } from './routes/statistics.js';
 
 const app = new Hono();
 
@@ -55,7 +54,6 @@ app.get('/', (c) => {
 // Register routes
 app.route('/api/people', peopleRoutes);
 app.route('/api/matches', matchesRoutes);
-app.route('/api/statistics', statisticsRoutes);
 
 // Error handling middleware
 app.onError((err, c) => {

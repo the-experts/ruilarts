@@ -40,12 +40,3 @@ export interface PersonCreate {
   currentPracticeId: number;
   choices: number[];
 }
-
-export interface Statistics {
-  totalPeople: number;
-  totalMatched: number;
-  matchRate: number;
-  choiceCounts: number[];
-  averageCircleSize: number;
-  circleSizes: Record<number, number>;
-}
