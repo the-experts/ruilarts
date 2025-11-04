@@ -132,3 +132,15 @@ A perfect 10-person circular match:
 - No one in the dataset currently has that practice and wants to leave
 
 **Result:** Maria is completely unmatched and cannot participate in any swap.
+
+
+### More description
+Base-Functionality:
+- supports getting a quick potential match
+- and starting the match process
+-
+Naive Matching:
+- Given a set of doctor locations and patient locations
+- Match as many patients with new doctors nearby and provide doctors each a patient
+- More patients means more possible matches to exchange patients
+- 

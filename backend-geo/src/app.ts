@@ -3,6 +3,9 @@ import express from 'express';
 const app = express();
 const port = 3000;
 
+/**
+ * example call http://localhost:3000/location?postcode=3608AB&addressNumber=48
+ */
 app.get('/location', async (req, res) => {
     console.log('receiving')
     const postcode = req.query.postcode
