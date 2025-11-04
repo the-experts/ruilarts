@@ -1,0 +1,44 @@
+# GraphHopper Configuration - Netherlands
+
+# Server settings
+server:
+  application_connectors:
+    - type: http
+      port: 8989
+      bind_host: 0.0.0.0
+  request_log:
+    appenders: []
+
+# GraphHopper settings
+graphhopper:
+  # OSM data file
+  datareader.file: /graphhopper/data/netherlands-251103.osm.pbf
+
+  # Graph cache location
+  graph.location: /data/graph-cache
+
+  # Encoded values for routing
+  graph.encoded_values: car_access, car_average_speed, bike_priority, bike_road_access, mtb_rating, hike_rating, country, road_class, bike_access, bike_average_speed, foot_access, foot_priority, foot_road_access, foot_average_speed
+
+  # Import settings (empty means import all highways for all vehicle types)
+  import.osm.ignored_highways: ""
+
+  # Routing profiles
+  profiles:
+    - name: car
+      custom_model_files: [car.json]
+    - name: bike
+      custom_model_files: [bike.json]
+    - name: foot
+      custom_model_files: [foot.json]
+
+  # Enable fast routing with Contraction Hierarchies
+  profiles_ch:
+    - profile: car
+    - profile: bike
+    - profile: foot
+
+  # CORS settings
+  cors:
+    allowed_origins: "*"
+    allowed_methods: "GET,POST"

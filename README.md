@@ -134,7 +134,74 @@ A perfect 10-person circular match:
 **Result:** Maria is completely unmatched and cannot participate in any swap.
 
 
-### More description
+## Geo
+
+##z Download Netherlands OSM Data
+
+Option B - Manual download:
+```bash
+curl -L https://download.geofabrik.de/europe/netherlands-latest.osm.pbf -o graphhopper/data/netherlands-latest.osm.pbf
+```
+
+### 3. Test
+
+```bash
+curl http://localhost:8989/health
+```
+
+Or visit the **GraphHopper Maps UI** in your browser:
+```
+http://localhost:8989
+```
+
+This gives you a visual interface to plan routes and see them on a map!
+
+### API Examples
+
+### Amsterdam to Rotterdam (Car)
+
+```bash
+curl "http://localhost:8989/route?point=52.3676,4.9041&point=51.9225,4.47917&vehicle=car"
+```
+
+### Utrecht to The Hague (Bike)
+
+```bash
+curl "http://localhost:8989/route?point=52.0907,5.1214&point=52.0705,4.3007&vehicle=bike"
+```
+
+### Walking in Amsterdam
+
+```bash
+curl "http://localhost:8989/route?point=52.3676,4.9041&point=52.3702,4.8952&vehicle=foot"
+```
+
+### API Parameters
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `point` | Coordinates as `latitude,longitude` (repeat for multiple points) | Required |
+| `vehicle` | `car`, `bike`, or `foot` | `car` |
+| `locale` | Language: `en`, `nl`, `de`, etc. | `en` |
+| `points_encoded` | Compact polyline format | `true` |
+| `instructions` | Turn-by-turn directions | `true` |
+
+### Response Format
+
+```json
+{
+  "paths": [{
+    "distance": 75628.9,
+    "time": 4521789,
+    "points": {
+      "coordinates": [[4.9041, 52.3676], [4.904, 52.3675], ...]
+    },
+    "instructions": [...]
+  }]
+}
+```
+
+## More description
 Base-Functionality:
 - supports getting a quick potential match
 - and starting the match process
