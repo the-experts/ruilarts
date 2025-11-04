@@ -1,0 +1,28 @@
+meta {
+  name: Get All Matches
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/matches
+  body: none
+  auth: none
+}
+
+docs {
+  Get all matched circles from PostgreSQL database.
+
+  Returns all circles that have been matched and persisted to the database.
+  Circles are automatically created when people are added and a match is found.
+  Once a match is found, the matched people are removed from the Neo4j graph
+  and the circle is permanently stored in PostgreSQL.
+
+  Response includes:
+  - circles: Array of all matched circles with their members
+  - total: Total number of circles found
+
+  Returns:
+  - 200: List of all circles with metadata and members
+  - 404: No matches found yet. Add people first to trigger matching.
+}

@@ -35,7 +35,6 @@ function Stap3() {
   const [postalCodeFilter, setPostalCodeFilter] = useState("");
   const [selectedPGId, setSelectedPGId] = useState(formData.currentPG?.id);
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
   const [filteredPGs, setFilteredPGs] = useState<Huisarts[]>([]);
 
@@ -47,7 +46,6 @@ function Stap3() {
 
   useEffect(() => {
     const fetchPGs = async () => {
-      setIsLoading(true);
       const results = await searchPGs({
         data: {
           city: cityFilter,
@@ -56,7 +54,6 @@ function Stap3() {
         },
       });
       setFilteredPGs(results);
-      setIsLoading(false);
     };
 
     fetchPGs();
@@ -169,11 +166,7 @@ function Stap3() {
           onValueChange={handleSelectPG}
         >
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {isLoading ? (
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
-                <p className="text-sm text-gray-600">Laden</p>
-              </div>
-            ) : filteredPGs.length > 0 ? (
+            {filteredPGs.length > 0 ? (
               <List
                 rowComponent={RowComponent}
                 rowCount={filteredPGs.length}
@@ -195,7 +188,7 @@ function Stap3() {
       <div className="pt-4">
         <Button
           onClick={handleNext}
-          disabled={!selectedPGId || filteredPGs.length === 0 || isLoading}
+          disabled={!selectedPGId || filteredPGs.length === 0}
           className="w-full"
           size="lg"
         >

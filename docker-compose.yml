@@ -82,6 +82,10 @@ services:
       - PORT=8000
       - MAX_PRACTICE_CHOICES=10
       - MAX_CIRCLE_SIZE=10
+      - POSTGRES_DB=huisartsen
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_HOST=db
     ports:
       - "8000:8000"
     volumes:
