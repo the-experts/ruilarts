@@ -95,3 +95,32 @@ peopleRoutes.get('/:id', async (c) => {
     );
   }
 });
+
+// Get all people
+peopleRoutes.get('/', async (c) => {
+  try {
+    const people = await neo4jService.getAllPeople();
+    return c.json(people);
+  } catch (error) {
+    console.error('Error getting people:', error);
+    return c.json(
+      { error: 'Failed to get people' },
+      500
+    );
+  }
+});
+
+// Delete a person
+peopleRoutes.delete('/:id', async (c) => {
+  try {
+    const personId = c.req.param('id');
+    await neo4jService.deletePerson(personId);
+    return c.json({ message: 'Person deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting person:', error);
+    return c.json(
+      { error: 'Failed to delete person' },
+      500
+    );
+  }
+});
