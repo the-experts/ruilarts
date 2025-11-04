@@ -130,13 +130,15 @@ export function ErrorBoundary({ error }: { error: RootRouteError }) {
           <div className="icon">⚠️</div>
           <h1>Oeps, iets ging fout</h1>
           <p className="subtitle">
-            We hebben een onverwacht probleem tegengekomen. Dit kan voorkomen.
+            We kwamen nu net even niet door de vibe check. Dit kan voorkomen.
             Probeer het opnieuw of ga terug naar het begin.
           </p>
 
           <div className="message">
-            Het spijt ons. Onze servers werken eraan om dit op te lossen.
-            Probeer het over een paar seconden opnieuw.
+            Het spijt ons. Onze AI-bots werken eraan om dit op te lossen. Tobias
+            geeft Codex de schuld. Maar... Dat is ook alleen maar zo omdat hij
+            uit de tokens is voor Claude. Probeer het over een paar seconden
+            opnieuw.
           </div>
 
           {isDevMode && error && (
@@ -149,7 +151,7 @@ export function ErrorBoundary({ error }: { error: RootRouteError }) {
                   marginBottom: "8px",
                 }}
               >
-                Technische details (alleen ontwikkelaars)
+                Technische details (alleen Experts)
               </summary>
               <div className="error-details">
                 {error.message && `Bericht: ${error.message}\n\n`}
