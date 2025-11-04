@@ -47,11 +47,13 @@ services:
     container_name: ruilarts-huisartsen-api
     depends_on:
       - db
+      - ruilarts-geo
     environment:
       POSTGRES_DB: huisartsen
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: secret
       POSTGRES_HOST: db
+      GEO_URL: http://ruilarts-geo:4000
     ports:
       - "5001:5001"
     networks:
@@ -120,6 +122,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 120s
+    networks:
+      - ruilarts-network
 
 volumes:
   pgdata:

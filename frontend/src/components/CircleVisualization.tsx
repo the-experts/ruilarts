@@ -17,7 +17,7 @@ export function MultiCircleGraph({
         nodes.push({
           id: member.person_id,
           label: member.person_name,
-          cluster: circle.id, // group by circle
+          data: { circleId: circle.id },
         });
 
         edges.push({
@@ -27,10 +27,8 @@ export function MultiCircleGraph({
           label: "gets spot from",
         });
       });
-
-    
     });
-      return { nodes, edges };
+    return { nodes, edges };
   }, [circles]);
 
   return (
@@ -38,8 +36,9 @@ export function MultiCircleGraph({
       <GraphCanvas
         nodes={nodes}
         edges={edges}
-        layoutType="concentric2d"
+        layoutType="forceDirected2d"
         draggable
+        clusterAttribute="circleId"
       />
     </div>
   );

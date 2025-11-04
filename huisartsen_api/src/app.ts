@@ -2,6 +2,7 @@ import express from "express";
 import { Request, Response } from "express";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
@@ -86,11 +87,11 @@ app.get("/huisartsen", async (req: Request, res: Response) => {
     query += " WHERE " + filters.join(" AND ");
   }
 
+  query += " ORDER BY naam ASC";
+
   try {
     const result = await pool.query(query, params);
     const rows = result.rows.map(convertRow);
-    // @ts-expect-error can be number or string
-    rows.sort((a, b) => a.naam - b.naam);
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -101,8 +102,6 @@ app.get("/huisartsen", async (req: Request, res: Response) => {
 app.get("/huisartsen/closest", async (req: Request, res: Response) => {
   const lat = parseFloat(req.query.lat as string);
   const lon = parseFloat(req.query.lon as string);
-
-  console.log(lat);
 
   if (isNaN(lat) || isNaN(lon)) {
     res
@@ -115,18 +114,68 @@ app.get("/huisartsen/closest", async (req: Request, res: Response) => {
     const result = await pool.query(
       "SELECT id, naam, adres, latitude, longitude, link, street, postalcode, city FROM huisartsen"
     );
-    const distances = result.rows
-      .filter((row) => row.latitude !== null && row.longitude !== null)
-      .map((row) => {
-        const distance = haversine(lat, lon, row.latitude, row.longitude);
-        return {
-          ...convertRow(row),
-          distance_m: Math.round(distance),
-        };
-      });
 
-    distances.sort((a, b) => a.distance_m - b.distance_m);
-    res.json(distances.slice(0, 5));
+    const validRows = result.rows.filter(
+      (row) => row.latitude !== null && row.longitude !== null
+    );
+
+    const withHaversine = validRows.map((row) => {
+      const distance = haversine(lat, lon, row.latitude, row.longitude);
+      return {
+        ...convertRow(row),
+        haversine_m: Math.round(distance),
+      };
+    });
+
+    // Sort by haversine distance and take top 5
+    const closestByHaversine = withHaversine
+      .sort((a, b) => a.haversine_m - b.haversine_m)
+      .slice(0, 5);
+
+
+    // Fetch actual route distances
+    const routePromises = closestByHaversine.map(async (row) => {
+      try {
+        const response = await axios.get(
+          `${process.env.GEO_URL}/route`,
+          {
+            params: {
+              fromLat: lat,
+              fromLon: lon,
+              toLat: row.latitude,
+              toLon: row.longitude,
+              transportProfile: "car",
+            },
+          }
+        );
+
+        const distance_m =
+          response.data.distance ?? row.haversine_m;
+
+        return {
+          ...row,
+          distance_m: Math.round(distance_m),
+        };
+      } catch (err) {
+        console.error(
+          `Routing failed for ${row.naam}:`,
+          (err as Error).message
+        );
+        return {
+          ...row,
+          distance_m: row.haversine_m, // fallback
+        };
+      }
+    });
+
+    const withRouteDistances = await Promise.all(routePromises);
+
+    // Sort by actual route distance
+    const sortedByRoute = withRouteDistances.sort(
+      (a, b) => a.distance_m - b.distance_m
+    );
+
+    res.json(sortedByRoute);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database query failed" });
