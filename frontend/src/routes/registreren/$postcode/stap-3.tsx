@@ -212,7 +212,7 @@ function RowComponent({
         <div className="flex-1">
           <h3 className="font-medium text-gray-900">{pg.naam}</h3>
           <p className="text-sm text-gray-600">
-            {pg.street} • {pg.postalcode} {pg.city}
+            {pg.adres}
           </p>
         </div>
       </div>
