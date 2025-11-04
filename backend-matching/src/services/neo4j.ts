@@ -1,6 +1,6 @@
 import neo4j, { Driver, Session, Record } from 'neo4j-driver';
 import { config } from '../config.js';
-import { Person, PersonCreate, Practice } from '../models/index.js';
+import { Person, PersonCreate } from '../models/index.js';
 import { v4 as uuidv4 } from 'uuid';
 
 class Neo4jService {
