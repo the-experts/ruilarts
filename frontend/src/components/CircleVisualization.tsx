@@ -18,7 +18,6 @@ export function MultiCircleGraph({
         nodes.push({
           id: member.person_id,
           label: member.person_name,
-          data: { circleId: circle.id },
         });
 
         edges.push({
@@ -40,7 +39,6 @@ export function MultiCircleGraph({
         edges={edges}
         layoutType="forceDirected2d"
         draggable
-        clusterAttribute="circleId"
       />
     </div>
   );
