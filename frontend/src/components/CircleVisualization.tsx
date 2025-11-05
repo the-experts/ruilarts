@@ -37,7 +37,7 @@ export function MultiCircleGraph({
       <GraphCanvas
         nodes={nodes}
         edges={edges}
-        layoutType="forceDirected2d"
+        layoutType="concentric2d"
         draggable
       />
     </div>
