@@ -36,3 +36,4 @@ When the system detects this circular pattern (A→B→C→D→A), it creates a 
 - Leverage scraped huisarts data for location-based matching
 - never run npm run build for checking
 - texts on the frontend should be in taalniveau B1 in dutch
+- never try to run npm run dev

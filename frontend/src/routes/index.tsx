@@ -1,4 +1,3 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { ArrowRight, Heart, MapPin, Users } from "lucide-react";
 import { useState } from "react";
 import Logo from "../logo.svg";
 
-import Dither from "@/components/bg/Dither";
+import EducationalSwapDemo from "@/components/EducationalSwapDemo";
 import { getNearbyPGs } from "@/data/huisartsen";
 import { isValidPostalCode, normalizePostalCode } from "@/lib/form-utils";
 
@@ -30,7 +29,7 @@ function App() {
 
     if (!isValidPostalCode(normalized)) {
       setError(
-        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)"
+        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)",
       );
       return;
     }
@@ -56,116 +55,73 @@ function App() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-blue-50 to-indigo-50">
-      {/* Hero Section */}
-      <div className="bg-linear-to-r from-sky-200 via-sky-200 to-teal-200 w-full h-[60vh] grid">
-        <div className="row-end-1 col-end-1">
-          <Dither
-            waveColor={[0, 0.7, 1]}
-            disableAnimation={false}
-            enableMouseInteraction={false}
-            colorNum={11}
-            waveAmplitude={0.6}
-            waveFrequency={3}
-            waveSpeed={0.03}
-          />
-        </div>
-        <div className="row-end-1 col-end-1 flex z-10 justify-between bg-sky-200/80">
-          <div>
-            <section className="relative py-24 px-6 text-center overflow-hidden">
-              <div className="relative max-w-4xl mx-auto z-10 p-8">
-                <div className="mb-6 flex justify-center w-[400px]">
-                  <img src={Logo} width={400} alt="Ruil Arts" />
-                </div>
-                <Card>
-                  <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.02em]">
-                    Vind een huisarts{" "}
-                    <span className="bg-linear-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-                      door ruilen
-                    </span>
-                  </h1>
-                  <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Na een verhuizing is een huisarts dicht bij huis belangrijk.
-                    Ruilarts helpt je een huisarts te vinden door mensen die
-                    verhuizen slim met elkaar te verbinden.
-                  </p>
-                  <div className="relative z-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
-                    <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                      <Input
-                        type="text"
-                        name="postcode"
-                        placeholder="1234AB"
-                        className="w-full h-12 text-base pl-4"
-                        maxLength={7}
-                        value={postalCodeInput}
-                        onChange={(e) => setPostalCodeInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleStartClick();
-                          }
-                        }}
-                      />
-                      <Input
-                        type="text"
-                        name="houseNumber"
-                        placeholder="1"
-                        className="w-full h-12 text-base pl-4"
-                        maxLength={7}
-                        value={houseNumberInput}
-                        onChange={(e) => setHouseNumberInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleStartClick();
-                          }
-                        }}
-                      />
-                    </div>
-                    <Button
-                      onClick={handleStartClick}
-                      className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold whitespace-nowrap"
-                    >
-                      Starten <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-                  </div>
-                  {error && (
-                    <p className="text-sm text-red-600 text-center max-w-md mx-auto mb-4">
-                      {error}
-                    </p>
-                  )}
-                </Card>
+      {/* Hero Section - Educational Animation */}
+      <EducationalSwapDemo />
+
+      {/* Registration Section */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="mb-6 flex justify-center">
+            <img src={Logo} width={300} alt="Ruil Arts" />
+          </div>
+          <Card className="p-8">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
+              Vind een huisarts{" "}
+              <span className="bg-linear-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+                door ruilen
+              </span>
+            </h2>
+            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+              Na een verhuizing is een huisarts dicht bij huis belangrijk.
+              Ruilarts helpt je een huisarts te vinden door mensen die
+              verhuizen slim met elkaar te verbinden.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
+              <div className="flex flex-col sm:flex-row gap-3 flex-1">
+                <Input
+                  type="text"
+                  name="postcode"
+                  placeholder="1234AB"
+                  className="w-full h-12 text-base pl-4"
+                  maxLength={7}
+                  value={postalCodeInput}
+                  onChange={(e) => setPostalCodeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleStartClick();
+                    }
+                  }}
+                />
+                <Input
+                  type="text"
+                  name="houseNumber"
+                  placeholder="1"
+                  className="w-full h-12 text-base pl-4"
+                  maxLength={7}
+                  value={houseNumberInput}
+                  onChange={(e) => setHouseNumberInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleStartClick();
+                    }
+                  }}
+                />
               </div>
-            </section>
-          </div>
-          <div
-            className="aspect-8/9 w-full md:w-[50vw] relative"
-            style={{ background: 'url("/nlmap.svg")', backgroundSize: "cover" }}
-          >
-            <Avatar className="absolute top-3/5 left-2/7">
-              <AvatarImage
-                src="https://avatar.iran.liara.run/public/boy?username=Wilhelm"
-                alt="Wilhelm"
-              />
-            </Avatar>
-            <Avatar className="absolute top-1/5 left-3/5">
-              <AvatarImage
-                src="https://avatar.iran.liara.run/public/boy?username=Henk"
-                alt="Henk"
-              />
-            </Avatar>
-            <Avatar className="absolute top-2/5 left-4/5">
-              <AvatarImage
-                src="https://avatar.iran.liara.run/public/girl?username=Fransiska"
-                alt="Anouk"
-              />
-            </Avatar>
-            <Avatar className="absolute top-5/11 left-3/7">
-              <AvatarImage
-                src="https://avatar.iran.liara.run/public/girl?username=Maria"
-                alt="Maria"
-              />
-            </Avatar>
-          </div>
+              <Button
+                onClick={handleStartClick}
+                className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold whitespace-nowrap"
+              >
+                Starten <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </div>
+            {error && (
+              <p className="text-sm text-red-600 text-center max-w-md mx-auto mb-4">
+                {error}
+              </p>
+            )}
+          </Card>
         </div>
-      </div>
+      </section>
 
       {/* Benefits Section */}
       <section className="py-20 px-6">
