@@ -429,7 +429,7 @@ const EducationalSwapDemo = ({
                   transition={{ duration: 0.3 }}
                 />
                 {/* Distance label with background */}
-                <g>
+                {/*<g>
                   <rect
                     x={midX - 3}
                     y={midY + labelOffsetY - 1.2}
@@ -451,7 +451,7 @@ const EducationalSwapDemo = ({
                   >
                     {displayDistance}km
                   </text>
-                </g>
+                </g>*/}
               </g>
             );
           })}
