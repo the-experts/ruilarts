@@ -75,6 +75,7 @@ export function RegistrationFormProvider({
 
     await createMatch({
       data: {
+        email: details.email,
         name: details.name.trim(),
         currentPracticeId: formData.currentPG!.id,
         choices

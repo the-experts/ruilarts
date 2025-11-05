@@ -4,6 +4,7 @@ import { getHuisarts, Huisarts } from "@/data/huisartsService.ts";
 
 interface CreateMatchRequest {
   name: string;
+  email: string
   currentPracticeId: number;
   choices: number[];
 }

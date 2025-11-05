@@ -17,6 +17,7 @@ export interface Circle {
 interface Member {
   person_id: string;
   person_name: string;
+  email: string
   current_practice_id: number;
   desired_practice_id: number;
   preference_order: number;
