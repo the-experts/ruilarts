@@ -46,9 +46,9 @@
           <section>
             <h3>Het Probleem</h3>
             <p>
-              Ongeveer 1 op 20 Nederlanders zoekt andere huisarts
+              Ongeveer 1 op 20 Nederlanders zoekt een andere huisarts
             </p>
-            <li><img src="assets/other/overview-problem.png" alt="Overview" style="height: 100px; vertical-align: middle; margin-right: 10px;"></li>
+            <img src="assets/other/overview-problem.png" alt="Overview" style="height: 200px; vertical-align: middle; margin-right: 10px;">
           </section>
           <section>
             <h3>Scenario</h3>
@@ -149,7 +149,7 @@
             <p><strong>Huisartsdata</strong>:</p>
             <ul>
               <li><img src="assets/logos/postgresql.png" alt="Postgres" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Postgres</li>
-              <li><img src="assets/logos/nodejs.svg" alt="Node.js" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Node-geo-service</li>
+              <li><img src="assets/logos/nodejs.svg" alt="Node.js" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Node (geo service)</li>
               <li><img src="assets/logos/graphhopper.ico" alt="GraphHopper" style="height: 30px; vertical-align: middle; margin-right: 10px;"> GraphHopper</li>
             </ul>
           </section>
@@ -228,7 +228,7 @@ RETURN p0, pr0, w0, p1, pr1, w1</code></pre>
             <pre><code class="language-typescript" style="font-size: 0.55em;">score = (maxPref × 10) + (totalScore × 1) + (distance × 20)</code></pre>
             <ul style="font-size: 0.9em;">
               <li><strong>maxPref × 10</strong>: beste individuele voorkeur</li>
-              <li><strong>totalScore × 1</strong>: groepstevredenheid</li>
+              <li><strong>totalScore × 1</strong>: totale voorkeur van groep </li>
               <li><strong>distance × 20</strong>: afstand tot ideale grootte (5)</li>
             </ul>
             <p style="font-size: 0.85em; margin-top: 20px;">Lager = beter match</p>
@@ -272,7 +272,7 @@ RETURN p0, pr0, w0, p1, pr1, w1</code></pre>
               </li>
               <li>
                 <strong>Opslag & cleanup</strong> – cirkel naar PostgreSQL,
-                personen uit Neo4j verwijderd, weespraktijken opgeruimd.
+                pers. en parktijken opgeruimd uit Neo4j,
               </li>
               <li>
                 <strong>Terughalen</strong> – frontend leest resultaten via
@@ -281,7 +281,7 @@ RETURN p0, pr0, w0, p1, pr1, w1</code></pre>
               </li>
             </ol>
             <p>
-              <strong>Resultaat</strong>: snelle feedback voor gebruikers én een
+              <strong>Resultaat</strong>: snelle feedback én een
               opgeschoonde graaf na elke succesvolle match.
             </p>
           </section>
@@ -550,16 +550,14 @@ RETURN p0, pr0, w0, p1, pr1, w1</code></pre>
                 snel.
               </li>
               <li>
-                <strong>Proces</strong>: durf te pivotten, documenteer tijdens
-                het bouwen, ship klein en vaak, gebruik testdata als versneller.
+                <strong>Proces</strong>: durf te pivotten, documenteer continue, ship klein en vaak, gebruik testdata als versneller.
               </li>
               <li>
                 <strong>Impact</strong>: patiënten dichter bij huis, praktijken
                 minder administratie, zorgsysteem efficiënter.
               </li>
               <li>
-                <strong>Volgende stap</strong>: auth + monitoring afronden, beta
-                draaien, feedback verwerken en gecontroleerd opschalen.
+                <strong>Volgende stap</strong>: auth + monitoring, feedback verwerken en gecontroleerd opschalen.
               </li>
             </ul>
           </section>
