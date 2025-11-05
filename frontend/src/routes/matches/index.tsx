@@ -58,6 +58,11 @@ const CircleList: React.FC<CircleProps> = ({ circles }) => {
           </Card>
         ))}
       </div>
+        <Button asChild>
+            <Link to="/match-map">
+                View Huisartsen matches on Map
+            </Link>
+        </Button>
     </div>
   );
 };
