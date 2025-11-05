@@ -24,6 +24,8 @@ services:
       - "8080:8080"
     depends_on:
       - mailpit
+    networks:
+      - ruilarts-network
 
   # Local-only SMTP capture (no internet delivery)
   mailpit:
@@ -32,6 +34,8 @@ services:
     ports:
       - "8025:8025"  # Web UI
       - "1025:1025"  # SMTP port
+    networks:
+      - ruilarts-network
 
 
   # Neo4j database for backend-matching
