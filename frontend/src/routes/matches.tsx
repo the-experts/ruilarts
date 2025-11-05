@@ -1,14 +1,18 @@
-import { MultiCircleGraph } from "@/components/CircleVisualization";
-import { getMatches } from "@/data/matchService";
-import { GetMatchesResponse } from "@/interfaces/Matches";
-import { Await, createFileRoute } from "@tanstack/react-router";
+import {getDoctorsForMatch, getMatches} from "@/data/matchService";
+import {Await, createFileRoute} from "@tanstack/react-router";
 import MapView from "@/components/ui/mapview.tsx";
+import {Huisarts} from "@/data/huisartsService.ts";
+import {GetMatchesResponse} from "@/interfaces/Matches.ts";
+import { MultiCircleGraph } from "@/components/CircleVisualization";
 
 export const Route = createFileRoute("/matches")({
     component: App,
     loader: () => ({
         deferred: new Promise<GetMatchesResponse>(async (resolve) => {
             resolve(await getMatches());
+        }),
+        matches: new Promise<Huisarts[]>(async (resolve) => {
+            resolve(await getDoctorsForMatch());
         }),
     }),
 });
@@ -21,9 +25,12 @@ function App() {
             <h1 className="relative z-10">Matches</h1>
             <ul>
                 <Await promise={data.deferred} fallback="Loading...">
-                    {(matches) => <MultiCircleGraph circles={matches.circles}/>}
+                    {(deferred) => <MultiCircleGraph circles={deferred.circles}/>}
                 </Await>
-                <MapView/>
+                <Await promise={data.matches} fallback="Loading...">
+                    {(matches) =><MapView matches={matches} />}
+                </Await>
+
             </ul>
         </div>
     );
