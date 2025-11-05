@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 interface CSVRow {
   person_id: string;
   name: string;
+  email: string;
   current_practice_id: string;
   [key: string]: string;
 }
@@ -21,6 +22,7 @@ interface PersonSummary {
 
 interface PersonCreatePayload {
   name: string;
+  email: string;
   currentPracticeId: number;
   choices: number[];
 }
@@ -116,6 +118,10 @@ function buildPersonPayload(row: CSVRow): PersonCreatePayload {
     throw new Error(`Invalid current practice id for ${row.name}`);
   }
 
+  if (!row.email || !row.email.trim()) {
+    throw new Error(`Missing email for ${row.name}`);
+  }
+
   const choices = buildChoices(row);
 
   if (choices.length === 0) {
@@ -124,6 +130,7 @@ function buildPersonPayload(row: CSVRow): PersonCreatePayload {
 
   return {
     name: row.name,
+    email: row.email.trim(),
     currentPracticeId,
     choices,
   };

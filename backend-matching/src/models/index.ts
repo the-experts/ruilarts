@@ -5,6 +5,7 @@ export interface Practice {
 export interface Person {
   id: string;
   name: string;
+  email: string;
   currentPractice: Practice;
   choices: Practice[];
   matchedInCircleId?: string | null;
@@ -37,6 +38,7 @@ export interface MatchResult {
 
 export interface PersonCreate {
   name: string;
+  email: string;
   currentPracticeId: number;
   choices: number[];
 }

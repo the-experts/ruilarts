@@ -1,5 +1,5 @@
-person_id,name,current_practice_id,desired_practice_id_1,desired_practice_id_2
-1,Anna de Vries,37,77,48
-2,Piet Janssen,161,25,37
-3,Karel Smit,33,48,100
-4,Sophie van Dam,1,161,200
+person_id,name,email,current_practice_id,desired_practice_id_1,desired_practice_id_2
+1,Anna de Vries,anna.devries@example.nl,37,77,48
+2,Piet Janssen,piet.janssen@example.nl,161,25,37
+3,Karel Smit,karel.smit@example.nl,33,48,100
+4,Sophie van Dam,sophie.vandam@example.nl,1,161,200

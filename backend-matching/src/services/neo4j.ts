@@ -51,6 +51,7 @@ class Neo4jService {
     return {
       id: personNode.properties.id,
       name: personNode.properties.name,
+      email: personNode.properties.email,
       currentPractice: {
         id: toNumber(currentPractice.properties.id),
       },
@@ -89,7 +90,8 @@ class Neo4jService {
 
         CREATE (p:Person {
           id: $personId,
-          name: $name
+          name: $name,
+          email: $email
         })
 
         CREATE (p)-[:CURRENTLY_AT]->(currentPr)
@@ -105,6 +107,7 @@ class Neo4jService {
       const params = {
         personId,
         name: personData.name,
+        email: personData.email,
         currentPracticeId: personData.currentPracticeId,
       } as any;
 
