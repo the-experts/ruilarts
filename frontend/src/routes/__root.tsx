@@ -3,7 +3,6 @@ import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import { RegistrationFormProvider } from "../context/registration-form";
-import { ErrorBoundary } from "../components/ErrorBoundary";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -28,8 +27,6 @@ export const Route = createRootRoute({
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
     ],
   }),
-
-  errorComponent: ErrorBoundary,
   shellComponent: RootDocument,
 });
 
