@@ -61,27 +61,28 @@ const EducationalSwapDemo = () => {
   const doctors: Doctor[] = [
     {
       id: "doc1",
+
       location: locations.p1.name,
       pos: locations.p1.pos,
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-groningen",
+      avatarUrl: "./avatars/doc-1.png",
     },
     {
       id: "doc2",
       location: locations.p2.name,
       pos: locations.p2.pos,
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-zwolle",
+      avatarUrl: "./avatars/doc-2.png",
     },
     {
       id: "doc3",
       location: locations.p3.name,
       pos: locations.p3.pos,
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-denhaag",
+      avatarUrl: "./avatars/doc-3.png",
     },
     {
       id: "doc4",
       location: locations.p4.name,
       pos: locations.p4.pos,
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-leeuwarden",
+      avatarUrl: "./avatars/doc-4.png",
     },
   ];
 
@@ -89,7 +90,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p1",
       name: "Henk",
-      avatarUrl: "https://avatar.iran.liara.run/public/boy?username=Henk",
+      avatarUrl: "./avatars/henk.png",
       currentLocation: locations.p1.name,
       newLocation: locations.p2.name,
       startPos: locations.p1.pos,
@@ -98,7 +99,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p2",
       name: "Maria",
-      avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Maria",
+      avatarUrl: "./avatars/maria.png",
       currentLocation: locations.p2.name,
       newLocation: locations.p3.name,
       startPos: locations.p2.pos,
@@ -107,7 +108,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p3",
       name: "Frank",
-      avatarUrl: "https://avatar.iran.liara.run/public?username=Frank",
+      avatarUrl: "./avatars/frank.png",
       currentLocation: locations.p3.name,
       newLocation: locations.p4.name,
       startPos: locations.p3.pos,
@@ -116,7 +117,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p4",
       name: "Anne",
-      avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Anne",
+      avatarUrl: "/avatars/anne.png",
       currentLocation: locations.p4.name,
       newLocation: locations.p1.name,
       startPos: locations.p4.pos,

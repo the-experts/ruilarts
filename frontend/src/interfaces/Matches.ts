@@ -3,9 +3,10 @@ export interface GetMatchesResponse {
   total: number;
 }
 
-interface Circle {
+export interface Circle {
   id: string;
   size: number;
+  score: number;
   max_preference_order: number;
   total_preference_score: number;
   created_at: string; // ISO date string

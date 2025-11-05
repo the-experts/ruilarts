@@ -12,14 +12,15 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyStatementRouteImport } from './routes/privacy-statement'
-import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as MatchMapRouteImport } from './routes/match-map'
 import { Route as HuisartsenRouteImport } from './routes/huisartsen'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegistrerenIndexRouteImport } from './routes/registreren/index'
+import { Route as MatchesIndexRouteImport } from './routes/matches/index'
 import { Route as RegistrerenVoltooidRouteImport } from './routes/registreren/voltooid'
 import { Route as RegistrerenStap1RouteImport } from './routes/registreren/stap-1'
 import { Route as Registreren_layoutRouteImport } from './routes/registreren/__layout'
+import { Route as MatchesMatchIdIndexRouteImport } from './routes/matches/$matchId/index'
 import { Route as RegistrerenPostcodeHouseNumberRouteRouteImport } from './routes/registreren/$postcode/$houseNumber/route'
 import { Route as RegistrerenPostcodeHouseNumberStap4RouteImport } from './routes/registreren/$postcode/$houseNumber/stap-4'
 import { Route as RegistrerenPostcodeHouseNumberStap3RouteImport } from './routes/registreren/$postcode/$houseNumber/stap-3'
@@ -35,11 +36,6 @@ const RegistrerenRoute = RegistrerenRouteImport.update({
 const PrivacyStatementRoute = PrivacyStatementRouteImport.update({
   id: '/privacy-statement',
   path: '/privacy-statement',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MatchesRoute = MatchesRouteImport.update({
-  id: '/matches',
-  path: '/matches',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MatchMapRoute = MatchMapRouteImport.update({
@@ -62,6 +58,11 @@ const RegistrerenIndexRoute = RegistrerenIndexRouteImport.update({
   path: '/',
   getParentRoute: () => RegistrerenRoute,
 } as any)
+const MatchesIndexRoute = MatchesIndexRouteImport.update({
+  id: '/matches/',
+  path: '/matches/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegistrerenVoltooidRoute = RegistrerenVoltooidRouteImport.update({
   id: '/voltooid',
   path: '/voltooid',
@@ -75,6 +76,11 @@ const RegistrerenStap1Route = RegistrerenStap1RouteImport.update({
 const Registreren_layoutRoute = Registreren_layoutRouteImport.update({
   id: '/__layout',
   getParentRoute: () => RegistrerenRoute,
+} as any)
+const MatchesMatchIdIndexRoute = MatchesMatchIdIndexRouteImport.update({
+  id: '/matches/$matchId/',
+  path: '/matches/$matchId/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const RegistrerenPostcodeHouseNumberRouteRoute =
   RegistrerenPostcodeHouseNumberRouteRouteImport.update({
@@ -105,13 +111,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
   '/match-map': typeof MatchMapRoute
-  '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
+  '/matches': typeof MatchesIndexRoute
   '/registreren/': typeof RegistrerenIndexRoute
   '/registreren/$postcode/$houseNumber': typeof RegistrerenPostcodeHouseNumberRouteRouteWithChildren
+  '/matches/$matchId': typeof MatchesMatchIdIndexRoute
   '/registreren/$postcode/$houseNumber/stap-2': typeof RegistrerenPostcodeHouseNumberStap2Route
   '/registreren/$postcode/$houseNumber/stap-3': typeof RegistrerenPostcodeHouseNumberStap3Route
   '/registreren/$postcode/$houseNumber/stap-4': typeof RegistrerenPostcodeHouseNumberStap4Route
@@ -120,12 +127,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
   '/match-map': typeof MatchMapRoute
-  '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren': typeof RegistrerenIndexRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
+  '/matches': typeof MatchesIndexRoute
   '/registreren/$postcode/$houseNumber': typeof RegistrerenPostcodeHouseNumberRouteRouteWithChildren
+  '/matches/$matchId': typeof MatchesMatchIdIndexRoute
   '/registreren/$postcode/$houseNumber/stap-2': typeof RegistrerenPostcodeHouseNumberStap2Route
   '/registreren/$postcode/$houseNumber/stap-3': typeof RegistrerenPostcodeHouseNumberStap3Route
   '/registreren/$postcode/$houseNumber/stap-4': typeof RegistrerenPostcodeHouseNumberStap4Route
@@ -135,14 +143,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
   '/match-map': typeof MatchMapRoute
-  '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren': typeof RegistrerenRouteWithChildren
   '/registreren/__layout': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
+  '/matches/': typeof MatchesIndexRoute
   '/registreren/': typeof RegistrerenIndexRoute
   '/registreren/$postcode/$houseNumber': typeof RegistrerenPostcodeHouseNumberRouteRouteWithChildren
+  '/matches/$matchId/': typeof MatchesMatchIdIndexRoute
   '/registreren/$postcode/$houseNumber/stap-2': typeof RegistrerenPostcodeHouseNumberStap2Route
   '/registreren/$postcode/$houseNumber/stap-3': typeof RegistrerenPostcodeHouseNumberStap3Route
   '/registreren/$postcode/$houseNumber/stap-4': typeof RegistrerenPostcodeHouseNumberStap4Route
@@ -153,13 +162,14 @@ export interface FileRouteTypes {
     | '/'
     | '/huisartsen'
     | '/match-map'
-    | '/matches'
     | '/privacy-statement'
     | '/registreren'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
+    | '/matches'
     | '/registreren/'
     | '/registreren/$postcode/$houseNumber'
+    | '/matches/$matchId'
     | '/registreren/$postcode/$houseNumber/stap-2'
     | '/registreren/$postcode/$houseNumber/stap-3'
     | '/registreren/$postcode/$houseNumber/stap-4'
@@ -168,12 +178,13 @@ export interface FileRouteTypes {
     | '/'
     | '/huisartsen'
     | '/match-map'
-    | '/matches'
     | '/privacy-statement'
     | '/registreren'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
+    | '/matches'
     | '/registreren/$postcode/$houseNumber'
+    | '/matches/$matchId'
     | '/registreren/$postcode/$houseNumber/stap-2'
     | '/registreren/$postcode/$houseNumber/stap-3'
     | '/registreren/$postcode/$houseNumber/stap-4'
@@ -182,14 +193,15 @@ export interface FileRouteTypes {
     | '/'
     | '/huisartsen'
     | '/match-map'
-    | '/matches'
     | '/privacy-statement'
     | '/registreren'
     | '/registreren/__layout'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
+    | '/matches/'
     | '/registreren/'
     | '/registreren/$postcode/$houseNumber'
+    | '/matches/$matchId/'
     | '/registreren/$postcode/$houseNumber/stap-2'
     | '/registreren/$postcode/$houseNumber/stap-3'
     | '/registreren/$postcode/$houseNumber/stap-4'
@@ -199,9 +211,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuisartsenRoute: typeof HuisartsenRoute
   MatchMapRoute: typeof MatchMapRoute
-  MatchesRoute: typeof MatchesRoute
   PrivacyStatementRoute: typeof PrivacyStatementRoute
   RegistrerenRoute: typeof RegistrerenRouteWithChildren
+  MatchesIndexRoute: typeof MatchesIndexRoute
+  MatchesMatchIdIndexRoute: typeof MatchesMatchIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -218,13 +231,6 @@ declare module '@tanstack/react-router' {
       path: '/privacy-statement'
       fullPath: '/privacy-statement'
       preLoaderRoute: typeof PrivacyStatementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/matches': {
-      id: '/matches'
-      path: '/matches'
-      fullPath: '/matches'
-      preLoaderRoute: typeof MatchesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/match-map': {
@@ -255,6 +261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegistrerenIndexRouteImport
       parentRoute: typeof RegistrerenRoute
     }
+    '/matches/': {
+      id: '/matches/'
+      path: '/matches'
+      fullPath: '/matches'
+      preLoaderRoute: typeof MatchesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/registreren/voltooid': {
       id: '/registreren/voltooid'
       path: '/voltooid'
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/registreren'
       preLoaderRoute: typeof Registreren_layoutRouteImport
       parentRoute: typeof RegistrerenRoute
+    }
+    '/matches/$matchId/': {
+      id: '/matches/$matchId/'
+      path: '/matches/$matchId'
+      fullPath: '/matches/$matchId'
+      preLoaderRoute: typeof MatchesMatchIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/registreren/$postcode/$houseNumber': {
       id: '/registreren/$postcode/$houseNumber'
@@ -353,9 +373,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
   MatchMapRoute: MatchMapRoute,
-  MatchesRoute: MatchesRoute,
   PrivacyStatementRoute: PrivacyStatementRoute,
   RegistrerenRoute: RegistrerenRouteWithChildren,
+  MatchesIndexRoute: MatchesIndexRoute,
+  MatchesMatchIdIndexRoute: MatchesMatchIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

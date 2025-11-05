@@ -4,6 +4,7 @@ import { Circle } from '../models/index.js';
 interface CircleMetadata {
   maxPreferenceOrder: number;
   totalPreferenceScore: number;
+  score: number;
 }
 
 class CirclesService {
@@ -24,9 +25,9 @@ class CirclesService {
 
       // Insert circle record
       await client.query(
-        `INSERT INTO circles (id, size, max_preference_order, total_preference_score, status)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [circleId, circle.size, metadata.maxPreferenceOrder, metadata.totalPreferenceScore, 'active']
+        `INSERT INTO circles (id, size, max_preference_order, total_preference_score, score, status)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [circleId, circle.size, metadata.maxPreferenceOrder, metadata.totalPreferenceScore, metadata.score, 'active']
       );
 
       console.log(`[Circles] Saved circle ${circleId} to PostgreSQL`);
@@ -74,6 +75,7 @@ class CirclesService {
            c.size,
            c.max_preference_order,
            c.total_preference_score,
+           c.score,
            c.created_at,
            c.status,
            json_agg(
@@ -88,7 +90,7 @@ class CirclesService {
            ) as members
          FROM circles c
          LEFT JOIN circle_members cm ON c.id = cm.circle_id
-         GROUP BY c.id, c.size, c.max_preference_order, c.total_preference_score, c.created_at, c.status
+         GROUP BY c.id, c.size, c.max_preference_order, c.total_preference_score, c.score, c.created_at, c.status
          ORDER BY c.created_at DESC`
       );
 
@@ -110,6 +112,7 @@ class CirclesService {
            c.size,
            c.max_preference_order,
            c.total_preference_score,
+           c.score,
            c.created_at,
            c.status,
            json_agg(
@@ -125,7 +128,7 @@ class CirclesService {
          FROM circles c
          LEFT JOIN circle_members cm ON c.id = cm.circle_id
          WHERE c.id = $1
-         GROUP BY c.id, c.size, c.max_preference_order, c.total_preference_score, c.created_at, c.status`,
+         GROUP BY c.id, c.size, c.max_preference_order, c.total_preference_score, c.score, c.created_at, c.status`,
         [circleId]
       );
 
