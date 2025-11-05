@@ -158,7 +158,7 @@ export function generateHtmlEmail(data: EmailTemplateData): string {
                 <ul style="margin: 0; padding-left: 24px; color: #475569; line-height: 1.8; font-size: 15px;">
                   <li style="margin-bottom: 8px;">Bekijk de praktijk op Zorgkaart</li>
                   <li style="margin-bottom: 8px;">Neem contact op met de praktijk</li>
-                  <li>Plan een bezoek aan je nieuwe huisarts</li>
+                  <li style="margin-bottom: 8px;">Plan een bezoek aan je nieuwe huisarts</li>
                 </ul>
               </div>
             </td>
