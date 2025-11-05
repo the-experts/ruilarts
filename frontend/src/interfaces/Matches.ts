@@ -3,7 +3,7 @@ export interface GetMatchesResponse {
   total: number;
 }
 
-interface Circle {
+export interface Circle {
   id: string;
   size: number;
   max_preference_order: number;

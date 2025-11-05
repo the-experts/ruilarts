@@ -1,4 +1,4 @@
-import {getDoctorsForMatch, getMatches} from "@/data/matchService";
+import {getDoctorsForMatches, getMatches} from "@/data/matchService";
 import {Await, createFileRoute} from "@tanstack/react-router";
 import MapView from "@/components/ui/mapview.tsx";
 import {Huisarts} from "@/data/huisartsService.ts";
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/matches")({
             resolve(await getMatches());
         }),
         matches: new Promise<Huisarts[]>(async (resolve) => {
-            resolve(await getDoctorsForMatch());
+            resolve(await getDoctorsForMatches());
         }),
     }),
 });
