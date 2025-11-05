@@ -50,3 +50,21 @@ export const getHuisartsen = async (
 
   return data;
 }
+
+export const getHuisarts = async (
+     id: string
+) => {
+
+
+  const response = await fetch(
+      `${BASE_URL}/huisartsen/${id}`
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch huisartsen');
+  }
+
+  const data = (await response.json()) as Huisarts;
+
+  return data;
+}

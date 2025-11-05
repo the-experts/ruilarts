@@ -17,7 +17,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.3",
-    "@react-three/fiber": "^9.4.0",
+    "@react-three/fiber": "9.4.0",
     "@react-three/postprocessing": "^3.0.4",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "4.1.16",
@@ -78,5 +78,8 @@
     "vite": "^7.1.7",
     "vitest": "^3.0.5",
     "web-vitals": "^5.1.0"
+  },
+  "overrides": {
+    "@react-three/fiber": "9.4.0"
   }
 }
