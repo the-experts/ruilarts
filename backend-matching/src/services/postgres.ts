@@ -58,16 +58,32 @@ class PostgresService {
   }
 
   /**
-   * Run migrations from SQL file
+   * Run migrations from SQL files
    */
   async runMigrations(): Promise<void> {
-    const migrationPath = path.join(__dirname, '../../migrations/001_create_circles_tables.sql');
+    const migrationsDir = path.join(__dirname, '../../migrations');
+    const migrationFiles = [
+      '001_create_circles_tables.sql',
+      '002_add_score_to_circles.sql'
+    ];
 
     try {
       console.log('[Postgres] Running migrations...');
-      const sql = fs.readFileSync(migrationPath, 'utf-8');
-      await this.pool.query(sql);
-      console.log('[Postgres] Migrations completed successfully');
+
+      for (const file of migrationFiles) {
+        const migrationPath = path.join(migrationsDir, file);
+
+        if (fs.existsSync(migrationPath)) {
+          console.log(`[Postgres] Running migration: ${file}`);
+          const sql = fs.readFileSync(migrationPath, 'utf-8');
+          await this.pool.query(sql);
+          console.log(`[Postgres] ✓ ${file} completed`);
+        } else {
+          console.log(`[Postgres] ⚠ Migration file not found: ${file}`);
+        }
+      }
+
+      console.log('[Postgres] All migrations completed successfully');
     } catch (error) {
       console.error('[Postgres] Migration failed:', error);
       throw error;

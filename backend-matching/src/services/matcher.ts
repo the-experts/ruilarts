@@ -48,9 +48,11 @@ class MatcherService {
 
     // Rank cycles: lower preference order is better
     const rankedCycles = this.rankCycles(allCycles);
-    const bestCycle = rankedCycles[0];
+    const bestMatch = rankedCycles[0];
+    const bestCycle = bestMatch.cycle;
+    const bestScore = bestMatch.score;
 
-    console.log(`[Matcher] Best cycle: size=${bestCycle.nodes.length}, maxPref=${bestCycle.maxPreferenceOrder}, totalScore=${bestCycle.totalPreferenceScore}`);
+    console.log(`[Matcher] Best cycle: size=${bestCycle.nodes.length}, maxPref=${bestCycle.maxPreferenceOrder}, totalScore=${bestCycle.totalPreferenceScore}, score=${bestScore.toFixed(2)}`);
 
     // Create circle and mark people as matched
     const circle = await this.createCircleFromCycle(bestCycle);
@@ -61,6 +63,7 @@ class MatcherService {
     await cleanupService.cleanupMatchedCircle(circle, {
       maxPreferenceOrder: bestCycle.maxPreferenceOrder,
       totalPreferenceScore: bestCycle.totalPreferenceScore,
+      score: bestScore,
     });
 
     return circle;
@@ -177,7 +180,7 @@ RETURN ${returnItems.join(', ')}
    * Rank cycles using weighted scoring (lower score = better match)
    * Score = (maxPref × preferenceWeight) + (totalScore × totalScoreWeight) + (distance × sizeWeight)
    */
-  private rankCycles(cycles: RawCycle[]): RawCycle[] {
+  private rankCycles(cycles: RawCycle[]): Array<{ cycle: RawCycle; score: number }> {
     const idealSize = config.matching.idealCircleSize;
     const w1 = config.matching.preferenceWeight;
     const w2 = config.matching.totalScoreWeight;
@@ -198,7 +201,7 @@ RETURN ${returnItems.join(', ')}
     // Sort by score (lower is better)
     cyclesWithScores.sort((a, b) => a.score - b.score);
 
-    return cyclesWithScores.map(item => item.cycle);
+    return cyclesWithScores;
   }
 
   /**

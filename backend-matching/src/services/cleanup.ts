@@ -5,6 +5,7 @@ import { Circle } from '../models/index.js';
 interface CircleMetadata {
   maxPreferenceOrder: number;
   totalPreferenceScore: number;
+  score: number;
 }
 
 class CleanupService {
