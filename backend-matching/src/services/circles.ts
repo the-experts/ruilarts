@@ -1,5 +1,6 @@
 import { postgresService } from './postgres.js';
 import { Circle } from '../models/index.js';
+import { emailService } from './email.js';
 
 interface CircleMetadata {
   maxPreferenceOrder: number;
@@ -56,6 +57,23 @@ class CirclesService {
       console.log(`[Circles] Saved ${circle.people.length} members for circle ${circleId}`);
 
       await client.query('COMMIT');
+
+      // Send email notifications to all circle members (async, don't block)
+      console.log('[Circles] Circle saved successfully, triggering email notifications...');
+
+      const emailData = circle.people.map(circlePerson => ({
+        personName: circlePerson.person.name,
+        personEmail: circlePerson.person.email,
+        desiredPracticeId: circlePerson.person.choices[circlePerson.choiceIndex].id,
+        preferenceOrder: circlePerson.choiceIndex,
+        circleSize: circle.size,
+      }));
+
+      // Send emails asynchronously (don't await - let it run in background)
+      emailService.sendCircleNotifications(emailData).catch((error) => {
+        console.error('[Circles] Error sending email notifications:', error);
+      });
+
     } catch (error) {
       await client.query('ROLLBACK');
       console.error('[Circles] Error saving circle:', error);

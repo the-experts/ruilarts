@@ -1,0 +1,216 @@
+interface HuisartsDetails {
+  id: number;
+  naam: string;
+  adres: string;
+  street: string;
+  postalcode: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  link: string;
+}
+
+interface EmailTemplateData {
+  personName: string;
+  huisarts: HuisartsDetails;
+  preferenceNumber: number; // 0 = 1st choice, 1 = 2nd choice, 2 = 3rd choice
+  circleSize: number;
+}
+
+/**
+ * Generate plain text email content in Dutch (B1 level)
+ */
+export function generatePlainTextEmail(data: EmailTemplateData): string {
+  const preferenceText = getPreferenceText(data.preferenceNumber);
+
+  return `
+Beste ${data.personName},
+
+Goed nieuws! We hebben een huisarts voor je gevonden.
+
+Je bent gekoppeld aan: ${data.huisarts.naam}
+Adres: ${data.huisarts.adres}
+
+Dit was je ${preferenceText}.
+
+Je zit in een ruilgroep met ${data.circleSize} mensen. Iedereen in de groep krijgt een nieuwe huisarts.
+
+Wat kun je nu doen?
+- Bekijk de huisarts op Zorgkaart: ${data.huisarts.link}
+- Plan een route naar de praktijk
+- Neem contact op met je nieuwe huisarts
+
+Veel succes!
+
+Met vriendelijke groet,
+Ruilarts
+  `.trim();
+}
+
+/**
+ * Generate HTML email content in Dutch (B1 level) with frontend-matching styling
+ */
+export function generateHtmlEmail(data: EmailTemplateData): string {
+  const preferenceText = getPreferenceText(data.preferenceNumber);
+  const mapsUrl = generateGoogleMapsUrl(data.huisarts.latitude, data.huisarts.longitude);
+
+  return `
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Je nieuwe huisarts</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; background: linear-gradient(180deg, #f8fafc 0%, #dbeafe 50%, #e0e7ff 100%); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="padding: 40px 20px; text-align: center;">
+        <table role="presentation" style="width: 600px; max-width: 100%; margin: 0 auto; background-color: #ffffff; border-radius: 14px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden;">
+
+          <!-- Header with Logo -->
+          <tr>
+            <td style="padding: 48px 40px 32px; text-align: center; background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+              <!-- Logo -->
+              <div style="margin-bottom: 24px;">
+                <svg width="404" height="88" viewBox="0 0 101 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+                  <path d="M95.3024 21.3812C94.2784 21.3812 93.2944 21.2372 92.3504 20.9492C91.4224 20.6452 90.6944 20.2692 90.1664 19.8212L90.9344 18.4772C91.4624 18.8932 92.1264 19.2372 92.9264 19.5092C93.7264 19.7652 94.5584 19.8932 95.4224 19.8932C96.5744 19.8932 97.4224 19.7172 97.9664 19.3652C98.5264 18.9972 98.8064 18.4852 98.8064 17.8292C98.8064 17.3652 98.6544 17.0052 98.3504 16.7492C98.0464 16.4772 97.6624 16.2772 97.1984 16.1492C96.7344 16.0052 96.1184 15.8692 95.3504 15.7412C94.3264 15.5492 93.5024 15.3572 92.8784 15.1652C92.2544 14.9572 91.7184 14.6132 91.2704 14.1332C90.8384 13.6532 90.6224 12.9892 90.6224 12.1412C90.6224 11.0852 91.0624 10.2212 91.9424 9.54921C92.8224 8.87721 94.0464 8.54121 95.6144 8.54121C96.4304 8.54121 97.2464 8.65321 98.0624 8.87721C98.8784 9.08521 99.5504 9.36521 100.078 9.71721L99.3344 11.0852C98.2944 10.3652 97.0544 10.0052 95.6144 10.0052C94.5264 10.0052 93.7024 10.1972 93.1424 10.5812C92.5984 10.9652 92.3264 11.4692 92.3264 12.0932C92.3264 12.5732 92.4784 12.9572 92.7824 13.2452C93.1024 13.5332 93.4944 13.7492 93.9584 13.8932C94.4224 14.0212 95.0624 14.1572 95.8784 14.3012C96.8864 14.4932 97.6944 14.6852 98.3024 14.8772C98.9104 15.0692 99.4304 15.3972 99.8624 15.8612C100.294 16.3252 100.51 16.9652 100.51 17.7812C100.51 18.8852 100.046 19.7652 99.1184 20.4212C98.2064 21.0612 96.9344 21.3812 95.3024 21.3812Z" fill="#00CE90"/>
+                  <path d="M88.8297 20.4932C88.5097 20.7812 88.1177 21.0052 87.6537 21.1652C87.1897 21.3092 86.7017 21.3812 86.1897 21.3812C85.0057 21.3812 84.0937 21.0612 83.4537 20.4212C82.8137 19.7812 82.4937 18.8772 82.4937 17.7092V5.8772H84.1977V8.63721H88.0137V10.0772H84.1977V17.6132C84.1977 18.3652 84.3817 18.9412 84.7497 19.3412C85.1177 19.7252 85.6537 19.9172 86.3577 19.9172C87.1257 19.9172 87.7497 19.7012 88.2297 19.2692L88.8297 20.4932Z" fill="#00CE90"/>
+                  <path d="M74.8004 11.1092C75.2004 10.2612 75.7924 9.62121 76.5764 9.18921C77.3764 8.75721 78.3604 8.54121 79.5284 8.54121V10.1972L79.1204 10.1732C77.7924 10.1732 76.7524 10.5812 76.0004 11.3972C75.2484 12.2132 74.8724 13.3572 74.8724 14.8292V21.2612H73.1684V8.63721H74.8004V11.1092Z" fill="#00CE90"/>
+                  <path d="M61.1736 4.31715C63.3496 4.31715 65.0616 4.95715 66.3096 6.23715C67.5736 7.50115 68.2056 9.33315 68.2056 11.7331V21.2611H66.4536V16.3171H55.8936V21.2611H54.1656V11.7331C54.1656 9.33315 54.7896 7.50115 56.0376 6.23715C57.3016 4.95715 59.0136 4.31715 61.1736 4.31715ZM66.4536 14.7811V11.5651C66.4536 9.69315 65.9896 8.28515 65.0616 7.34115C64.1336 6.38115 62.8376 5.90115 61.1736 5.90115C59.5096 5.90115 58.2136 6.38115 57.2856 7.34115C56.3576 8.28515 55.8936 9.69315 55.8936 11.5651V14.7811H66.4536Z" fill="#00CE90"/>
+                  <path d="M50.8791 3.48725V5.02325C49.8435 5.26206 48.4589 5.96388 47.3729 7.15852L46.0045 6.94128C46.743 5.7249 49.8398 3.77406 50.8791 3.48725Z" fill="#00CE90"/>
+                  <path d="M51.1102 7.2091L50.9627 8.30379C49.6459 8.29965 48.0021 8.09841 45.791 7.76907L46.0878 6.75816C48.1177 7.05618 49.7842 7.23855 51.1102 7.2091Z" fill="#00CE90"/>
+                  <path d="M47.7455 2.86305L46.631 2.71289C46.2861 3.96343 46.0481 5.5765 45.7857 7.76179L46.8574 7.74813C47.1026 5.74308 47.3651 4.11346 47.7455 2.86305Z" fill="#00CE90"/>
+                  <path d="M52.2931 3.33318C53.4291 3.33318 54.3091 3.65318 54.9331 4.29318C55.5411 4.93318 55.8451 5.82118 55.8451 6.95718L55.8451 21.2612L54.1411 21.2612L54.1411 7.10118C54.1411 6.34918 53.9651 5.77318 53.6131 5.37318C53.2611 4.98918 52.7331 4.79718 52.0291 4.79718C51.5811 4.79718 51.3055 4.9018 50.8484 5.03461L50.471 4.27575L50.7937 3.51508C51.1648 3.39008 51.7651 3.33318 52.2931 3.33318Z" fill="#00CE90"/>
+                  <path d="M44.5435 17.7709V16.2349C45.5791 15.9961 46.9637 15.2942 48.0498 14.0996L49.4182 14.3168C48.6797 15.5332 45.5828 17.4841 44.5435 17.7709Z" fill="#00A5CE"/>
+                  <path d="M44.5435 14.0599L44.691 12.9652C46.0078 12.9693 47.6516 13.1706 49.8627 13.4999L49.566 14.5108C47.5361 14.2128 45.8696 14.0304 44.5435 14.0599Z" fill="#00A5CE"/>
+                  <path d="M47.9083 18.4059L49.0227 18.5561C49.3677 17.3056 49.6056 15.6925 49.8681 13.5072L48.7964 13.5208C48.5512 15.5259 48.2886 17.1555 47.9083 18.4059Z" fill="#00A5CE"/>
+                  <path d="M43.1295 17.928C41.9935 17.928 41.1135 17.608 40.4895 16.968C39.8815 16.328 39.5775 15.44 39.5775 14.304V0H41.2815V14.16C41.2815 14.912 41.4575 15.488 41.8095 15.888C42.1615 16.272 42.6895 16.464 43.3935 16.464C43.8415 16.464 44.1172 16.3594 44.5742 16.2266L44.9516 16.9854L44.6289 17.7461C44.2578 17.8711 43.6575 17.928 43.1295 17.928Z" fill="#00A5CE"/>
+                  <path d="M33.1322 5.184H34.8362V17.808H33.1322V5.184ZM33.9962 2.424C33.6442 2.424 33.3482 2.304 33.1082 2.064C32.8682 1.824 32.7482 1.536 32.7482 1.2C32.7482 0.880001 32.8682 0.6 33.1082 0.36C33.3482 0.12 33.6442 0 33.9962 0C34.3482 0 34.6442 0.12 34.8842 0.36C35.1242 0.584 35.2442 0.856 35.2442 1.176C35.2442 1.528 35.1242 1.824 34.8842 2.064C34.6442 2.304 34.3482 2.424 33.9962 2.424Z" fill="#00A5CE"/>
+                  <path d="M28.3598 5.18396V17.808H26.7278V15.504C26.2798 16.272 25.6638 16.872 24.8798 17.304C24.0958 17.72 23.1998 17.928 22.1918 17.928C20.5438 17.928 19.2398 17.472 18.2798 16.56C17.3358 15.632 16.8638 14.28 16.8638 12.504V5.18396H18.5678V12.336C18.5678 13.664 18.8958 14.672 19.5518 15.36C20.2078 16.048 21.1438 16.392 22.3598 16.392C23.6878 16.392 24.7358 15.992 25.5038 15.192C26.2718 14.376 26.6558 13.248 26.6558 11.808V5.18396H28.3598Z" fill="#00A5CE"/>
+                  <path d="M11.472 17.808L7.632 12.408C7.2 12.456 6.752 12.48 6.288 12.48H1.776V17.808H0V1.008H6.288C8.432 1.008 10.112 1.52 11.328 2.544C12.544 3.568 13.152 4.976 13.152 6.768C13.152 8.08 12.816 9.192 12.144 10.104C11.488 11 10.544 11.648 9.312 12.048L13.416 17.808H11.472ZM6.24 10.968C7.904 10.968 9.176 10.6 10.056 9.864C10.936 9.128 11.376 8.096 11.376 6.768C11.376 5.408 10.936 4.368 10.056 3.648C9.176 2.912 7.904 2.544 6.24 2.544H1.776V10.968H6.24Z" fill="#00A5CE"/>
+                </svg>
+              </div>
+             
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 48px 40px;">
+              <h1 style="margin: 0; color: #000000; font-size: 32px; font-weight: 700; letter-spacing: -0.025em;">🎉 Goed nieuws!</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0px 40px;">
+              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #1e293b; font-weight: 400;">
+                Beste ${data.personName},
+              </p>
+
+              <p style="margin: 0 0 32px; font-size: 16px; line-height: 1.6; color: #475569;">
+                We hebben een huisarts voor je gevonden! Je bent gekoppeld aan een nieuwe praktijk.
+              </p>
+
+              <!-- Practice Info Card -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 14px; margin-bottom: 32px; border: 1px solid #a7f3d0; overflow: hidden;">
+                <tr>
+                  <td style="padding: 32px;">
+                    <h2 style="margin: 0 0 16px; font-size: 22px; color: #00CE90; font-weight: 700; letter-spacing: -0.025em;">
+                      ${data.huisarts.naam}
+                    </h2>
+                    <p style="margin: 0 0 12px; font-size: 16px; color: #1e293b; line-height: 1.5;">
+                      📍 ${data.huisarts.adres}
+                    </p>
+                    <div style="display: inline-block; padding: 6px 12px; background-color: #ffffff; border-radius: 9999px; font-size: 14px; font-weight: 600; color: #059669; border: 1px solid #a7f3d0;">
+                      ✓ Dit was je ${preferenceText}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <div style="margin: 0 0 32px; padding: 20px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left: 4px solid #00A5CE; border-radius: 8px;">
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #1e293b;">
+                  <strong style="color: #00A5CE;">Ruilgroep:</strong> Je zit in een groep met ${data.circleSize} mensen. Iedereen in de groep krijgt een nieuwe huisarts.
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 8px 0;">
+                    <a href="${mapsUrl}" style="display: inline-block; padding: 16px 32px; background-color: #4f46e5; color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); transition: background-color 0.2s;">
+                      🗺️ Navigeer naar praktijk
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0;">
+                    <a href="${data.huisarts.link}" style="display: inline-block; padding: 16px 32px; background-color: #ffffff; color: #4f46e5; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; border: 2px solid #4f46e5; transition: background-color 0.2s;">
+                      📋 Bekijk op Zorgkaart
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Next Steps -->
+              <div style="margin-top: 40px; padding-top: 32px; border-top: 2px solid #e2e8f0;">
+                <h3 style="margin: 0 0 20px; font-size: 20px; color: #1e293b; font-weight: 700;">Wat nu?</h3>
+                <ul style="margin: 0; padding-left: 24px; color: #475569; line-height: 1.8; font-size: 15px;">
+                  <li style="margin-bottom: 8px;">Bekijk de praktijk op Zorgkaart</li>
+                  <li style="margin-bottom: 8px;">Neem contact op met de praktijk</li>
+                  <li>Plan een bezoek aan je nieuwe huisarts</li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 32px 40px; text-align: center; background-color: #f8fafc; border-radius: 0 0 14px 14px;">
+              <p style="margin: 0 0 8px; font-size: 15px; color: #475569;">
+                Veel succes met je nieuwe huisarts!
+              </p>
+              <p style="margin: 0; font-size: 14px; color: #94a3b8;">
+                Met vriendelijke groet,<br>
+                <strong style="color: #64748b;">Ruilarts</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+/**
+ * Get email subject line in Dutch
+ */
+export function generateSubject(): string {
+  return 'Goed nieuws! We hebben een huisarts voor je gevonden';
+}
+
+/**
+ * Helper: Convert preference index to Dutch text
+ */
+function getPreferenceText(preferenceNumber: number): string {
+  switch (preferenceNumber) {
+    case 0:
+      return '1e keuze';
+    case 1:
+      return '2e keuze';
+    case 2:
+      return '3e keuze';
+    default:
+      return `${preferenceNumber + 1}e keuze`;
+  }
+}
+
+/**
+ * Helper: Generate Google Maps URL from coordinates
+ */
+function generateGoogleMapsUrl(latitude: number, longitude: number): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+}

@@ -29,8 +29,8 @@ function Stap2() {
   const { formData, updateTargetPGs, updatePostalCode } = useRegistrationForm();
   const nearbyPGs = Route.useLoaderData();
 
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(
-    new Set(formData.targetPGs.map((pg) => pg.id))
+  const [selectedIds, setSelectedIds] = useState<number[]>(
+    formData.targetPGs.map((pg) => pg.id)
   );
   const [error, setError] = useState("");
 
@@ -40,22 +40,26 @@ function Stap2() {
   }
 
   const handleTogglePG = (pgId: number) => {
-    const newSelected = new Set(selectedIds);
-    if (newSelected.has(pgId)) {
-      newSelected.delete(pgId);
-    } else if (newSelected.size < 3) {
-      newSelected.add(pgId);
+    let newSelected: number[];
+    if (selectedIds.includes(pgId)) {
+      newSelected = selectedIds.filter((id) => id !== pgId);
+    } else if (selectedIds.length < 3) {
+      newSelected = [...selectedIds, pgId];
+    } else {
+      newSelected = selectedIds;
     }
     setSelectedIds(newSelected);
   };
 
   const handleNext = () => {
-    if (selectedIds.size === 0) {
+    if (selectedIds.length === 0) {
       setError("Selecteer alstublieft minstens 1 huisartsenpraktijk");
       return;
     }
 
-    const selected = nearbyPGs.filter((pg) => selectedIds.has(pg.id));
+    const selected = selectedIds.map(
+      (id) => nearbyPGs.find((pg) => pg.id === id)!
+    );
     updateTargetPGs(selected);
     navigate({
       to: "/registreren/$postcode/$houseNumber/stap-3",
@@ -81,7 +85,7 @@ function Stap2() {
           <div
             key={pg.id}
             className={`rounded-lg border-2 p-4 transition-all cursor-pointer ${
-              selectedIds.has(pg.id)
+              selectedIds.includes(pg.id)
                 ? "border-blue-500 bg-blue-50"
                 : "border-gray-200 bg-white hover:border-gray-300"
             }`}
@@ -89,7 +93,7 @@ function Stap2() {
           >
             <div className="flex items-start gap-3">
               <Checkbox
-                checked={selectedIds.has(pg.id)}
+                checked={selectedIds.includes(pg.id)}
                 onCheckedChange={() => handleTogglePG(pg.id)}
                 className="mt-1"
               />
@@ -105,7 +109,7 @@ function Stap2() {
                   </p>
                 )}
               </div>
-              {selectedIds.has(pg.id) && (
+              {selectedIds.includes(pg.id) && (
                 <div className="text-blue-600 font-semibold">
                   #{Array.from(selectedIds).indexOf(pg.id) + 1}
                 </div>
@@ -117,14 +121,14 @@ function Stap2() {
 
       {/* Selection counter */}
       <div className="text-sm text-gray-600">
-        {selectedIds.size} van 3 geselecteerd
+        {selectedIds.length} van 3 geselecteerd
       </div>
 
       {/* Next button */}
       <div className="pt-4">
         <Button
           onClick={handleNext}
-          disabled={selectedIds.size === 0}
+          disabled={selectedIds.length === 0}
           className="w-full"
           size="lg"
         >

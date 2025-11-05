@@ -27,4 +27,11 @@ export const config = {
     totalScoreWeight: parseFloat(process.env.TOTAL_SCORE_WEIGHT || '1'),
     sizeWeight: parseInt(process.env.SIZE_WEIGHT || '20', 10),
   },
+  email: {
+    serviceUrl: process.env.EMAIL_SERVICE_URL || 'http://email-sender:8080',
+    enabled: process.env.EMAIL_ENABLED !== 'false',
+  },
+  huisartsenApi: {
+    url: process.env.HUISARTSEN_API_URL || 'http://huisartsen-api:5001',
+  },
 };
