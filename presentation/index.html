@@ -32,8 +32,9 @@
             <ul>
               <li>Lennard van den Berg</li>
               <li>Jan Philipp Kohrs</li>
-              <li>Jan Martijn</li>
+              <li>Jan Martijn Roetman</li>
               <li>Tobias Termeczky</li>
+              <li style="font-size: 9px;">Codex, Claude, CoPilot, and more</li>
             </ul>
           </section>
         </section>
@@ -42,28 +43,12 @@
           <section>
             <h3>Het Probleem</h3>
             <p>Wanneer mensen verhuizen, komt de zorgtoegang in het gedrang</p>
-          </section>
-          <section>
-            <h3>Het Probleem</h3>
-            <p>
-              Ongeveer 1 op 20 Nederlanders zoekt een andere huisarts
-            </p>
-            <img src="assets/other/overview-problem.png" alt="Overview" style="height: 200px; vertical-align: middle; margin-right: 10px;">
-          </section>
-          <section>
-            <h3>Scenario</h3>
-            <p><strong>Pieter</strong> is net naar Enschede verhuisd</p>
-            <ul>
-              <li>Heeft een huisarts in Den Haag (nu ver weg)</li>
-              <li>Zoekt een huisarts in Enschede</li>
-              <li>Maar de praktijken in Enschede zitten vol 😞</li>
-            </ul>
-            <p><strong>Eddy</strong> is net naar Den Haag verhuisd</p>
-            <ul>
-              <li>Heeft een huisarts in Enschede (nu ver weg)</li>
-              <li>Zoekt een huisarts in Den Haag</li>
-              <li>Maar de praktijken in Den Haag zitten vol 😞</li>
-            </ul>
+            <p>Ongeveer 1 op 20 Nederlanders zoekt een andere huisarts</p>
+            <img
+              src="assets/other/overview-problem.png"
+              alt="Overview"
+              style="height: 200px; vertical-align: middle; margin-right: 10px"
+            />
           </section>
           <section>
             <h3>Het Probleem</h3>
@@ -79,57 +64,14 @@
             </ul>
           </section>
           <section>
-            <h3>De Kans</h3>
-            <p>
-              💡
-              <strong
-                >Wat als we meerdere mensen in een cirkel kunnen
-                matchen?</strong
-              >
-            </p>
-            <p><strong>A → B → C → D → A</strong></p>
-            <p>Iedereen krijgt wat hij of zij nodig heeft!</p>
-          </section>
-        </section>
-        <!-- page 3: De Oplossing -->
-        <section>
-          <section>
             <h3>De Oplossing</h3>
-            <p><strong>Circulair matching-algoritme in het kort</strong></p>
-          </section>
-          <section>
-            <h3>Hoe het werkt</h3>
-            <ul>
-              <li>
-                Mensen melden hun huidige én gewenste praktijken (max. 10)
-              </li>
-              <li>
-                Het algoritme zoekt onmiddellijk naar cirkels van 2‑10 personen
-              </li>
-              <li>
-                Iedereen in de cirkel krijgt tegelijk een passende overstap
-              </li>
-            </ul>
-          </section>
-          <section>
-            <h3>Waarom dit werkt</h3>
-            <p>
-              ✨ Resultaat: iedereen closer bij huis, ruil in één keer geregeld.
-            </p>
-            <ul>
-              <li>
-                <strong>Neo4j-graph</strong> vindt patronen razendsnel en
-                verwijdert gematchte personen direct
-              </li>
-              <li>
-                <strong>Slimme ranking</strong> bewaakt voorkeuren en ideale
-                cirkelgrootte
-              </li>
-              <li>
-                <strong>PostgreSQL</strong> bewaart matches, zodat het systeem
-                efficiënt en opgeschoond blijft
-              </li>
-            </ul>
+            <iframe
+              scrolling="no"
+              width="100%"
+              height="512"
+              src="http://localhost:3000/het-probleem"
+              title="description"
+            ></iframe>
           </section>
         </section>
         <!-- page 4: Technologiestack -->
@@ -140,35 +82,213 @@
           <section>
             <p><strong>Backend Matching</strong>:</p>
             <ul>
-              <li><img src="assets/logos/hono.svg" alt="Hono" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Hono</li>
-              <li><img src="assets/logos/neo4j.ico" alt="Neo4j" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Neo4j</li>
-              <li><img src="assets/logos/postgresql.png" alt="PostgreSQL" style="height: 30px; vertical-align: middle; margin-right: 10px;"> PostgreSQL</li>
+              <li>
+                <img
+                  src="assets/logos/hono.svg"
+                  alt="Hono"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Hono
+              </li>
+              <li>
+                <img
+                  src="assets/logos/neo4j.ico"
+                  alt="Neo4j"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Neo4j
+              </li>
+              <li>
+                <img
+                  src="assets/logos/postgresql.png"
+                  alt="PostgreSQL"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                PostgreSQL
+              </li>
             </ul>
           </section>
           <section>
             <p><strong>Huisartsdata</strong>:</p>
             <ul>
-              <li><img src="assets/logos/postgresql.png" alt="Postgres" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Postgres</li>
-              <li><img src="assets/logos/nodejs.svg" alt="Node.js" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Node (geo service)</li>
-              <li><img src="assets/logos/graphhopper.ico" alt="GraphHopper" style="height: 30px; vertical-align: middle; margin-right: 10px;"> GraphHopper</li>
+              <li>
+                <img
+                  src="assets/logos/postgresql.png"
+                  alt="Postgres"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Postgres
+              </li>
+              <li>
+                <img
+                  src="assets/logos/nodejs.svg"
+                  alt="Node.js"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Node (geo service)
+              </li>
+              <li>
+                <img
+                  src="assets/logos/graphhopper.ico"
+                  alt="GraphHopper"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                GraphHopper
+              </li>
             </ul>
           </section>
           <section>
             <p><strong>Frontend</strong>:</p>
             <ul>
-              <li><img src="assets/logos/react.svg" alt="React" style="height: 30px; vertical-align: middle; margin-right: 10px;"> React 19</li>
-              <li><img src="assets/logos/tanstack.png" alt="TanStack" style="height: 30px; vertical-align: middle; margin-right: 10px;"> TanStack Start</li>
-              <li><img src="assets/logos/shadcn.ico" alt="shadcn" style="height: 30px; vertical-align: middle; margin-right: 10px;"><img src="assets/logos/radix.png" alt="Radix" style="height: 30px; vertical-align: middle; margin-right: 10px;"> shadcn/Radix</li>
-              <li><img src="assets/logos/react-hook-form.svg" alt="React Hook Form" style="height: 30px; vertical-align: middle; margin-right: 10px;"><img src="assets/logos/zod.png" alt="Zod" style="height: 30px; vertical-align: middle; margin-right: 10px;"> React Hook Form + Zod</li>
-              <li><img src="assets/logos/tailwind.svg" alt="Tailwind" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Tailwind</li>
+              <li>
+                <img
+                  src="assets/logos/react.svg"
+                  alt="React"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                React 19
+              </li>
+              <li>
+                <img
+                  src="assets/logos/tanstack.png"
+                  alt="TanStack"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                TanStack Start
+              </li>
+              <li>
+                <img
+                  src="assets/logos/shadcn.ico"
+                  alt="shadcn"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                /><img
+                  src="assets/logos/radix.png"
+                  alt="Radix"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                shadcn/Radix
+              </li>
+              <li>
+                <img
+                  src="assets/logos/react-hook-form.svg"
+                  alt="React Hook Form"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                /><img
+                  src="assets/logos/zod.png"
+                  alt="Zod"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                React Hook Form + Zod
+              </li>
+              <li>
+                <img
+                  src="assets/logos/tailwind.svg"
+                  alt="Tailwind"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Tailwind
+              </li>
             </ul>
           </section>
           <section>
             <p><strong>Infrastructuur</strong>:</p>
             <ul>
-              <li><img src="assets/logos/docker.svg" alt="Docker" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Docker Compose</li>
-              <li><img src="assets/logos/bruno.png" alt="Bruno" style="height: 30px; vertical-align: middle; margin-right: 10px;"> Bruno</li>
-              <li><img src="assets/logos/typescript.svg" alt="TypeScript" style="height: 30px; vertical-align: middle; margin-right: 10px;"><img src="assets/logos/nodejs.svg" alt="Node.js" style="height: 30px; vertical-align: middle; margin-right: 10px;"> TypeScript/Node.js 22</li>
+              <li>
+                <img
+                  src="assets/logos/docker.svg"
+                  alt="Docker"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Docker Compose
+              </li>
+              <li>
+                <img
+                  src="assets/logos/bruno.png"
+                  alt="Bruno"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                Bruno
+              </li>
+              <li>
+                <img
+                  src="assets/logos/typescript.svg"
+                  alt="TypeScript"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                /><img
+                  src="assets/logos/nodejs.svg"
+                  alt="Node.js"
+                  style="
+                    height: 30px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                  "
+                />
+                TypeScript/Node.js 22
+              </li>
             </ul>
           </section>
           <section>
@@ -197,369 +317,149 @@
           <section data-auto-animate>
             <h3>Neo4j Graph Model</h3>
             <ul>
-              <li><code>Person</code> ──<code>CURRENTLY_AT</code>──&gt; <code>Practice</code></li>
-              <li><code>Person</code> ──<code>WANTS[order]</code>──&gt; <code>Practice</code></li>
+              <li>
+                <code>Person</code> ──<code>CURRENTLY_AT</code>──&gt;
+                <code>Practice</code>
+              </li>
+              <li>
+                <code>Person</code> ──<code>WANTS[order]</code>──&gt;
+                <code>Practice</code>
+              </li>
             </ul>
-            <p style="margin-top: 30px;"><strong>Cypher zoekt cirkelpatronen</strong>:</p>
+            <p style="margin-top: 30px">
+              <strong>Cypher zoekt cirkelpatronen</strong>:
+            </p>
             <pre><code class="language-cypher" style="font-size: 0.5em;">MATCH (p0)-[:CURRENTLY_AT]->(pr0),
       (p0)-[w0:WANTS]->(pr1),
       (p1)-[:CURRENTLY_AT]->(pr1),
       (p1)-[w1:WANTS]->(pr0)
 WHERE p0.id = $personId
 RETURN p0, pr0, w0, p1, pr1, w1</code></pre>
-            <p style="font-size: 0.8em;">Ankerpersoon voorkomt combination explosion</p>
+            <p style="font-size: 0.8em">
+              Rootnode voorkomt combination explosion
+            </p>
           </section>
 
           <!-- Slide 3: Visual Example -->
           <section data-auto-animate>
             <h3>Cirkel Voorbeeld (4 personen)</h3>
-            <pre style="font-size: 0.6em; line-height: 1.3;"><code>Pieter @ doctor A  ──wants──&gt;  doctor B @ Maria
+            <pre
+              style="font-size: 0.6em; line-height: 1.3"
+            ><code>Pieter @ doctor A  ──wants──&gt;  doctor B @ Maria
     ↑                          ↓
   wants                       wants
     ↑                          ↓
     Jan @ doctor D  &lt;──wants──  doctor C @ Sophie</code></pre>
             <p>✅ Iedereen krijgt gewenste praktijk tegelijk</p>
-            <p style="font-size: 0.85em; margin-top: 20px;">Dynamische queries voor groottes 2‑10</p>
+            <p style="font-size: 0.85em; margin-top: 20px">
+              Dynamische queries voor groottes 2‑10
+            </p>
           </section>
 
           <!-- Slide 4: Scoring -->
           <section data-auto-animate>
             <h3>Scoring Formule</h3>
             <pre><code class="language-typescript" style="font-size: 0.55em;">score = (maxPref × 10) + (totalScore × 1) + (distance × 20)</code></pre>
-            <ul style="font-size: 0.9em;">
+            <ul style="font-size: 0.9em">
               <li><strong>maxPref × 10</strong>: beste individuele voorkeur</li>
-              <li><strong>totalScore × 1</strong>: totale voorkeur van groep </li>
-              <li><strong>distance × 20</strong>: afstand tot ideale grootte (5)</li>
+              <li>
+                <strong>totalScore × 1</strong>: totale voorkeur van groep
+              </li>
+              <li>
+                <strong>distance × 20</strong>: afstand tot ideale cirkel
+                grootte (5)
+              </li>
             </ul>
-            <p style="font-size: 0.85em; margin-top: 20px;">Lager = beter match</p>
+            <p style="font-size: 0.85em; margin-top: 20px">
+              Lager = beter match
+            </p>
           </section>
 
           <!-- Slide 5: Workflow -->
           <section data-auto-animate>
             <h3>Workflow</h3>
-            <ol style="font-size: 0.85em;">
-              <li><strong>Zoeken</strong>: alle cirkels (2‑10) met ankerpersoon</li>
-              <li><strong>Ranking</strong>: berkeen score van alle cirkels</li>
-              <li><strong>Match</strong>: selecteer cirkel met de beste score</li>
-              <li><strong>Opslaan</strong>: Move naar PostgreSQL voor permanente opslag</li>
-              <li><strong>Cleanup</strong>: verwijder uit Neo4j, houd graph lean</li>
+            <ol style="font-size: 0.85em">
+              <li><strong>Zoeken</strong>: alle cirkels (2‑10) met Rootnode</li>
+              <li><strong>Ranking</strong>: bereken score van alle cirkels</li>
+              <li>
+                <strong>Match</strong>: selecteer cirkel met de beste score
+                (laagste)
+              </li>
+              <li>
+                <strong>Opslaan</strong>: Move naar PostgreSQL voor permanente
+                opslag
+              </li>
+              <li>
+                <strong>Cleanup</strong>: verwijder uit Neo4j, houd graphDB lean
+              </li>
             </ol>
-            <p style="font-size: 0.85em; margin-top: 20px;">
+            <p style="font-size: 0.85em; margin-top: 20px">
               💡 Neo4j = snelle matching, PostgreSQL = historie
             </p>
           </section>
         </section>
 
-        <!-- TODO FIX page 7: Datastroom -->
-        <section>
-          <section>
-            <h3>Datastroom samengevat</h3>
-          </section>
-          <section>
-            <h3>Flow</h3>
-            <ol>
-              <li>
-                <strong>Registratie</strong> – gebruiker meldt huidige praktijk
-                + voorkeuren; Neo4j krijgt nodes en <code>WANTS</code>-relaties.
-              </li>
-              <li>
-                <strong>Async matching</strong> – API antwoordt direct, matcher
-                zoekt op achtergrond cirkels van 2‑10 personen.
-              </li>
-              <li>
-                <strong>Ranking & selectie</strong> – beste cirkel gekozen op
-                voorkeursorde, totaalscore en cirkelgrootte.
-              </li>
-              <li>
-                <strong>Opslag & cleanup</strong> – cirkel naar PostgreSQL,
-                pers. en parktijken opgeruimd uit Neo4j,
-              </li>
-              <li>
-                <strong>Terughalen</strong> – frontend leest resultaten via
-                <code>/api/matches</code>; Neo4j blijft licht voor nieuwe
-                aanvragen.
-              </li>
-            </ol>
-            <p>
-              <strong>Resultaat</strong>: snelle feedback én een
-              opgeschoonde graaf na elke succesvolle match.
-            </p>
-          </section>
-        </section>
         <!--  TODO FIX  page 8: Ontwikkeltijdlijn -->
         <section>
           <section>
             <h3>Ontwikkeltijdlijn</h3>
-            <p>36 uur in het kort</p>
           </section>
           <section>
-            <h3>Timeline</h3>
             <ul>
               <li>
-                <strong>Dag 1 avond</strong> – projectstructuur + scraping van
-                3.000 huisartsrecords, PostgreSQL en Flask-API opgezet.
+                <p><strong>Dag 1 avond</strong></p>
+                Projectstructuur + scraping van 8.153 huisartsrecords,
+                PostgreSQL, eerste basic API's, PDOK-adreslookup toegevoegd.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <ul>
+              <li>
+                <p><strong>Dag 2 ochtend</strong></p>
+                Eerste matchingservice, grote pivot naar TypeScript/Hono ipv
+                Python, Docker en GraphHopper ingeregeld.
               </li>
               <li>
-                <strong>Dag 2 ochtend</strong> – eerste matchingservice, grote
-                pivot naar TypeScript/Hono, Docker en GraphHopper ingeregeld.
+                <p><strong>Dag 2 middag</strong></p>
+                Multi-keuze matching, UI-flow, geo-API's/graphopper,
+                ID‑gebaseerde data.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <ul>
+              <li>
+                <p><strong>Dag 2 avond</strong></p>
+                frontend↔backend gekoppeld, testdata geladen, algoritme rewrite
+                - new person only, PostgreSQL-persistentie afgerond.
               </li>
               <li>
-                <strong>Dag 2 middag</strong> – multi-keuze matching, UI-flow,
-                geo-API's, ID‑gebaseerde data en PDOK-adreslookup toegevoegd.
-              </li>
-              <li>
-                <strong>Dag 2 avond</strong> – frontend↔backend gekoppeld,
-                testdata geladen, algoritmebug gefikst, PostgreSQL-persistentie
-                afgerond.
+                <p><strong>Dag 3</strong></p>
+                Email service. Error handling. Test & Stresstesting 100.000
+                users.
               </li>
             </ul>
           </section>
           <section>
             <h3>Statistieken</h3>
             <ul>
-              <li>110 commits</li>
+              <li>~222 commits</li>
               <li>4 developers</li>
-              <li>~10k regels code</li>
-              <li>5 services</li>
+              <li>~135k additions</li>
+              <li>8 micro-services</li>
             </ul>
             <p>
-              <strong>Kernbeslissingen</strong>: Neo4j + PostgreSQL, rewrite
-              naar TypeScript, async matching, configureerbare scoring.
-            </p>
-            <p>
               <strong>Resultaat</strong>: van idee naar demo-klaar product in
-              één hackathonweekend.
+              één hackathon.
             </p>
-          </section>
-        </section>
-        <!-- page  TODO FIX  9: Key Features -->
-        <section>
-          <section>
-            <h3>Belangrijkste features in één lijst</h3>
-          </section>
-          <section>
-            <h3>Features</h3>
-            <ol>
-              <li>
-                <strong>Slimme matching</strong> – Neo4j vindt circulaire ruilen
-                van 2‑10 personen, ranking bewaakt voorkeuren én coördinatie.
-              </li>
-              <li>
-                <strong>Flexibele voorkeuren</strong> – tot 10 praktijken per
-                gebruiker, automatisch fallback zonder slechte matches te
-                forceren.
-              </li>
-              <li>
-                <strong>Twee-database design</strong> – Neo4j voor snelle
-                zoekgraaf, PostgreSQL voor duurzame opslag en rapportage.
-              </li>
-              <li>
-                <strong>Rijke data & geo</strong> – 3.000+ praktijken,
-                PDOK-adressen, Haversine-afstanden en GraphHopper-routes voor
-                relevante suggesties.
-              </li>
-              <li>
-                <strong>Heldere API + moderne UI</strong> – REST endpoints voor
-                mensen en cirkels, React/Tailwind frontend, alles startbaar met
-                <code>docker-compose up</code>.
-              </li>
-              <li>
-                <strong>Observability & veiligheid</strong> – uitgebreide
-                logging, healthcheck, rollbackbescherming en configuratie via
-                env-vars voor snelle tuning.
-              </li>
-            </ol>
           </section>
         </section>
         <!-- TODO FIX  page 10: Challenges -->
         <section>
           <section>
-            <h3>Opgeloste uitdagingen</h3>
-          </section>
-          <section>
-            <h3>Uitdagingen</h3>
-            <ul>
-              <li>
-                <strong>Technologiewissel</strong> – Python/FastAPI →
-                TypeScript/Hono voor betere tooling, typeveiligheid en snelheid.
-              </li>
-              <li>
-                <strong>Unieke identifiers</strong> – overstap van namen naar
-                UUID's + numerieke praktijk-ID's voorkomt botsingen.
-              </li>
-              <li>
-                <strong>Meer voorkeuren</strong> – array van 10 keuzes verhoogt
-                matchkans zonder de kwaliteit te verlagen.
-              </li>
-              <li>
-                <strong>Query-bug</strong> – modulo-fout in cyclusdetectie
-                opgelost, volledige matches gevonden.
-              </li>
-              <li>
-                <strong>Persistentie</strong> – PostgreSQL bewaart cirkels,
-                Neo4j blijft licht; uitrol via Docker-compose.
-              </li>
-              <li>
-                <strong>Async UX</strong> – matching draait op achtergrond, API
-                blijft snel; logging maakt alles traceerbaar.
-              </li>
-            </ul>
-          </section>
-        </section>
-        <!-- TODO FIX page 11: Demo Scenarios -->
-        <section>
-          <section>
-            <h3>Demo-scenario's samengevat</h3>
-          </section>
-          <section>
-            <h3>Scenario's</h3>
-            <ol>
-              <li>
-                <strong>Perfecte cirkel (10 personen)</strong> – iedereen
-                wisselt één stap door, alle eerste voorkeuren vervuld.
-              </li>
-              <li>
-                <strong>Geïsoleerd duo</strong> – twee personen ruilen 1-op-1
-                hun praktijk, meest voorkomende real-life situatie.
-              </li>
-              <li>
-                <strong>Geen match</strong> – iemand wil een niet-bestaande
-                plek, blijft wachten zonder slechte match af te dwingen.
-              </li>
-              <li>
-                <strong>Multi-keuze succes</strong> – mix van tweede/derde
-                voorkeuren levert alsnog een optimale cirkel op.
-              </li>
-              <li>
-                <strong>Grootte-optimalisatie</strong> – scoringssysteem kiest
-                cirkel dicht bij ideale grootte van 5.
-              </li>
-              <li>
-                <strong>Realistisch verhuisverhaal</strong> – Jan ↔ Sophie tonen
-                dat matches automatisch ontstaan zodra puzzel compleet is.
-              </li>
-            </ol>
-          </section>
-          <section>
-            <h3>Performance</h3>
-            <p>
-              <strong>Interactieve demo</strong>:
-              <code>npm run import:data</code>, personen posten naar
-              <code>/api/people</code>, resultaten via
-              <code>/api/matches</code>.
-            </p>
-            <p>
-              <strong>Performancebewijs</strong>: 1.000 personen → matching
-              &lt;200 ms, meerdere cirkelgroottes, Neo4j/Pg blijven responsief.
-              Edgecases (iedereen wil dezelfde praktijk, lange ketens) worden
-              correct afgehandeld.
-            </p>
-          </section>
-        </section>
-        <!--  TODO FIX page 12: Current State -->
-        <section>
-          <section>
-            <h3>Huidige status</h3>
-            <p>Waar staan we?</p>
-          </section>
-          <section>
-            <h3>Status</h3>
-            <ul>
-              <li>
-                <strong>Werkt nu</strong>: matching-engine (cirkels 2‑10,
-                configurabel, realtime), Neo4j + PostgreSQL met automatische
-                opschoning, REST-API's en React-frontend draaien via Docker
-                Compose.
-              </li>
-              <li>
-                <strong>Klaar voor beta</strong>: logging, healthcheck en
-                rollbackbescherming aanwezig; documentatie en datasets gereed.
-              </li>
-              <li>
-                <strong>Nog te doen</strong>: authenticatie/autorisatie,
-                uitgebreide testdekking, monitoring & notificaties,
-                gebruikersdashboard.
-              </li>
-              <li>
-                <strong>Gereedheid</strong>: kerntechnologie ~80%
-                productieklaar; productfeatures ~30% – vier maanden tot
-                productie met geplande roadmap.
-              </li>
-            </ul>
-          </section>
-        </section>
-        <!--  TODO FIX page 13: Future Roadmap -->
-        <section>
-          <section>
-            <h3>Toekomstige uitbreidingen</h3>
-            <p>Roadmap</p>
-          </section>
-          <section>
-            <h3>Roadmap (1)</h3>
-            <ul>
-              <li>
-                <strong>Maand 1-2</strong>: auth & rollen, realtime notificaties
-                (WebSockets/e-mail), testsuite (unit + integratie) en
-                stagingomgeving.
-              </li>
-              <li>
-                <strong>Maand 3-4</strong>: gebruikersdashboard met
-                matchvisualisatie, verfijnde registratieflow, polish van UX en
-                content.
-              </li>
-              <li>
-                <strong>Maand 5-6</strong>: AI-assist (matchkans & suggesties),
-                afstands- en CO₂-metingen, praktijkportaal en
-                mobiele/PWA-ervaring.
-              </li>
-            </ul>
-          </section>
-          <section>
-            <h3>Roadmap (2)</h3>
-            <ul>
-              <li>
-                <strong>Maand 7-12</strong>: integraties met LSP, Zorgkaart,
-                verzekeraars; uitrol naar andere zorgdomeinen;
-                internationalisatie.
-              </li>
-              <li>
-                <strong>Jaar 2+</strong>: schaaloptimalisaties, caching,
-                Kubernetes, nieuwe verdienmodellen (freemium,
-                praktijkabonnement, verzekerings-partners), internationale
-                expansie en onderzoekssamenwerkingen.
-              </li>
-            </ul>
-          </section>
-        </section>
-        <!-- TODO FIX  page 14: Key Takeaways -->
-        <section>
-          <section>
-            <h3>Belangrijkste inzichten</h3>
-            <p>In één pagina</p>
-          </section>
-          <section>
-            <h3>Inzichten</h3>
-            <ul>
-              <li>
-                <strong>Prestatie</strong>: in 36 uur een end-to-end systeem
-                gebouwd – matching-algoritme, data, frontend, infra en logging.
-              </li>
-              <li>
-                <strong>Techniek</strong>: Neo4j + PostgreSQL bewijst zich,
-                TypeScript levert typeveiligheid, async ontwerpen houdt de UX
-                snel.
-              </li>
-              <li>
-                <strong>Proces</strong>: durf te pivotten, documenteer continue, ship klein en vaak, gebruik testdata als versneller.
-              </li>
-              <li>
-                <strong>Impact</strong>: patiënten dichter bij huis, praktijken
-                minder administratie, zorgsysteem efficiënter.
-              </li>
-              <li>
-                <strong>Volgende stap</strong>: auth + monitoring, feedback verwerken en gecontroleerd opschalen.
-              </li>
-            </ul>
+            <h3>DEMO</h3>
+            <a href="http://localhost:3000">TO THE DEMO!</a>
           </section>
         </section>
       </div>
