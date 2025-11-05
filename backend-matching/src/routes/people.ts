@@ -14,12 +14,22 @@ peopleRoutes.post('/', async (c) => {
     // Validate required fields
     if (
       !body.name ||
+      !body.email ||
       typeof body.currentPracticeId !== 'number' ||
       !Array.isArray(body.choices) ||
       body.choices.length === 0
     ) {
       return c.json(
         { error: 'Missing required fields' },
+        400
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(body.email)) {
+      return c.json(
+        { error: 'Invalid email format' },
         400
       );
     }

@@ -64,7 +64,8 @@ class PostgresService {
     const migrationsDir = path.join(__dirname, '../../migrations');
     const migrationFiles = [
       '001_create_circles_tables.sql',
-      '002_add_score_to_circles.sql'
+      '002_add_score_to_circles.sql',
+      '003_add_email_to_circle_members.sql'
     ];
 
     try {

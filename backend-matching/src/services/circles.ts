@@ -38,12 +38,13 @@ class CirclesService {
 
         await client.query(
           `INSERT INTO circle_members
-           (circle_id, person_id, person_name, current_practice_id, desired_practice_id, preference_order, gets_spot_from)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+           (circle_id, person_id, person_name, email, current_practice_id, desired_practice_id, preference_order, gets_spot_from)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
           [
             circleId,
             person.id,
             person.name,
+            person.email,
             person.currentPractice.id,
             person.choices[circlePerson.choiceIndex].id,
             circlePerson.choiceIndex,
@@ -82,6 +83,7 @@ class CirclesService {
              json_build_object(
                'person_id', cm.person_id,
                'person_name', cm.person_name,
+               'email', cm.email,
                'current_practice_id', cm.current_practice_id,
                'desired_practice_id', cm.desired_practice_id,
                'preference_order', cm.preference_order,
@@ -119,6 +121,7 @@ class CirclesService {
              json_build_object(
                'person_id', cm.person_id,
                'person_name', cm.person_name,
+               'email', cm.email,
                'current_practice_id', cm.current_practice_id,
                'desired_practice_id', cm.desired_practice_id,
                'preference_order', cm.preference_order,
