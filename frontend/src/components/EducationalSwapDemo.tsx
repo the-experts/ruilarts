@@ -29,30 +29,58 @@ const EducationalSwapDemo = () => {
   const [step, setStep] = useState(0);
   const totalSteps = 4;
 
+  const locations = {
+    p1: {
+      name: "Zwolle",
+      pos: {
+        x: 0.65,
+        y: 0.2,
+      },
+    },
+    p2: {
+      name: "Utrecht",
+      pos: {
+        x: 0.42,
+        y: 0.51,
+      },
+    },
+    p3: {
+      name: "Rotterdam",
+      pos: {
+        x: 0.25,
+        y: 0.65,
+      },
+    },
+    p4: {
+      name: "Haarlem",
+      pos: { x: 0.3, y: 0.28 },
+    },
+  };
+
   // Data: positions are relative (0-1) for responsive design
   const doctors: Doctor[] = [
     {
       id: "doc1",
-      location: "Groningen",
-      pos: { x: 0.65, y: 0.2 },
+      location: locations.p1.name,
+      pos: locations.p1.pos,
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-groningen",
     },
     {
       id: "doc2",
-      location: "Zwolle",
-      pos: { x: 0.6, y: 0.45 },
+      location: locations.p2.name,
+      pos: locations.p2.pos,
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-zwolle",
     },
     {
       id: "doc3",
-      location: "Den Haag",
-      pos: { x: 0.25, y: 0.65 },
+      location: locations.p3.name,
+      pos: locations.p3.pos,
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-denhaag",
     },
     {
       id: "doc4",
-      location: "Leeuwarden",
-      pos: { x: 0.5, y: 0.12 },
+      location: locations.p4.name,
+      pos: locations.p4.pos,
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-leeuwarden",
     },
   ];
@@ -62,37 +90,37 @@ const EducationalSwapDemo = () => {
       id: "p1",
       name: "Henk",
       avatarUrl: "https://avatar.iran.liara.run/public/boy?username=Henk",
-      currentLocation: "Groningen",
-      newLocation: "Zwolle",
-      startPos: { x: 0.65, y: 0.2 },
-      targetPos: { x: 0.6, y: 0.45 },
+      currentLocation: locations.p1.name,
+      newLocation: locations.p2.name,
+      startPos: locations.p1.pos,
+      targetPos: locations.p2.pos,
     },
     {
       id: "p2",
       name: "Maria",
       avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Maria",
-      currentLocation: "Zwolle",
-      newLocation: "Den Haag",
-      startPos: { x: 0.6, y: 0.45 },
-      targetPos: { x: 0.25, y: 0.65 },
+      currentLocation: locations.p2.name,
+      newLocation: locations.p3.name,
+      startPos: locations.p2.pos,
+      targetPos: locations.p3.pos,
     },
     {
       id: "p3",
       name: "Frank",
       avatarUrl: "https://avatar.iran.liara.run/public?username=Frank",
-      currentLocation: "Den Haag",
-      newLocation: "Leeuwarden",
-      startPos: { x: 0.25, y: 0.65 },
-      targetPos: { x: 0.5, y: 0.12 },
+      currentLocation: locations.p3.name,
+      newLocation: locations.p4.name,
+      startPos: locations.p3.pos,
+      targetPos: locations.p4.pos,
     },
     {
       id: "p4",
       name: "Anne",
       avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Anne",
-      currentLocation: "Leeuwarden",
-      newLocation: "Groningen",
-      startPos: { x: 0.5, y: 0.12 },
-      targetPos: { x: 0.65, y: 0.2 },
+      currentLocation: locations.p4.name,
+      newLocation: locations.p1.name,
+      startPos: locations.p4.pos,
+      targetPos: locations.p1.pos,
     },
   ];
 
@@ -119,7 +147,7 @@ const EducationalSwapDemo = () => {
   };
 
   return (
-    <div className="relative w-full h-[70vh] bg-gradient-to-r from-sky-200 via-sky-200 to-teal-200">
+    <div className="relative w-full aspect-video bg-gradient-to-r from-sky-200 via-sky-200 to-teal-200">
       {/* Background map */}
       <div
         className="absolute inset-0 opacity-20"
@@ -152,7 +180,9 @@ const EducationalSwapDemo = () => {
         {/* Connection lines */}
         {step >= 1 &&
           people.map((person, idx) => {
-            const doctor = doctors.find((d) => d.location === person.newLocation);
+            const doctor = doctors.find(
+              (d) => d.location === person.newLocation,
+            );
             if (!doctor) return null;
 
             // Calculate current position based on step
@@ -162,10 +192,10 @@ const EducationalSwapDemo = () => {
             return (
               <motion.line
                 key={`line-${person.id}`}
-                x1={`${startX * 100}%`}
-                y1={`${startY * 100}%`}
-                x2={`${doctor.pos.x * 100}%`}
-                y2={`${doctor.pos.y * 100}%`}
+                x1={`${startX * 100 + 3}%`}
+                y1={`${startY * 100 + 4}%`}
+                x2={`${doctor.pos.x * 100 + 4}%`}
+                y2={`${doctor.pos.y * 100 + 5}%`}
                 stroke={step === 3 ? "#10B981" : "#4FACFE"}
                 strokeWidth={step === 3 ? "4" : "3"}
                 strokeDasharray={step === 1 ? "8,8" : "0"}
@@ -187,7 +217,9 @@ const EducationalSwapDemo = () => {
 
       {/* Doctors (fixed positions) */}
       {people.map((person, idx) => {
-        const doctor = doctors.find((d) => d.location === person.currentLocation);
+        const doctor = doctors.find(
+          (d) => d.location === person.currentLocation,
+        );
         if (!doctor) return null;
 
         return (
@@ -205,15 +237,15 @@ const EducationalSwapDemo = () => {
             transition={{ duration: 0.5, delay: idx * 0.1 }}
           >
             <div className="flex flex-col items-center gap-1">
+              <div className="text-xs font-semibold text-slate-700 bg-white bg-opacity-80 px-2 py-0.5 rounded whitespace-nowrap">
+                Huisarts {doctor.location}
+              </div>
               <Avatar className="w-10 h-10 border-2 border-indigo-600 bg-gradient-to-br from-indigo-100 to-indigo-200">
                 <AvatarImage
                   src={doctor.avatarUrl}
                   alt={`Huisarts ${doctor.location}`}
                 />
               </Avatar>
-              <div className="text-xs font-semibold text-slate-700 bg-white bg-opacity-80 px-2 py-0.5 rounded whitespace-nowrap">
-                Huisarts {doctor.location}
-              </div>
             </div>
           </motion.div>
         );
@@ -233,16 +265,16 @@ const EducationalSwapDemo = () => {
             initial={{
               left: `${person.startPos.x * 100}%`,
               top: `${person.startPos.y * 100}%`,
-              x: "-50%",
-              y: "-50%",
+              x: "0%",
+              y: "25%",
               scale: 0,
               opacity: 0,
             }}
             animate={{
               left: `${currentPos.x * 100}%`,
               top: `${currentPos.y * 100}%`,
-              x: "-50%",
-              y: "-50%",
+              x: "-35%",
+              y: "25%",
               scale: 1,
               opacity: 1,
             }}

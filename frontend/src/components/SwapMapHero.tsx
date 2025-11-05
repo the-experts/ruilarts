@@ -37,25 +37,25 @@ const SwapMapHero = () => {
   const doctors: Doctor[] = [
     {
       id: "doc1",
-      location: "Groningen",
+      location: "Zwolle",
       pos: { x: 0.5, y: 0.15 },
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-groningen",
     },
     {
       id: "doc2",
-      location: "Zwolle",
+      location: "Utrecht",
       pos: { x: 0.55, y: 0.35 },
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-zwolle",
     },
     {
       id: "doc3",
-      location: "Den Haag",
+      location: "Rotterdam",
       pos: { x: 0.3, y: 0.6 },
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-denhaag",
     },
     {
       id: "doc4",
-      location: "Leeuwarden",
+      location: "Haarlem",
       pos: { x: 0.45, y: 0.1 },
       avatarUrl: "https://avatar.iran.liara.run/public?username=doc-leeuwarden",
     },
@@ -66,8 +66,8 @@ const SwapMapHero = () => {
       id: "p1",
       name: "Henk",
       avatarUrl: "https://avatar.iran.liara.run/public/boy?username=Henk",
-      currentLocation: "Groningen",
-      newLocation: "Zwolle",
+      currentLocation: "Zwolle",
+      newLocation: "Utrecht",
       startPos: { x: 0.5, y: 0.15 },
       targetPos: { x: 0.55, y: 0.35 },
       currentPos: { x: 0.5, y: 0.15 },
@@ -76,8 +76,8 @@ const SwapMapHero = () => {
       id: "p2",
       name: "Maria",
       avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Maria",
-      currentLocation: "Zwolle",
-      newLocation: "Den Haag",
+      currentLocation: "Utrecht",
+      newLocation: "Rotterdam",
       startPos: { x: 0.55, y: 0.35 },
       targetPos: { x: 0.3, y: 0.6 },
       currentPos: { x: 0.55, y: 0.35 },
@@ -86,8 +86,8 @@ const SwapMapHero = () => {
       id: "p3",
       name: "Frank",
       avatarUrl: "https://avatar.iran.liara.run/public?username=Frank",
-      currentLocation: "Den Haag",
-      newLocation: "Leeuwarden",
+      currentLocation: "Rotterdam",
+      newLocation: "Haarlem",
       startPos: { x: 0.3, y: 0.6 },
       targetPos: { x: 0.45, y: 0.1 },
       currentPos: { x: 0.3, y: 0.6 },
@@ -96,8 +96,8 @@ const SwapMapHero = () => {
       id: "p4",
       name: "Anne",
       avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Anne",
-      currentLocation: "Leeuwarden",
-      newLocation: "Groningen",
+      currentLocation: "Haarlem",
+      newLocation: "Zwolle",
       startPos: { x: 0.45, y: 0.1 },
       targetPos: { x: 0.5, y: 0.15 },
       currentPos: { x: 0.45, y: 0.1 },
@@ -108,7 +108,12 @@ const SwapMapHero = () => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
-  const drawLines = (ctx: CanvasRenderingContext2D, width: number, height: number, progress: number) => {
+  const drawLines = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    progress: number,
+  ) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -116,8 +121,12 @@ const SwapMapHero = () => {
 
     people.forEach((person) => {
       const easeProgress = easeInOutCubic(progress);
-      const currentX = person.startPos.x + (person.targetPos.x - person.startPos.x) * easeProgress;
-      const currentY = person.startPos.y + (person.targetPos.y - person.startPos.y) * easeProgress;
+      const currentX =
+        person.startPos.x +
+        (person.targetPos.x - person.startPos.x) * easeProgress;
+      const currentY =
+        person.startPos.y +
+        (person.targetPos.y - person.startPos.y) * easeProgress;
 
       const startX = currentX * width;
       const startY = currentY * height;
@@ -153,12 +162,7 @@ const SwapMapHero = () => {
 
       ctx.beginPath();
       ctx.moveTo(startX, startY);
-      ctx.quadraticCurveTo(
-        midX + offsetX,
-        midY + offsetY,
-        endX,
-        endY
-      );
+      ctx.quadraticCurveTo(midX + offsetX, midY + offsetY, endX, endY);
       ctx.stroke();
 
       // Draw arrow head
@@ -170,11 +174,11 @@ const SwapMapHero = () => {
       ctx.moveTo(endX, endY);
       ctx.lineTo(
         endX - arrowSize * Math.cos(angle - Math.PI / 6),
-        endY - arrowSize * Math.sin(angle - Math.PI / 6)
+        endY - arrowSize * Math.sin(angle - Math.PI / 6),
       );
       ctx.lineTo(
         endX - arrowSize * Math.cos(angle + Math.PI / 6),
-        endY - arrowSize * Math.sin(angle + Math.PI / 6)
+        endY - arrowSize * Math.sin(angle + Math.PI / 6),
       );
       ctx.fill();
     });
@@ -293,7 +297,10 @@ const SwapMapHero = () => {
         >
           <div className="flex flex-col items-center gap-1">
             <Avatar className="w-12 h-12 border-2 border-indigo-600 bg-gradient-to-br from-indigo-100 to-indigo-200">
-              <AvatarImage src={doctor.avatarUrl} alt={`Doctor at ${doctor.location}`} />
+              <AvatarImage
+                src={doctor.avatarUrl}
+                alt={`Doctor at ${doctor.location}`}
+              />
             </Avatar>
             <div className="text-xs font-semibold text-slate-700 bg-white bg-opacity-80 px-2 py-0.5 rounded">
               {doctor.location}
@@ -305,14 +312,18 @@ const SwapMapHero = () => {
       {/* People (animated positions) */}
       {people.map((person) => {
         const easeProgress = easeInOutCubic(animProgress);
-        const currentX = person.startPos.x + (person.targetPos.x - person.startPos.x) * easeProgress;
-        const currentY = person.startPos.y + (person.targetPos.y - person.startPos.y) * easeProgress;
+        const currentX =
+          person.startPos.x +
+          (person.targetPos.x - person.startPos.x) * easeProgress;
+        const currentY =
+          person.startPos.y +
+          (person.targetPos.y - person.startPos.y) * easeProgress;
 
         let labelOpacity = 0;
         if (animProgress > 0.2 && animProgress < 0.8) {
           labelOpacity = Math.min(
             (animProgress - 0.2) / 0.2,
-            (0.8 - animProgress) / 0.2
+            (0.8 - animProgress) / 0.2,
           );
         }
 
@@ -340,9 +351,7 @@ const SwapMapHero = () => {
                 }}
               >
                 <div>{person.name}</div>
-                <div className="text-blue-600">
-                  naar {person.newLocation}
-                </div>
+                <div className="text-blue-600">naar {person.newLocation}</div>
               </div>
             </div>
           </div>
