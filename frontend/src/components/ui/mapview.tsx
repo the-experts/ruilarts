@@ -4,13 +4,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import {Huisarts} from "@/data/huisartsService.ts";
 
 interface MapViewProps {
-    matches?: Huisarts[]
+    doctors?: Huisarts[]
 }
 
-const MapView = ({matches}: MapViewProps) => {
+const MapView = ({doctors}: MapViewProps) => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<MapLibreMap | null>(null);
-
+    let index = 0;
     // Initialize map only once
     useEffect(() => {
         if (!mapContainerRef.current || mapRef.current) return;
@@ -25,7 +25,7 @@ const MapView = ({matches}: MapViewProps) => {
                         "tiles": ["https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"],
                         "tileSize": 256,
                         "attribution": "&copy; OpenStreetMap Contributors",
-                        "maxzoom": 22
+                        "maxzoom": 21
                     }
                 },
                 "layers": [
@@ -34,10 +34,12 @@ const MapView = ({matches}: MapViewProps) => {
                         "type": "raster",
                         "source": "osm" // This must match the source key above
                     }
-                ]
+                ],
+
             },
             center: [5.311177, 52.189589],
             zoom: 8,
+
         });
 
         mapRef.current = map;
@@ -48,24 +50,48 @@ const MapView = ({matches}: MapViewProps) => {
     // Add markers when data changes
     useEffect(() => {
         const map = mapRef.current;
-        if (!map || !matches) return;
+        if (!map || !doctors) return;
 
-        matches.forEach((loc) => {
+        doctors.forEach((doctor) => {
             new maplibregl.Marker()
-                .setLngLat([loc.longitude, loc.latitude])
-                .setPopup(new maplibregl.Popup().setText(loc.naam))
+                .setLngLat([doctor.longitude, doctor.latitude])
+                .setPopup(new maplibregl.Popup().setText(doctor.naam))
                 .addTo(map);
         });
-    }, [matches]);
+        map.setCenter({
+            lon: doctors[0].longitude,
+            lat: doctors[0].latitude
+        })
+
+    }, [doctors]);
 
     // if (isLoading) return <p>Loading map data...</p>;
     // if (error) return <p>Error: {(error as Error).message}</p>;
 
     return (
-        <div
-            ref={mapContainerRef}
-            style={{width: "100rem", height: "100rem", borderRadius: "8px"}}
-        />
+        <div>
+            <div
+                ref={mapContainerRef}
+                style={{width: "90rem", height: "50rem", borderRadius: "8px"}}
+            />
+            <button onClick={() => {
+                // console.log('clicked')
+
+                const map = mapRef.current;
+                if (doctors) {
+                    if (index + 1 >= doctors.length) {
+                        index--;
+                    } else {
+                        index++;
+                    }
+                    map?.setCenter({
+                        lon: doctors[index].longitude,
+                        lat: doctors[index].latitude,
+                    })
+                }
+            }}> To next doctor
+            </button>
+        </div>
     );
 };
 

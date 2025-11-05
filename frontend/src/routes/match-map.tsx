@@ -20,7 +20,7 @@ function App() {
             <h1 className="relative z-10">Matches</h1>
             <ul>
                 <Await promise={data.matches} fallback="Loading...">
-                    {(matches) =><MapView matches={matches} />}
+                    {(matches) =><MapView doctors={matches} />}
                 </Await>
             </ul>
         </div>
