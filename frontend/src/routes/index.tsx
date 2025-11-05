@@ -55,11 +55,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-blue-50 to-indigo-50">
-      {/* Hero Section - Educational Animation */}
-      <EducationalSwapDemo />
 
       {/* Registration Section */}
-      <section className="py-12 px-6 bg-white">
+      <section className="py-12 px-6">
         <div className="max-w-2xl mx-auto text-center">
           <div className="mb-6 flex justify-center">
             <img src={Logo} width={300} alt="Ruil Arts" />
@@ -123,6 +121,10 @@ function App() {
         </div>
       </section>
 
+
+      {/* Hero Section - Educational Animation */}
+      <EducationalSwapDemo />
+
       {/* Benefits Section */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
@@ -179,69 +181,9 @@ function App() {
       <section className="py-20 px-6 bg-slate-900 text-white">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-16">
-            Een Voorbeeld
+            Hoe werkt het?
           </h2>
-
-          {/* Circular Swap Diagram */}
-          <div className="mb-16 bg-slate-800 rounded-xl p-8 border border-slate-700">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
-              <div className="text-center">
-                <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <span className="text-white font-bold text-center text-sm">
-                    Henk
-                    <br />
-                    Groningen
-                  </span>
-                </div>
-                <p className="text-slate-300 text-sm">naar Zwolle</p>
-              </div>
-
-              <div className="hidden md:flex text-2xl text-indigo-400">→</div>
-              <div className="md:hidden text-2xl text-indigo-400">↓</div>
-
-              <div className="text-center">
-                <div className="w-24 h-24 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <span className="text-white font-bold text-center text-sm">
-                    Maria
-                    <br />
-                    Zwolle
-                  </span>
-                </div>
-                <p className="text-slate-300 text-sm">naar Den Haag</p>
-              </div>
-
-              <div className="hidden md:flex text-2xl text-indigo-400">→</div>
-              <div className="md:hidden text-2xl text-indigo-400">↓</div>
-
-              <div className="text-center">
-                <div className="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <span className="text-white font-bold text-center text-sm">
-                    Frank
-                    <br />
-                    Den Haag
-                  </span>
-                </div>
-                <p className="text-slate-300 text-sm">naar Leeuwarden</p>
-              </div>
-
-              <div className="hidden md:flex text-2xl text-indigo-400">→</div>
-              <div className="md:hidden text-2xl text-indigo-400">↓</div>
-
-              <div className="text-center">
-                <div className="w-24 h-24 bg-pink-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <span className="text-white font-bold text-center text-sm">
-                    Anne
-                    <br />
-                    Leeuwarden
-                  </span>
-                </div>
-                <p className="text-slate-300 text-sm">naar Groningen</p>
-              </div>
-            </div>
-            <p className="text-center text-slate-300 mt-8">
-              Iedereen kan naar een huisarts in hun buurt door slim te ruilen.
-            </p>
-          </div>
+          
 
           {/* How it works steps */}
           <div className="grid md:grid-cols-3 gap-8">

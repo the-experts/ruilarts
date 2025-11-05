@@ -35,25 +35,25 @@ const EducationalSwapDemo = () => {
       id: "doc1",
       location: "Groningen",
       pos: { x: 0.65, y: 0.2 },
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-groningen",
+      avatarUrl: "./avatars/doc-1.png",
     },
     {
       id: "doc2",
       location: "Zwolle",
       pos: { x: 0.6, y: 0.45 },
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-zwolle",
+      avatarUrl: "./avatars/doc-2.png",
     },
     {
       id: "doc3",
       location: "Den Haag",
       pos: { x: 0.25, y: 0.65 },
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-denhaag",
+      avatarUrl: "./avatars/doc-3.png",
     },
     {
       id: "doc4",
       location: "Leeuwarden",
       pos: { x: 0.5, y: 0.12 },
-      avatarUrl: "https://avatar.iran.liara.run/public?username=doc-leeuwarden",
+      avatarUrl: "./avatars/doc-4.png",
     },
   ];
 
@@ -61,7 +61,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p1",
       name: "Henk",
-      avatarUrl: "https://avatar.iran.liara.run/public/boy?username=Henk",
+      avatarUrl: "./avatars/henk.png",
       currentLocation: "Groningen",
       newLocation: "Zwolle",
       startPos: { x: 0.65, y: 0.2 },
@@ -70,7 +70,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p2",
       name: "Maria",
-      avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Maria",
+      avatarUrl: "./avatars/maria.png",
       currentLocation: "Zwolle",
       newLocation: "Den Haag",
       startPos: { x: 0.6, y: 0.45 },
@@ -79,7 +79,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p3",
       name: "Frank",
-      avatarUrl: "https://avatar.iran.liara.run/public?username=Frank",
+      avatarUrl: "./avatars/frank.png",
       currentLocation: "Den Haag",
       newLocation: "Leeuwarden",
       startPos: { x: 0.25, y: 0.65 },
@@ -88,7 +88,7 @@ const EducationalSwapDemo = () => {
     {
       id: "p4",
       name: "Anne",
-      avatarUrl: "https://avatar.iran.liara.run/public/girl?username=Anne",
+      avatarUrl: "/avatars/anne.png",
       currentLocation: "Leeuwarden",
       newLocation: "Groningen",
       startPos: { x: 0.5, y: 0.12 },
