@@ -15,6 +15,25 @@ services:
     networks:
       - ruilarts-network
 
+  email-sender:
+    build: ./mail_service
+    container_name: email-sender
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mailpit
+
+  # Local-only SMTP capture (no internet delivery)
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP port
+
+
   # Neo4j database for backend-matching
   neo4j:
     image: neo4j:5.15
