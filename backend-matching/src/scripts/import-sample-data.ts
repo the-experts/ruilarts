@@ -196,8 +196,8 @@ async function importSampleData(): Promise<void> {
 
 
     console.log('------------------------------------------------------------')
-    console.log('Use postal code: "1696 CB" to get the desired Huisarts named "Meijer, A.E."')
-    console.log('Use search "Bakashvili" to gete the desired Huisarts named "Bakashvili, N."')
+    console.log('Use postal code: "3972 CV" to get the desired Huisarts named "Lennep, A.C.D. van"')
+    console.log('Use search "Bakashvili" to get the current Huisarts named "Bakashvili, N."')
   } catch (error) {
     console.error('❌ Import failed:', error);
     process.exit(1);
