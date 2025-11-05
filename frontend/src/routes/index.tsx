@@ -55,7 +55,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-blue-50 to-indigo-50">
-
       {/* Registration Section */}
       <section className="py-12 px-6">
         <div className="max-w-2xl mx-auto text-center">
@@ -71,8 +70,8 @@ function App() {
             </h2>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
               Na een verhuizing is een huisarts dicht bij huis belangrijk.
-              Ruilarts helpt je een huisarts te vinden door mensen die
-              verhuizen slim met elkaar te verbinden.
+              Ruilarts helpt je een huisarts te vinden door mensen die verhuizen
+              slim met elkaar te verbinden.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
               <div className="flex flex-col sm:flex-row gap-3 flex-1">
@@ -120,7 +119,6 @@ function App() {
           </Card>
         </div>
       </section>
-
 
       {/* Hero Section - Educational Animation */}
       <EducationalSwapDemo />
@@ -183,7 +181,6 @@ function App() {
           <h2 className="text-4xl font-black text-center mb-16">
             Hoe werkt het?
           </h2>
-          
 
           {/* How it works steps */}
           <div className="grid md:grid-cols-3 gap-8">

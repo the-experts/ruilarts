@@ -6,5 +6,5 @@ export const Route = createFileRoute("/het-probleem/")({
 });
 
 function RouteComponent() {
-  return <EducationalSwapDemo />;
+  return <EducationalSwapDemo withDescription={false} />;
 }
