@@ -197,7 +197,9 @@ function App() {
               <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-black">
                 2
               </div>
-              <h3 className="font-bold text-lg mb-2">Wij Zoeken Matches</h3>
+              <h3 className="font-bold text-lg mb-2">
+                Wij zoeken een ruilmogelijkheid
+              </h3>
               <p className="text-slate-300">
                 Ons systeem zoekt andere mensen die passen in een ruil cirkel.
               </p>
@@ -222,7 +224,7 @@ function App() {
             Klaar om te starten?
           </h2>
           <p className="text-xl text-slate-600 mb-12">
-            Voer je postcode in. Wij zoeken naar matches voor je.
+            Voer je postcode en huisnummer in.  
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
