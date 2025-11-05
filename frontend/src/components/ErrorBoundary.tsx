@@ -1,9 +1,23 @@
 import { RootRouteError, useRouter } from "@tanstack/react-router";
+import { useState } from "react";
 import LetterGlitch from "./bg/LetterGlitch";
 
 export function ErrorBoundary({ error }: { error: RootRouteError }) {
   const router = useRouter();
   const isDevMode = process.env.NODE_ENV === "development";
+
+  const errorMessages = [
+    "Het spijt ons. Onze AI-bots werken eraan om dit op te lossen. \n\nTobias geeft Codex de schuld. Maar... Dat is ook alleen maar zo omdat hij uit de tokens is voor Claude. Probeer het over een paar seconden opnieuw.",
+    "De ruil-robot heeft per ongeluk de adressen door elkaar gegooid. \n\nNu denkt hij dat Amsterdam in Groningen ligt en Maastricht op de maan. We geven hem even een Nederlandse geografieles. Probeer het straks nog eens!",
+    "Gefeliciteerd, je hebt het systeem zo hard gesloopt dat je in de 'Oeps… alles kapot'-zone bent beland. \n\nHelaas… dat betekent: je bent af. \n\nAdem diep in, herpak jezelf en probeer het nog eens — maar deze keer… met beleid.",
+    "JP was te druk met het maken van fancy animaties. \n\nDe backend voelt zich een beetje verwaarloosd. Probeer het nog een keer terwijl wij JP eraan herinneren dat functionaliteit ook belangrijk is.",
+    "Lennard vergeleek per ongeluk appels met peren in de code. \n\nDe computer snapte er niks van en crashte. Even geduld, we leggen Lennard uit dat if (appel === peer) altijd false is.",
+    "JM is nog steeds bezig met het implementeren van een kaart. \n\nProbleem is... hij is zelf een beetje van de kaart. We sturen hem een GPS en een kompas. Tot die tijd: probeer het gewoon nog een keer."
+  ];
+
+  const [randomMessage] = useState(() =>
+    errorMessages[Math.floor(Math.random() * errorMessages.length)]
+  );
 
   const handleReset = () => {
     window.location.href = "/";
@@ -134,11 +148,8 @@ export function ErrorBoundary({ error }: { error: RootRouteError }) {
             Probeer het opnieuw of ga terug naar het begin.
           </p>
 
-          <div className="message">
-            Het spijt ons. Onze AI-bots werken eraan om dit op te lossen. Tobias
-            geeft Codex de schuld. Maar... Dat is ook alleen maar zo omdat hij
-            uit de tokens is voor Claude. Probeer het over een paar seconden
-            opnieuw.
+          <div className="message" style={{ whiteSpace: "pre-wrap" }}>
+            {randomMessage}
           </div>
 
           {isDevMode && error && (
