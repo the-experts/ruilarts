@@ -26,7 +26,11 @@ interface Doctor {
   color: string;
 }
 
-const EducationalSwapDemo = () => {
+const EducationalSwapDemo = ({
+  withDescription = true,
+}: {
+  withDescription?: boolean;
+}) => {
   const [step, setStep] = useState(0);
   const [animProgress, setAnimProgress] = useState(0);
   const totalSteps = 4;
@@ -425,7 +429,7 @@ const EducationalSwapDemo = () => {
                   transition={{ duration: 0.3 }}
                 />
                 {/* Distance label with background */}
-                <g>
+                {/*<g>
                   <rect
                     x={midX - 3}
                     y={midY + labelOffsetY - 1.2}
@@ -447,7 +451,7 @@ const EducationalSwapDemo = () => {
                   >
                     {displayDistance}km
                   </text>
-                </g>
+                </g>*/}
               </g>
             );
           })}
@@ -557,25 +561,35 @@ const EducationalSwapDemo = () => {
       })}
 
       {/* Controls and description overlay */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-900/95 to-transparent text-white p-6 z-30">
+      <div
+        className={`absolute bottom-0 left-0 right-0 p-6 z-30${
+          withDescription
+            ? "  text-white bg-gradient-to-t from-slate-900/80 via-slate-900/50 to-transparent"
+            : ""
+        }`}
+      >
         <div className="max-w-4xl mx-auto">
           {/* Step indicator */}
-          <div className="text-center mb-3">
-            <span className="text-sm font-medium opacity-75">
-              Stap {step + 1} van {totalSteps}
-            </span>
-          </div>
+          {withDescription && (
+            <>
+              <div className="text-center mb-3">
+                <span className="text-sm font-medium opacity-75">
+                  Stap {step + 1} van {totalSteps}
+                </span>
+              </div>
 
-          {/* Description */}
-          <motion.p
-            key={step}
-            className="text-center text-lg mb-6 min-h-[3rem] flex items-center justify-center"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {stepDescriptions[step]}
-          </motion.p>
+              {/* Description */}
+              <motion.p
+                key={step}
+                className="text-center text-lg mb-6 min-h-[3rem] flex items-center justify-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {stepDescriptions[step]}
+              </motion.p>
+            </>
+          )}
 
           {/* Controls */}
           <div className="flex gap-3 items-center justify-center">
