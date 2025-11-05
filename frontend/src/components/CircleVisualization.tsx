@@ -12,6 +12,7 @@ export function MultiCircleGraph({
     const nodes: GraphNode[] = [];
     const edges: GraphEdge[] = [];
 
+    if(circles){
     circles.forEach((circle) => {
       circle.members.forEach((member) => {
         nodes.push({
@@ -28,6 +29,7 @@ export function MultiCircleGraph({
         });
       });
     });
+    }
     return { nodes, edges };
   }, [circles]);
 
