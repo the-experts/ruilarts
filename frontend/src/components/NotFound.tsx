@@ -1,17 +1,15 @@
-
 import LetterGlitch from "./bg/LetterGlitch";
+import FuzzyText from "./effects/FuzzyText";
 
 export function NotFound() {
-
   const handleReset = () => {
-    console.log('test')
+    console.log("test");
     window.location.href = "/";
   };
 
-
   return (
     <>
-        <style>{`
+      <style>{`
           * {
             margin: 0;
             padding: 0;
@@ -108,36 +106,50 @@ export function NotFound() {
             transform: translateY(-2px);
           }
         `}</style>
-        <div className="fixed top-0 left-0 right-0 bottom-0 z-0">
-          <LetterGlitch
-            glitchSpeed={1}
-            centerVignette={false}
-            outerVignette={true}
-            smooth={true}
-          />
-        </div>
-        <div className="container z-10 relative">
-          <div className="icon">⚠️</div>
-          <h1>Oeps, iets ging fout</h1>
-          <p className="subtitle">
-            We kwamen nu net even niet door de vibe check. Dit kan voorkomen.
-            Probeer het opnieuw of ga terug naar het begin.
+      <div className="fixed top-0 left-0 right-0 bottom-0 z-0">
+        <LetterGlitch
+          glitchSpeed={1}
+          centerVignette={false}
+          outerVignette={true}
+          smooth={true}
+        />
+      </div>
+      <div className="container z-10 relative">
+        <h1 className="flex justify-center">
+          <FuzzyText
+            baseIntensity={0.2}
+            hoverIntensity={0.4}
+            enableHover={true}
+            fontSize="clamp(2rem, 8vw, 8rem)"
+            color="black"
+          >
+            404
+          </FuzzyText>
+        </h1>
+        <p className="subtitle">gij zoekt, gij zoekt nog steeds...</p>
+
+        <div className="message">
+          <p>
+            Deze pagina is… tja… kwijt. Verdwaald. Waarschijnlijk ergens
+            afgeslagen bij “klik hier” en nu in een digitale sloot beland.
           </p>
-
-          <div className="message">
-            Het spijt ons. Onze AI-bots werken eraan om dit op te lossen. Tobias
-            geeft Codex de schuld. Maar... Dat is ook alleen maar zo omdat hij
-            uit de tokens is voor Claude. Probeer het over een paar seconden
-            opnieuw.
-          </div>
-
-         
-          <div className="actions">
-            <button className="btn-secondary" onClick={handleReset}>
-              Naar start
-            </button>
-          </div>
+          <p>
+            Geen paniek. Dit gebeurt zelfs bij mensen met Google Maps én
+            richtingsgevoel.
+          </p>
+          <p>
+            Probeer terug te gaan, adem rustig in (zoals je huisarts zou
+            adviseren) en vind je weg opnieuw. En mocht je deze pagina ooit
+            terugzien: vraag haar hoe ze zo ver van huis is gekomen.
+          </p>
         </div>
-        </>
+
+        <div className="actions">
+          <button className="btn-secondary" onClick={handleReset}>
+            Naar start
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
