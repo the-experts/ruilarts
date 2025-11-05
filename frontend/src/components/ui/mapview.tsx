@@ -13,6 +13,7 @@ const MapView = ({doctors}: MapViewProps) => {
     let index = 0;
     // Initialize map only once
     useEffect(() => {
+
         if (!mapContainerRef.current || mapRef.current) return;
 
         const map = new maplibregl.Map({
@@ -75,8 +76,6 @@ const MapView = ({doctors}: MapViewProps) => {
                 style={{width: "90rem", height: "50rem", borderRadius: "8px"}}
             />
             <button onClick={() => {
-                // console.log('clicked')
-
                 const map = mapRef.current;
                 if (doctors) {
                     if (index + 1 >= doctors.length) {
