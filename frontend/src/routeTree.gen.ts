@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyStatementRouteImport } from './routes/privacy-statement'
 import { Route as MatchesRouteImport } from './routes/matches'
+import { Route as MatchMapRouteImport } from './routes/match-map'
 import { Route as HuisartsenRouteImport } from './routes/huisartsen'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegistrerenIndexRouteImport } from './routes/registreren/index'
@@ -39,6 +40,11 @@ const PrivacyStatementRoute = PrivacyStatementRouteImport.update({
 const MatchesRoute = MatchesRouteImport.update({
   id: '/matches',
   path: '/matches',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchMapRoute = MatchMapRouteImport.update({
+  id: '/match-map',
+  path: '/match-map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HuisartsenRoute = HuisartsenRouteImport.update({
@@ -98,6 +104,7 @@ const RegistrerenPostcodeHouseNumberStap2Route =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/match-map': typeof MatchMapRoute
   '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren': typeof Registreren_layoutRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/match-map': typeof MatchMapRoute
   '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren': typeof RegistrerenIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/huisartsen': typeof HuisartsenRoute
+  '/match-map': typeof MatchMapRoute
   '/matches': typeof MatchesRoute
   '/privacy-statement': typeof PrivacyStatementRoute
   '/registreren': typeof RegistrerenRouteWithChildren
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/huisartsen'
+    | '/match-map'
     | '/matches'
     | '/privacy-statement'
     | '/registreren'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/huisartsen'
+    | '/match-map'
     | '/matches'
     | '/privacy-statement'
     | '/registreren'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/huisartsen'
+    | '/match-map'
     | '/matches'
     | '/privacy-statement'
     | '/registreren'
@@ -186,6 +198,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuisartsenRoute: typeof HuisartsenRoute
+  MatchMapRoute: typeof MatchMapRoute
   MatchesRoute: typeof MatchesRoute
   PrivacyStatementRoute: typeof PrivacyStatementRoute
   RegistrerenRoute: typeof RegistrerenRouteWithChildren
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       path: '/matches'
       fullPath: '/matches'
       preLoaderRoute: typeof MatchesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/match-map': {
+      id: '/match-map'
+      path: '/match-map'
+      fullPath: '/match-map'
+      preLoaderRoute: typeof MatchMapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/huisartsen': {
@@ -332,6 +352,7 @@ const RegistrerenRouteWithChildren = RegistrerenRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
+  MatchMapRoute: MatchMapRoute,
   MatchesRoute: MatchesRoute,
   PrivacyStatementRoute: PrivacyStatementRoute,
   RegistrerenRoute: RegistrerenRouteWithChildren,
