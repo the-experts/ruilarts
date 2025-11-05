@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyStatementRouteImport } from './routes/privacy-statement'
 import { Route as MatchMapRouteImport } from './routes/match-map'
@@ -26,13 +24,6 @@ import { Route as RegistrerenPostcodeHouseNumberStap4RouteImport } from './route
 import { Route as RegistrerenPostcodeHouseNumberStap3RouteImport } from './routes/registreren/$postcode/$houseNumber/stap-3'
 import { Route as RegistrerenPostcodeHouseNumberStap2RouteImport } from './routes/registreren/$postcode/$houseNumber/stap-2'
 
-const RegistrerenRouteImport = createFileRoute('/registreren')()
-
-const RegistrerenRoute = RegistrerenRouteImport.update({
-  id: '/registreren',
-  path: '/registreren',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrivacyStatementRoute = PrivacyStatementRouteImport.update({
   id: '/privacy-statement',
   path: '/privacy-statement',
@@ -144,7 +135,6 @@ export interface FileRoutesById {
   '/huisartsen': typeof HuisartsenRoute
   '/match-map': typeof MatchMapRoute
   '/privacy-statement': typeof PrivacyStatementRoute
-  '/registreren': typeof RegistrerenRouteWithChildren
   '/registreren/__layout': typeof Registreren_layoutRoute
   '/registreren/stap-1': typeof RegistrerenStap1Route
   '/registreren/voltooid': typeof RegistrerenVoltooidRoute
@@ -194,7 +184,6 @@ export interface FileRouteTypes {
     | '/huisartsen'
     | '/match-map'
     | '/privacy-statement'
-    | '/registreren'
     | '/registreren/__layout'
     | '/registreren/stap-1'
     | '/registreren/voltooid'
@@ -212,20 +201,12 @@ export interface RootRouteChildren {
   HuisartsenRoute: typeof HuisartsenRoute
   MatchMapRoute: typeof MatchMapRoute
   PrivacyStatementRoute: typeof PrivacyStatementRoute
-  RegistrerenRoute: typeof RegistrerenRouteWithChildren
   MatchesIndexRoute: typeof MatchesIndexRoute
   MatchesMatchIdIndexRoute: typeof MatchesMatchIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/registreren': {
-      id: '/registreren'
-      path: '/registreren'
-      fullPath: '/registreren'
-      preLoaderRoute: typeof RegistrerenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/privacy-statement': {
       id: '/privacy-statement'
       path: '/privacy-statement'
@@ -284,7 +265,7 @@ declare module '@tanstack/react-router' {
     }
     '/registreren/__layout': {
       id: '/registreren/__layout'
-      path: '/registreren'
+      path: ''
       fullPath: '/registreren'
       preLoaderRoute: typeof Registreren_layoutRouteImport
       parentRoute: typeof RegistrerenRoute
@@ -327,54 +308,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface RegistrerenPostcodeHouseNumberRouteRouteChildren {
-  RegistrerenPostcodeHouseNumberStap2Route: typeof RegistrerenPostcodeHouseNumberStap2Route
-  RegistrerenPostcodeHouseNumberStap3Route: typeof RegistrerenPostcodeHouseNumberStap3Route
-  RegistrerenPostcodeHouseNumberStap4Route: typeof RegistrerenPostcodeHouseNumberStap4Route
-}
-
-const RegistrerenPostcodeHouseNumberRouteRouteChildren: RegistrerenPostcodeHouseNumberRouteRouteChildren =
-  {
-    RegistrerenPostcodeHouseNumberStap2Route:
-      RegistrerenPostcodeHouseNumberStap2Route,
-    RegistrerenPostcodeHouseNumberStap3Route:
-      RegistrerenPostcodeHouseNumberStap3Route,
-    RegistrerenPostcodeHouseNumberStap4Route:
-      RegistrerenPostcodeHouseNumberStap4Route,
-  }
-
-const RegistrerenPostcodeHouseNumberRouteRouteWithChildren =
-  RegistrerenPostcodeHouseNumberRouteRoute._addFileChildren(
-    RegistrerenPostcodeHouseNumberRouteRouteChildren,
-  )
-
-interface RegistrerenRouteChildren {
-  Registreren_layoutRoute: typeof Registreren_layoutRoute
-  RegistrerenStap1Route: typeof RegistrerenStap1Route
-  RegistrerenVoltooidRoute: typeof RegistrerenVoltooidRoute
-  RegistrerenIndexRoute: typeof RegistrerenIndexRoute
-  RegistrerenPostcodeHouseNumberRouteRoute: typeof RegistrerenPostcodeHouseNumberRouteRouteWithChildren
-}
-
-const RegistrerenRouteChildren: RegistrerenRouteChildren = {
-  Registreren_layoutRoute: Registreren_layoutRoute,
-  RegistrerenStap1Route: RegistrerenStap1Route,
-  RegistrerenVoltooidRoute: RegistrerenVoltooidRoute,
-  RegistrerenIndexRoute: RegistrerenIndexRoute,
-  RegistrerenPostcodeHouseNumberRouteRoute:
-    RegistrerenPostcodeHouseNumberRouteRouteWithChildren,
-}
-
-const RegistrerenRouteWithChildren = RegistrerenRoute._addFileChildren(
-  RegistrerenRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuisartsenRoute: HuisartsenRoute,
   MatchMapRoute: MatchMapRoute,
   PrivacyStatementRoute: PrivacyStatementRoute,
-  RegistrerenRoute: RegistrerenRouteWithChildren,
   MatchesIndexRoute: MatchesIndexRoute,
   MatchesMatchIdIndexRoute: MatchesMatchIdIndexRoute,
 }
