@@ -27,6 +27,10 @@ export const createMatch = createServerFn()
 export const getMatches = createServerFn().handler(async () => {
   const response = await fetch(`${BASE_URL}/api/matches`);
 
+  if (!response.ok) {
+    return {circles: [], total: 0} as GetMatchesResponse
+  }
+
   const data = (await response.json()) as GetMatchesResponse;
 
   return data;
