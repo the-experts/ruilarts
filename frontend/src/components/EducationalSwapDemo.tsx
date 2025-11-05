@@ -331,8 +331,8 @@ const EducationalSwapDemo = ({
           </marker>
         </defs>
 
-        {/* Destination lines (to new doctor) - curved */}
-        {(step === 1 || step === 3) &&
+        {/* Destination lines (to new doctor) - curved, only in step 1 */}
+        {step === 1 &&
           people.map((person, idx) => {
             const doctor = doctors.find(
               (d) => d.location === person.newLocation,
@@ -354,13 +354,12 @@ const EducationalSwapDemo = ({
               <motion.path
                 key={`dest-line-${person.id}`}
                 d={pathData}
-                stroke={step === 3 ? "#10B981" : "#4FACFE"}
+                stroke="#4FACFE"
                 strokeWidth="0.5"
                 fill="none"
-                strokeDasharray={step === 1 ? "2,2" : "0"}
-                markerEnd={
-                  step === 1 ? "url(#arrowhead-blue)" : "url(#arrowhead-green)"
-                }
+                strokeDasharray="2 2"
+                pathLength={100}
+                markerEnd="url(#arrowhead-blue)"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{
                   pathLength: 1,
@@ -375,87 +374,94 @@ const EducationalSwapDemo = ({
             );
           })}
 
-        {/* Current connection lines (to old doctor during movement) - straight, red */}
-        {step === 2 &&
+        {/* Connection lines in step 3 - from people to new doctors */}
+        {step === 3 &&
           people.map((person, idx) => {
-            const oldDoctor = doctors.find(
-              (d) => d.location === person.currentLocation,
+            const newDoctor = doctors.find(
+              (d) => d.location === person.newLocation,
             );
-            if (!oldDoctor) return null;
-
-            // Get this person's individual progress (staggered)
-            const personProgress = getPersonProgress(idx);
-
-            // Calculate current position along curved path
-            const currentPos = getCurvedPath(
-              person.startPos,
-              person.targetPos,
-              personProgress,
-            );
+            if (!newDoctor) return null;
 
             // Get avatar centers for proper line alignment
-            const personCenter = getAvatarCenter(currentPos, true);
-            const doctorCenter = getAvatarCenter(oldDoctor.pos, false);
-
-            // Use real distance for this journey
-            const totalDistance = getRealDistance(
-              person.currentLocation,
-              person.newLocation,
-            );
-            const displayDistance = Math.round(totalDistance * personProgress);
-
-            // Position label offset to avoid line overlap
-            const midX = (personCenter.x + doctorCenter.x) / 2;
-            const midY = (personCenter.y + doctorCenter.y) / 2;
-
-            // Offset labels vertically based on index to avoid overlap
-            const labelOffsetY = (idx - 1.5) * 2.5;
-
-            // Only show if person has started moving
-            if (personProgress === 0) return null;
+            const personCenter = getAvatarCenter(person.targetPos, true);
+            const doctorCenter = getAvatarCenter(newDoctor.pos, false);
 
             return (
-              <g key={`current-line-${person.id}`}>
-                <motion.line
-                  x1={personCenter.x}
-                  y1={personCenter.y}
-                  x2={doctorCenter.x}
-                  y2={doctorCenter.y + 3}
-                  stroke="#EF4444"
-                  strokeWidth="0.25"
-                  strokeDasharray="1,1"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.5 }}
-                  transition={{ duration: 0.3 }}
-                />
-                {/* Distance label with background */}
-                {/*<g>
-                  <rect
-                    x={midX - 3}
-                    y={midY + labelOffsetY - 1.2}
-                    width="6"
-                    height="2.5"
-                    fill="white"
-                    opacity="0.9"
-                    rx="2"
-                  />
-                  <text
-                    x={midX}
-                    y={midY + labelOffsetY + 0.2}
-                    fill="#DC2626"
-                    fontSize="1"
-                    fontWeight="600"
-                    fontFamily='"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                  >
-                    {displayDistance}km
-                  </text>
-                </g>*/}
-              </g>
+              <motion.line
+                key={`final-line-${person.id}-${step}`}
+                x1={personCenter.x}
+                y1={personCenter.y}
+                x2={doctorCenter.x}
+                y2={doctorCenter.y}
+                stroke="#10B981"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  delay: 0.3 + idx * 0.15,
+                  duration: 0.8,
+                  ease: "easeOut",
+                }}
+              />
             );
           })}
       </svg>
+
+      {/* Distance labels - HTML layer for step 3 */}
+      {/*<div className="pointer-events-none">
+        <AnimatePresence>
+          {step === 3 &&
+            people.map((person, idx) => {
+              const newDoctor = doctors.find(
+                (d) => d.location === person.newLocation,
+              );
+              if (!newDoctor) return null;
+
+              const personCenter = getAvatarCenter(person.targetPos, true);
+              const doctorCenter = getAvatarCenter(newDoctor.pos, false);
+
+              const midX = (personCenter.x + doctorCenter.x) / 2;
+              const midY = (personCenter.y + doctorCenter.y) / 2;
+              const labelOffsetY = (idx - 1.5) * 2.5;
+
+              // Calculate actual distance to new doctor
+              const dx = (person.targetPos.x - newDoctor.pos.x) * 500;
+              const dy = (person.targetPos.y - newDoctor.pos.y) * 500;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              const displayDistance = Math.round(distance * 0.8); // Scale factor for realistic km
+
+              return (
+                <motion.div
+                  key={`distance-label-${person.id}`}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: 0,
+                    top: 0,
+                    x: `${midX}%`,
+                    y: `${midY + labelOffsetY}%`,
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 15,
+                  }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{
+                    delay: 0.3 + idx * 0.15,
+                    duration: 0.4,
+                    ease: "easeOut",
+                  }}
+                >
+                  <div className="bg-white/90 backdrop-blur-sm px-2.5 py-1.5 rounded-lg shadow-lg border border-green-200/50">
+                    <span className="text-green-600 font-semibold text-xs font-mono leading-none">
+                      {displayDistance}km
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+        </AnimatePresence>
+      </div>*/}
 
       {/* Doctors (fixed positions) */}
       {doctors.map((doctor, idx) => {
@@ -473,7 +479,7 @@ const EducationalSwapDemo = ({
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
           >
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-1 pointer-events-none select-none">
               <div
                 className="text-xs font-semibold text-white px-2 py-0.5 rounded whitespace-nowrap"
                 style={{ backgroundColor: doctor.color }}
@@ -535,7 +541,7 @@ const EducationalSwapDemo = ({
               delay: idx * 0.1,
             }}
           >
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2 pointer-events-none select-none">
               <Avatar
                 className="w-14 h-14 border-4 shadow-lg transition-colors duration-500"
                 style={{ borderColor }}
@@ -562,9 +568,9 @@ const EducationalSwapDemo = ({
 
       {/* Controls and description overlay */}
       <div
-        className={`absolute bottom-0 left-0 right-0 p-6 z-30${
+        className={`absolute bottom-0 left-0 right-0 p-6 z-30 ${
           withDescription
-            ? "  text-white bg-gradient-to-t from-slate-900/80 via-slate-900/50 to-transparent"
+            ? "text-white bg-gradient-to-t from-slate-900/80 via-slate-900/50 to-transparent"
             : ""
         }`}
       >
