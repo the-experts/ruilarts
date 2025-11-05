@@ -13,7 +13,9 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const Route = createFileRoute("/registreren/$postcode/stap-3")({
+export const Route = createFileRoute(
+  "/registreren/$postcode/$houseNumber/stap-3"
+)({
   loader: ({ params }) => {
     // Validate postcode param exists
     if (!params.postcode) {
@@ -26,7 +28,9 @@ export const Route = createFileRoute("/registreren/$postcode/stap-3")({
 
 function Stap3() {
   const navigate = useNavigate();
-  const { postcode } = useParams({ from: "/registreren/$postcode/stap-3" });
+  const { postcode, houseNumber } = useParams({
+    from: "/registreren/$postcode/$houseNumber/stap-3",
+  });
   const { formData, updateCurrentPG, updatePostalCode } = useRegistrationForm();
   const loaderPostcode = Route.useLoaderData();
 
@@ -40,7 +44,10 @@ function Stap3() {
 
   useEffect(() => {
     if (formData.targetPGs.length === 0) {
-      navigate({ to: `/registreren/${postcode}/stap-2` });
+        navigate({
+         to: "/registreren/$postcode/$houseNumber/stap-2",
+        params: { postcode, houseNumber },
+      })
     }
   }, []);
 
@@ -77,7 +84,10 @@ function Stap3() {
     }
 
     updateCurrentPG(selected);
-    navigate({ to: `/registreren/${postcode}/stap-4` });
+    navigate({
+      to: "/registreren/$postcode/$houseNumber/stap-4",
+      params: { postcode, houseNumber },
+    });
   };
 
   const handleSelectPG = (pgId: string) => {
@@ -228,9 +238,9 @@ function RowComponent({
         <div className="flex-1">
           <h3 className="font-medium text-gray-900">{pg.naam}</h3>
           <p className="text-sm text-gray-600">{pg.adres}</p>
-             <p className="mt-1 text-sm text-gray-600">
-                  {pg.street}, {pg.postalcode} {pg.city}
-                </p>
+          <p className="mt-1 text-sm text-gray-600">
+            {pg.street}, {pg.postalcode} {pg.city}
+          </p>
         </div>
       </div>
     </div>

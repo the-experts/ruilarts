@@ -15,12 +15,19 @@ function Stap1() {
   const navigate = useNavigate()
   const { formData, updatePostalCode, updateTargetPGs } = useRegistrationForm()
   const [input, setInput] = useState(formData.postalCode || '')
+  const [houseNumber, setHouseNumber] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setInput(value)
+    setError('')
+  }
+
+    const handleChangeHouseNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setHouseNumber(value)
     setError('')
   }
 
@@ -38,14 +45,22 @@ function Stap1() {
       return
     }
 
+    if (!houseNumber) {
+      setError('Voer alstublieft een geldig huisnummer in')
+      return
+    }
+
     // Update form state
     updatePostalCode(normalized)
 
     setIsLoading(true)
     try {
-      await getNearbyPGs({data: {postalCode: normalized}})
+      await getNearbyPGs({data: {postalCode: normalized, houseNumber}})
       updateTargetPGs([])
-      navigate({ to: `/registreren/${normalized}/stap-2` })
+      navigate({
+         to: "/registreren/$postcode/$houseNumber/stap-2",
+        params: { postcode: normalized, houseNumber },
+      })
     } catch {
       setError('Er is een fout opgetreden. Probeer het opnieuw.')
       setIsLoading(false)
@@ -109,6 +124,24 @@ function Stap1() {
               <p className="text-xs text-gray-500">
                 Spaties en grootte van letters maakt niet uit (bijv. 1012ab, 1012 ab, 1012 AB)
               </p>
+            </div>
+
+             <div className="space-y-2">
+              <Label htmlFor="postcode" className="text-base font-semibold">
+                Huis nummer
+              </Label>
+              <Input
+                id="houseNumber"
+                type="text"
+                placeholder="bijv. 1"
+                value={houseNumber}
+                onChange={handleChangeHouseNumber}
+                onKeyDown={handleKeyDown}
+                disabled={isLoading}
+                maxLength={7}
+                autoFocus
+                className="text-lg"
+              />
             </div>
 
             {error && <p className="text-sm text-red-600">{error}</p>}

@@ -17,6 +17,7 @@ function App() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [postalCodeInput, setPostalCodeInput] = useState("");
+  const [houseNumberInput, setHouseNumberInput] = useState("");
 
   const handleStartClick = async () => {
     const normalized = normalizePostalCode(postalCodeInput);
@@ -29,17 +30,24 @@ function App() {
 
     if (!isValidPostalCode(normalized)) {
       setError(
-        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)",
+        "Voer alstublieft een geldige Nederlandse postcode in (bijv. 1012 AB)"
       );
       return;
     }
 
+    if (!houseNumberInput) {
+      setError("Voer alstublieft een geldig huisnummer in");
+      return;
+    }
+
     try {
-      await getNearbyPGs({ data: { postalCode: normalized } });
+      await getNearbyPGs({
+        data: { postalCode: normalized, houseNumber: houseNumberInput },
+      });
 
       navigate({
-        to: "/registreren/$postcode/stap-2",
-        params: { postcode: postalCodeInput },
+        to: "/registreren/$postcode/$houseNumber/stap-2",
+        params: { postcode: postalCodeInput, houseNumber: houseNumberInput },
       });
     } catch {
       setError("Er is een fout opgetreden. Probeer het opnieuw.");
@@ -81,7 +89,7 @@ function App() {
                     verhuizen slim met elkaar te verbinden.
                   </p>
                   <div className="relative z-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
-                    <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row gap-3 flex-1">
                       <Input
                         type="text"
                         name="postcode"
@@ -96,11 +104,20 @@ function App() {
                           }
                         }}
                       />
-                      {error && (
-                        <p className="text-sm text-red-600 text-left">
-                          {error}
-                        </p>
-                      )}
+                      <Input
+                        type="text"
+                        name="houseNumber"
+                        placeholder="1"
+                        className="w-full h-12 text-base pl-4"
+                        maxLength={7}
+                        value={houseNumberInput}
+                        onChange={(e) => setHouseNumberInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleStartClick();
+                          }
+                        }}
+                      />
                     </div>
                     <Button
                       onClick={handleStartClick}
@@ -109,6 +126,11 @@ function App() {
                       Starten <ArrowRight className="ml-2 w-4 h-4" />
                     </Button>
                   </div>
+                  {error && (
+                    <p className="text-sm text-red-600 text-center max-w-md mx-auto mb-4">
+                      {error}
+                    </p>
+                  )}
                 </Card>
               </div>
             </section>
@@ -310,20 +332,36 @@ function App() {
 
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
             <div className="flex-1">
-              <Input
-                type="text"
-                name="postcode"
-                placeholder="1234AB"
-                className="w-full h-12 text-base pl-4"
-                maxLength={7}
-                value={postalCodeInput}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleStartClick();
-                  }
-                }}
-                onChange={(e) => setPostalCodeInput(e.target.value)}
-              />
+              <div className="flex flex-col sm:flex-row gap-3 flex-1">
+                <Input
+                  type="text"
+                  name="postcode"
+                  placeholder="1234AB"
+                  className="w-full h-12 text-base pl-4"
+                  maxLength={7}
+                  value={postalCodeInput}
+                  onChange={(e) => setPostalCodeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleStartClick();
+                    }
+                  }}
+                />
+                <Input
+                  type="text"
+                  name="houseNumber"
+                  placeholder="1"
+                  className="w-full h-12 text-base pl-4"
+                  maxLength={7}
+                  value={houseNumberInput}
+                  onChange={(e) => setHouseNumberInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleStartClick();
+                    }
+                  }}
+                />
+              </div>
               {error && (
                 <p className="text-sm text-red-600 text-left">{error}</p>
               )}
@@ -352,13 +390,22 @@ function App() {
             </p>
           </div>
           <div className="flex gap-8 text-sm text-slate-600">
-            <a href="https://the-experts.nl/" className="hover:text-slate-900 transition">
+            <a
+              href="https://the-experts.nl/"
+              className="hover:text-slate-900 transition"
+            >
               Over ons
             </a>
-            <a href="/privacy-statement" className="hover:text-slate-900 transition">
+            <a
+              href="/privacy-statement"
+              className="hover:text-slate-900 transition"
+            >
               Privacy
             </a>
-            <a href="https://the-experts.nl/contact" className="hover:text-slate-900 transition">
+            <a
+              href="https://the-experts.nl/contact"
+              className="hover:text-slate-900 transition"
+            >
               Contact
             </a>
           </div>

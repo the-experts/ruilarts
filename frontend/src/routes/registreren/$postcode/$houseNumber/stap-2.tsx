@@ -10,16 +10,22 @@ import {
 } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/registreren/$postcode/stap-2")({
+export const Route = createFileRoute(
+  "/registreren/$postcode/$houseNumber/stap-2"
+)({
   loader: async ({ params }) => {
-    return getNearbyPGs({ data: { postalCode: params.postcode } });
+    return getNearbyPGs({
+      data: { postalCode: params.postcode, houseNumber: params.houseNumber },
+    });
   },
   component: Stap2,
 });
 
 function Stap2() {
   const navigate = useNavigate();
-  const { postcode } = useParams({ from: "/registreren/$postcode/stap-2" });
+  const { postcode, houseNumber } = useParams({
+    from: "/registreren/$postcode/$houseNumber/stap-2",
+  });
   const { formData, updateTargetPGs, updatePostalCode } = useRegistrationForm();
   const nearbyPGs = Route.useLoaderData();
 
@@ -51,7 +57,10 @@ function Stap2() {
 
     const selected = nearbyPGs.filter((pg) => selectedIds.has(pg.id));
     updateTargetPGs(selected);
-    navigate({ to: `/registreren/${postcode}/stap-3` });
+    navigate({
+      to: "/registreren/$postcode/$houseNumber/stap-3",
+      params: { postcode, houseNumber },
+    });
   };
 
   return (

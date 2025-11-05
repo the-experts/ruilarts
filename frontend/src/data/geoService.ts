@@ -5,8 +5,8 @@ interface LocationResponse {
 
 const BASE_URL = 'http://localhost:4000'
 
-export const getGeolocation = async (postalCode: string) => {
-    const response = await fetch(`${BASE_URL}/location?postcode=${postalCode}`)
+export const getGeolocation = async (postalCode: string, houseNumber: string) => {   
+    const response = await fetch(`${BASE_URL}/location?postcode=${postalCode}&addressNumber=${houseNumber}`)
 
     const data = (await response.json()) as LocationResponse
 

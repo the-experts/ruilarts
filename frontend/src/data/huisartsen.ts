@@ -7,10 +7,10 @@ import { getClosestHuisarts, getHuisartsen } from "./huisartsService";
  * For now, returns all PGs sorted by distance (mocked distance)
  */
 export const getNearbyPGs = createServerFn()
-  .inputValidator((data: { postalCode: string }) => data)
+  .inputValidator((data: { postalCode: string, houseNumber: string }) => data)
   .handler(async ({ data }) => {
     try {
-      const geolocation = await getGeolocation(data.postalCode);
+      const geolocation = await getGeolocation(data.postalCode, data.houseNumber);
 
       const closestHuisartsen = await getClosestHuisarts(
         geolocation.latitude,

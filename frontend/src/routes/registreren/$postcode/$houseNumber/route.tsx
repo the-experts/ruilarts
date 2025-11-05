@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
-export const Route = createFileRoute("/registreren/$postcode")({
+export const Route = createFileRoute("/registreren/$postcode/$houseNumber")({
   component: PostcodeLayout,
 });
 
@@ -22,7 +22,9 @@ const STEPS = [
 
 function PostcodeLayout() {
   const navigate = useNavigate();
-  const { postcode } = useParams({ from: "/registreren/$postcode" });
+  const { postcode, houseNumber } = useParams({
+    from: "/registreren/$postcode/$houseNumber",
+  });
 
   // Determine current step from pathname
   const pathname = useLocation({
@@ -45,7 +47,10 @@ function PostcodeLayout() {
         navigate({ to: "/registreren/stap-1" });
       } else {
         // From stap-3 or stap-4, go back within the postcode routes
-        navigate({ to: `/registreren/${postcode}/${prevStep.id}` });
+        navigate({
+          to: `/registreren/$postcode/$houseNumber/${prevStep.id}`,
+          params: { postcode, houseNumber },
+        });
       }
     }
   };

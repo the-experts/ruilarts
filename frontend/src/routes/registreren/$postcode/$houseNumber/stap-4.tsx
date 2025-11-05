@@ -17,21 +17,21 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const Route = createFileRoute("/registreren/$postcode/stap-4")({
+export const Route = createFileRoute("/registreren/$postcode/$houseNumber/stap-4")({
   component: Stap4,
 });
 
 function Stap4() {
   const navigate = useNavigate();
-  const { postcode } = useParams({ from: "/registreren/$postcode/stap-4" });
+  const { postcode, houseNumber: paramsHouseNumber } = useParams({ from: "/registreren/$postcode/$houseNumber/stap-4" });
   const { formData, updateContactDetails } = useRegistrationForm();
 
   const [name, setName] = useState(formData.contactDetails.name || "");
   const [postalCode, setPostalCode] = useState(
-    formData.contactDetails.postalCode || postcode || ""
+    formData.contactDetails.postalCode || postcode
   );
   const [houseNumber, setHouseNumber] = useState(
-    formData.contactDetails.houseNumber || ""
+    formData.contactDetails.houseNumber || paramsHouseNumber
   );
   const [street, setStreet] = useState(formData.contactDetails.street || "");
   const [city, setCity] = useState(formData.contactDetails.city || "");
@@ -43,7 +43,10 @@ function Stap4() {
 
   useEffect(() => {
     if (!formData.currentPG) {
-      navigate({ to: `/registreren/${postcode}/stap-3` });
+        navigate({
+         to: "/registreren/$postcode/$houseNumber/stap-3",
+        params: { postcode, houseNumber: paramsHouseNumber },
+      })
     }
   }, []);
 
