@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Position {
   x: number;
@@ -23,37 +23,34 @@ interface Doctor {
   location: string;
   pos: Position;
   avatarUrl: string;
+  color: string;
 }
 
 const EducationalSwapDemo = () => {
   const [step, setStep] = useState(0);
+  const [animProgress, setAnimProgress] = useState(0);
   const totalSteps = 4;
 
   const locations = {
     p1: {
       name: "Zwolle",
-      pos: {
-        x: 0.65,
-        y: 0.2,
-      },
+      pos: { x: 0.65, y: 0.2 },
+      color: "#3B82F6", // blue
     },
     p2: {
       name: "Utrecht",
-      pos: {
-        x: 0.42,
-        y: 0.51,
-      },
+      pos: { x: 0.42, y: 0.51 },
+      color: "#10B981", // green
     },
     p3: {
       name: "Rotterdam",
-      pos: {
-        x: 0.25,
-        y: 0.65,
-      },
+      pos: { x: 0.25, y: 0.65 },
+      color: "#8B5CF6", // purple
     },
     p4: {
       name: "Haarlem",
       pos: { x: 0.3, y: 0.28 },
+      color: "#F59E0B", // orange
     },
   };
 
@@ -61,30 +58,36 @@ const EducationalSwapDemo = () => {
   const doctors: Doctor[] = [
     {
       id: "doc1",
-
       location: locations.p1.name,
       pos: locations.p1.pos,
       avatarUrl: "./avatars/doc-1.png",
+      color: locations.p1.color,
     },
     {
       id: "doc2",
       location: locations.p2.name,
       pos: locations.p2.pos,
       avatarUrl: "./avatars/doc-2.png",
+      color: locations.p2.color,
     },
     {
       id: "doc3",
       location: locations.p3.name,
       pos: locations.p3.pos,
       avatarUrl: "./avatars/doc-3.png",
+      color: locations.p3.color,
     },
     {
       id: "doc4",
       location: locations.p4.name,
       pos: locations.p4.pos,
       avatarUrl: "./avatars/doc-4.png",
+      color: locations.p4.color,
     },
   ];
+
+  // Offset for people to be slightly right of their doctor
+  const personOffset = { x: 0.008, y: 0.03 };
 
   const people: Person[] = [
     {
@@ -93,8 +96,14 @@ const EducationalSwapDemo = () => {
       avatarUrl: "./avatars/henk.png",
       currentLocation: locations.p1.name,
       newLocation: locations.p2.name,
-      startPos: locations.p1.pos,
-      targetPos: locations.p2.pos,
+      startPos: {
+        x: locations.p1.pos.x + personOffset.x,
+        y: locations.p1.pos.y + personOffset.y,
+      },
+      targetPos: {
+        x: locations.p2.pos.x + personOffset.x,
+        y: locations.p2.pos.y + personOffset.y,
+      },
     },
     {
       id: "p2",
@@ -102,8 +111,14 @@ const EducationalSwapDemo = () => {
       avatarUrl: "./avatars/maria.png",
       currentLocation: locations.p2.name,
       newLocation: locations.p3.name,
-      startPos: locations.p2.pos,
-      targetPos: locations.p3.pos,
+      startPos: {
+        x: locations.p2.pos.x + personOffset.x,
+        y: locations.p2.pos.y + personOffset.y,
+      },
+      targetPos: {
+        x: locations.p3.pos.x + personOffset.x,
+        y: locations.p3.pos.y,
+      },
     },
     {
       id: "p3",
@@ -111,8 +126,14 @@ const EducationalSwapDemo = () => {
       avatarUrl: "./avatars/frank.png",
       currentLocation: locations.p3.name,
       newLocation: locations.p4.name,
-      startPos: locations.p3.pos,
-      targetPos: locations.p4.pos,
+      startPos: {
+        x: locations.p3.pos.x + personOffset.x,
+        y: locations.p3.pos.y + personOffset.y,
+      },
+      targetPos: {
+        x: locations.p4.pos.x + personOffset.x,
+        y: locations.p4.pos.y + personOffset.y,
+      },
     },
     {
       id: "p4",
@@ -120,17 +141,60 @@ const EducationalSwapDemo = () => {
       avatarUrl: "/avatars/anne.png",
       currentLocation: locations.p4.name,
       newLocation: locations.p1.name,
-      startPos: locations.p4.pos,
-      targetPos: locations.p1.pos,
+      startPos: {
+        x: locations.p4.pos.x + personOffset.x,
+        y: locations.p4.pos.y + personOffset.y,
+      },
+      targetPos: {
+        x: locations.p1.pos.x + personOffset.x,
+        y: locations.p1.pos.y + personOffset.y,
+      },
     },
   ];
+
+  // Real distances between cities (in km)
+  const realDistances: Record<string, number> = {
+    "Zwolle-Utrecht": 70,
+    "Utrecht-Rotterdam": 60,
+    "Rotterdam-Haarlem": 60,
+    "Haarlem-Zwolle": 110,
+  };
+
+  const getRealDistance = (from: string, to: string): number => {
+    const key1 = `${from}-${to}`;
+    const key2 = `${to}-${from}`;
+    return realDistances[key1] || realDistances[key2] || 70;
+  };
 
   const stepDescriptions = [
     "4 mensen hebben een huisarts. Ze gaan verhuizen naar een nieuwe stad.",
     "Iedereen wil een huisarts dicht bij hun nieuwe huis. De lijnen tonen waar ze naartoe willen.",
-    "Iedereen verhuist tegelijk naar hun nieuwe stad. Dit heet een 'ruil cirkel'.",
-    "Klaar! Iedereen heeft nu een huisarts dicht bij hun nieuwe huis.",
+    "Iedereen verhuist onafhankelijk van elkaar naar een nieuwe stad, maar behouden tijdelijk hun oude huisarts totdat zij een nieuwe hebben gevonden.",
+    "Dus, ruilen maar! Via Ruil Arts krijgt iedereen een huisarts dicht bij hun nieuwe huis.",
   ];
+
+  // Calculate curved path points (quadratic bezier)
+  const getCurvedPath = (start: Position, end: Position, progress: number) => {
+    // Control point: midpoint with upward offset
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2;
+    const controlY = midY - 0.15; // Hop upward
+
+    // Quadratic Bezier formula
+    const t = progress;
+    const x =
+      (1 - t) * (1 - t) * start.x + 2 * (1 - t) * t * midX + t * t * end.x;
+    const y =
+      (1 - t) * (1 - t) * start.y + 2 * (1 - t) * t * controlY + t * t * end.y;
+
+    return { x, y, controlX: midX, controlY };
+  };
+
+  // Get SVG path for curved line
+  const getCurvedSVGPath = (start: Position, end: Position) => {
+    const { controlX, controlY } = getCurvedPath(start, end, 0.5);
+    return `M ${start.x * 100} ${start.y * 100} Q ${controlX * 100} ${controlY * 100} ${end.x * 100} ${end.y * 100}`;
+  };
 
   const getLabelText = (person: Person) => {
     switch (step) {
@@ -147,6 +211,80 @@ const EducationalSwapDemo = () => {
     }
   };
 
+  const getColorForLocation = (location: string) => {
+    const loc = Object.values(locations).find((l) => l.name === location);
+    return loc?.color || "#3B82F6";
+  };
+
+  const getCurrentColor = (person: Person) => {
+    // Color swaps for everyone when step 3 is reached
+    if (step >= 3) {
+      return getColorForLocation(person.newLocation);
+    }
+    return getColorForLocation(person.currentLocation);
+  };
+
+  // Helper to get avatar center position in SVG coordinates
+  const getAvatarCenter = (pos: Position, isPerson: boolean) => {
+    // Base position in SVG coordinates (0-100)
+    const x = pos.x * 100;
+    const y = pos.y * 100;
+
+    if (isPerson) {
+      // People: translate(-35%, 25%) + avatar center
+      // Need to offset to actual visual center of avatar
+      return { x: x + 4.5, y: y + 5 };
+    } else {
+      // Doctors: translate(-50%, -50%) + label above + avatar
+      // Need to offset down to avatar center below label
+      return { x: x + 3.5, y: y + 3 };
+    }
+  };
+
+  // Animate progress during step 2
+  useEffect(() => {
+    if (step === 2) {
+      const duration = 2000; // 2 seconds per person
+      const staggerDelay = 300; // 300ms delay between people
+      const totalDuration = duration + staggerDelay * (people.length - 1);
+      const startTime = Date.now();
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / totalDuration, 1);
+        setAnimProgress(progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    } else {
+      setAnimProgress(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
+  // Calculate individual person progress with stagger
+  const getPersonProgress = (idx: number): number => {
+    if (step !== 2) return 0;
+
+    const staggerDelay = 300; // 300ms
+    const duration = 2000; // 2 seconds
+    const totalDuration = duration + staggerDelay * (people.length - 1);
+    const personDelay = idx * staggerDelay;
+
+    // Calculate how much of the total time has passed
+    const elapsed = animProgress * totalDuration;
+
+    // Subtract this person's delay
+    const personElapsed = Math.max(0, elapsed - personDelay);
+
+    // Calculate their individual progress (0 to 1)
+    return Math.min(personElapsed / duration, 1);
+  };
+
   return (
     <div className="relative w-full aspect-video bg-gradient-to-r from-sky-200 via-sky-200 to-teal-200">
       {/* Background map */}
@@ -160,47 +298,65 @@ const EducationalSwapDemo = () => {
       />
 
       {/* SVG for lines */}
-      <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 5 }}>
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{ zIndex: 5 }}
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
         <defs>
           <marker
-            id="arrowhead"
+            id="arrowhead-blue"
             markerWidth="10"
             markerHeight="7"
             refX="9"
             refY="3.5"
             orient="auto"
           >
-            <polygon
-              points="0 0, 10 3.5, 0 7"
-              fill="#4FACFE"
-              opacity={step >= 1 ? 1 : 0}
-            />
+            <polygon points="0 0, 10 3.5, 0 7" fill="#4FACFE" />
+          </marker>
+          <marker
+            id="arrowhead-green"
+            markerWidth="10"
+            markerHeight="7"
+            refX="9"
+            refY="3.5"
+            orient="auto"
+          >
+            <polygon points="0 0, 10 3.5, 0 7" fill="#10B981" />
           </marker>
         </defs>
 
-        {/* Connection lines */}
-        {step >= 1 &&
+        {/* Destination lines (to new doctor) - curved */}
+        {(step === 1 || step === 3) &&
           people.map((person, idx) => {
             const doctor = doctors.find(
               (d) => d.location === person.newLocation,
             );
             if (!doctor) return null;
 
-            // Calculate current position based on step
-            const startX = step >= 2 ? person.targetPos.x : person.startPos.x;
-            const startY = step >= 2 ? person.targetPos.y : person.startPos.y;
+            // Get avatar centers for proper line alignment
+            const startCenter = getAvatarCenter(person.startPos, true);
+            const endCenter = getAvatarCenter(doctor.pos, false);
+
+            // Create curved path between centers
+            const midX = (startCenter.x + endCenter.x) / 2;
+            const midY = (startCenter.y + endCenter.y) / 2;
+            const controlY = midY - 15; // Hop upward
+
+            const pathData = `M ${startCenter.x} ${startCenter.y} Q ${midX} ${controlY} ${endCenter.x} ${endCenter.y}`;
 
             return (
-              <motion.line
-                key={`line-${person.id}`}
-                x1={`${startX * 100 + 3}%`}
-                y1={`${startY * 100 + 4}%`}
-                x2={`${doctor.pos.x * 100 + 4}%`}
-                y2={`${doctor.pos.y * 100 + 5}%`}
+              <motion.path
+                key={`dest-line-${person.id}`}
+                d={pathData}
                 stroke={step === 3 ? "#10B981" : "#4FACFE"}
-                strokeWidth={step === 3 ? "4" : "3"}
-                strokeDasharray={step === 1 ? "8,8" : "0"}
-                markerEnd="url(#arrowhead)"
+                strokeWidth="0.5"
+                fill="none"
+                strokeDasharray={step === 1 ? "2,2" : "0"}
+                markerEnd={
+                  step === 1 ? "url(#arrowhead-blue)" : "url(#arrowhead-green)"
+                }
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{
                   pathLength: 1,
@@ -214,15 +370,91 @@ const EducationalSwapDemo = () => {
               />
             );
           })}
+
+        {/* Current connection lines (to old doctor during movement) - straight, red */}
+        {step === 2 &&
+          people.map((person, idx) => {
+            const oldDoctor = doctors.find(
+              (d) => d.location === person.currentLocation,
+            );
+            if (!oldDoctor) return null;
+
+            // Get this person's individual progress (staggered)
+            const personProgress = getPersonProgress(idx);
+
+            // Calculate current position along curved path
+            const currentPos = getCurvedPath(
+              person.startPos,
+              person.targetPos,
+              personProgress,
+            );
+
+            // Get avatar centers for proper line alignment
+            const personCenter = getAvatarCenter(currentPos, true);
+            const doctorCenter = getAvatarCenter(oldDoctor.pos, false);
+
+            // Use real distance for this journey
+            const totalDistance = getRealDistance(
+              person.currentLocation,
+              person.newLocation,
+            );
+            const displayDistance = Math.round(totalDistance * personProgress);
+
+            // Position label offset to avoid line overlap
+            const midX = (personCenter.x + doctorCenter.x) / 2;
+            const midY = (personCenter.y + doctorCenter.y) / 2;
+
+            // Offset labels vertically based on index to avoid overlap
+            const labelOffsetY = (idx - 1.5) * 2.5;
+
+            // Only show if person has started moving
+            if (personProgress === 0) return null;
+
+            return (
+              <g key={`current-line-${person.id}`}>
+                <motion.line
+                  x1={personCenter.x}
+                  y1={personCenter.y}
+                  x2={doctorCenter.x}
+                  y2={doctorCenter.y + 3}
+                  stroke="#EF4444"
+                  strokeWidth="0.25"
+                  strokeDasharray="1,1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.5 }}
+                  transition={{ duration: 0.3 }}
+                />
+                {/* Distance label with background */}
+                <g>
+                  <rect
+                    x={midX - 3}
+                    y={midY + labelOffsetY - 1.2}
+                    width="6"
+                    height="2.5"
+                    fill="white"
+                    opacity="0.9"
+                    rx="2"
+                  />
+                  <text
+                    x={midX}
+                    y={midY + labelOffsetY + 0.2}
+                    fill="#DC2626"
+                    fontSize="1"
+                    fontWeight="600"
+                    fontFamily='"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {displayDistance}km
+                  </text>
+                </g>
+              </g>
+            );
+          })}
       </svg>
 
       {/* Doctors (fixed positions) */}
-      {people.map((person, idx) => {
-        const doctor = doctors.find(
-          (d) => d.location === person.currentLocation,
-        );
-        if (!doctor) return null;
-
+      {doctors.map((doctor, idx) => {
         return (
           <motion.div
             key={`doctor-${doctor.id}`}
@@ -238,10 +470,16 @@ const EducationalSwapDemo = () => {
             transition={{ duration: 0.5, delay: idx * 0.1 }}
           >
             <div className="flex flex-col items-center gap-1">
-              <div className="text-xs font-semibold text-slate-700 bg-white bg-opacity-80 px-2 py-0.5 rounded whitespace-nowrap">
+              <div
+                className="text-xs font-semibold text-white px-2 py-0.5 rounded whitespace-nowrap"
+                style={{ backgroundColor: doctor.color }}
+              >
                 Huisarts {doctor.location}
               </div>
-              <Avatar className="w-10 h-10 border-2 border-indigo-600 bg-gradient-to-br from-indigo-100 to-indigo-200">
+              <Avatar
+                className="w-10 h-10 border-2 shadow-lg"
+                style={{ borderColor: "white" }}
+              >
                 <AvatarImage
                   src={doctor.avatarUrl}
                   alt={`Huisarts ${doctor.location}`}
@@ -254,45 +492,56 @@ const EducationalSwapDemo = () => {
 
       {/* People (animated positions) */}
       {people.map((person, idx) => {
-        const currentPos = step >= 2 ? person.targetPos : person.startPos;
+        let currentPos = person.startPos;
+
+        if (step === 2) {
+          // Follow curved path during movement with individual staggered progress
+          const personProgress = getPersonProgress(idx);
+          currentPos = getCurvedPath(
+            person.startPos,
+            person.targetPos,
+            personProgress,
+          );
+        } else if (step >= 3) {
+          currentPos = person.targetPos;
+        }
+
+        const borderColor = getCurrentColor(person);
 
         return (
           <motion.div
             key={`person-${person.id}`}
             className="absolute"
             style={{
+              left: `${currentPos.x * 100}%`,
+              top: `${currentPos.y * 100}%`,
+              transform: "translate(-35%, 25%)",
               zIndex: 20,
             }}
             initial={{
-              left: `${person.startPos.x * 100}%`,
-              top: `${person.startPos.y * 100}%`,
-              x: "0%",
-              y: "25%",
               scale: 0,
               opacity: 0,
             }}
             animate={{
-              left: `${currentPos.x * 100}%`,
-              top: `${currentPos.y * 100}%`,
-              x: "-35%",
-              y: "25%",
               scale: 1,
               opacity: 1,
             }}
             transition={{
-              duration: step === 2 ? 2 : 0.5,
-              delay: step === 2 ? idx * 0.3 : idx * 0.1,
-              ease: "easeInOut",
+              duration: 0.5,
+              delay: idx * 0.1,
             }}
           >
             <div className="flex flex-col items-center gap-2">
-              <Avatar className="w-14 h-14 border-3 border-white shadow-lg">
+              <Avatar
+                className="w-14 h-14 border-4 shadow-lg transition-colors duration-500"
+                style={{ borderColor }}
+              >
                 <AvatarImage src={person.avatarUrl} alt={person.name} />
               </Avatar>
 
               {/* Label */}
               <motion.div
-                className="text-center text-xs font-semibold text-slate-900 bg-white px-3 py-1 rounded-full whitespace-nowrap shadow-md"
+                className="text-center text-xs font-semibold text-slate-900 bg-white px-3 py-1 rounded-full whitespace-nowrap shadow-md min-w-[160px]"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.5 }}
